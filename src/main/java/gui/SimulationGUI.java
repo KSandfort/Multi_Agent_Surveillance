@@ -1,18 +1,25 @@
 package gui;
 
+import gui.sceneLayouts.MainLayout;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import model.MapADT;
 
 /**
  * Parent class of all GUI elements.
  * Central unit to control the graphics.
  */
 public class SimulationGUI extends Application {
+
+    // Variables
+    MapADT mapADT;
+    MainLayout mainLayout;
+    Scene mainScene;
+
+    public void setMapADT(MapADT map) {
+        this.mapADT = map;
+    }
 
     /**
      * Starts the GUI and produces a window
@@ -24,20 +31,15 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World!");
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
-
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
+        primaryStage.setTitle("Multi-Agent Simulation");
+        mainLayout = new MainLayout();
+        mainScene = new Scene(mainLayout, 1200, 800);
+        primaryStage.setScene(mainScene);
         primaryStage.show();
+        System.out.println("Test");
+    }
+
+    public MainLayout getMainLayout() {
+        return mainLayout;
     }
 }
