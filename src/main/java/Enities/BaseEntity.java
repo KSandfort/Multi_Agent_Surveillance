@@ -12,6 +12,19 @@ public class BaseEntity {
     double turnSpeed;//rotation in degrees/sec
     boolean isIntruder = false;//set to false for now since we dont use it yet
     boolean isSprinting = true;
+
+    public void update()
+    {
+
+
+        checkCollision();
+    }
+
+    private void checkCollision()
+    {
+
+    }
+
     //move the entity
     public void move()
     {
