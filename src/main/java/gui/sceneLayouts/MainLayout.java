@@ -24,14 +24,14 @@ public class MainLayout extends BorderPane {
     Slider simSpeedSlider;
     Label speedLabel;
 
-    Circle circle;
+    public Circle circle;
+    public int circleX = 20;
 
     /**
      * Constructor
      */
     public MainLayout() {
         this.setStyle("-fx-font: 12px 'Verdana';");
-
 
         // Canvas - Center
         canvas = new Pane();
@@ -53,6 +53,10 @@ public class MainLayout extends BorderPane {
         controlsContainer.setPrefHeight(50);
         playPauseButton = new Button("Play / Pause");
         stepButton = new Button("Step");
+        int i = 50;
+        stepButton.setOnAction(e -> {
+            circle.relocate(i, 20);
+        });
         simSpeedSlider = new Slider();
         simSpeedSlider.setMin(1);
         simSpeedSlider.setMax(1000);
@@ -63,6 +67,8 @@ public class MainLayout extends BorderPane {
     }
 
     public void updateGUI(int x) {
-        circle.relocate(x, 20);
+        circleX += x;
+        System.out.println(circleX);
+        circle.relocate(circleX, 20);
     }
 }
