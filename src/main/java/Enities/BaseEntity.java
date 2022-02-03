@@ -3,6 +3,7 @@ package Enities;
 public class BaseEntity {
 
     double movementSpeed;
+    double sprintFactor;//number by which the movement speed needs to be increased when sprinting
     double fovAngle;
     double visionRange;
     //angle of forward facing vector with respect to the entity,
@@ -10,7 +11,7 @@ public class BaseEntity {
     double angle;
     double turnSpeed;//rotation in degrees/sec
     boolean isIntruder = false;//set to false for now since we dont use it yet
-
+    boolean isSprinting = true;
     //move the entity
     public void move()
     {
@@ -24,19 +25,27 @@ public class BaseEntity {
     public void turn(boolean left)
     {
         double rotation = left ? 1 : -1;
-
+        //TODO: same as move method
     }
+
+    //no idea if a see() and hear() method is appropriate should meybe be a percept() method instead
 
     //entity will have to be able to see its environments
     public void see()
     {
-        //no clue if a method is enough
+        //check distance to see if calculation is necessary
+
+        //check angle to see if it is within FOV
+
+        //i guess do stuff if it is in FOV
+
+        //walls will probably need some different calculations since you cant consider is a circle
     }
 
     //entity needs to be able to hear
     public void hear()
     {
-        //no clue if a method is enough
+
     }
 
     //entity needs to be able to place markers for indirect communication
