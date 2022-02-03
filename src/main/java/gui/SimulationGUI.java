@@ -1,11 +1,12 @@
 package gui;
 
+import controller.GameController;
 import gui.sceneLayouts.MainLayout;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.MapADT;
+import model.GameMap;
 
 /**
  * Parent class of all GUI elements.
@@ -15,20 +16,22 @@ public class SimulationGUI extends Application {
 
     // Variables
     int currentStep;
-    MapADT mapADT;
+    GameMap map;
     MainLayout mainLayout;
     Scene mainScene;
     int simulationDelay;
+    GameController controller;
+    final int WIDTH = 1200;
+    final int HEIGHT = 800;
 
     int circleX = 20; // temp var. should be deleted later
 
-    public void setMapADT(MapADT map) {
-        this.mapADT = map;
+
+    public void setController(GameController controller){
+        this.controller = controller;
     }
 
-    /**
-     * Starts the GUI and produces a window
-     */
+
     public void launchGUI() {
 
         String[] args = new String[0];
@@ -41,7 +44,7 @@ public class SimulationGUI extends Application {
         simulationDelay = 200;
         mainLayout = new MainLayout();
         mainScene = new Scene(mainLayout, 1200, 800);
-
+        this.setController(new GameController());
         // Animation timer
         AnimationTimer timer = new MyTimer();
         timer.start();
@@ -55,11 +58,13 @@ public class SimulationGUI extends Application {
      * Updates the GUI one simulation step.
      */
     public void updateGUI1step() {
-        mainLayout.circle.relocate(circleX, 20);
-        circleX++;
+//        mainLayout.circle.relocate(circleX, 20);
+//        circleX++;
 
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
+        this.controller.drawMap(mainLayout);
+
     }
 
     public MainLayout getMainLayout() {
@@ -83,12 +88,25 @@ public class SimulationGUI extends Application {
         private void doHandle() {
             try {
                 Thread.sleep(simulationDelay); // Adds a delay
+
             }
             catch (Exception e) {
                 System.out.println("GUI Thread Delay Error!");
             }
             updateGUI1step();
         }
+    }
+
+    public int getHEIGHT(){
+        return HEIGHT;
+    }
+
+    public int getWIDTH(){
+        return WIDTH;
+    }
+
+    public static void main(String [] args){
+
     }
 }
 

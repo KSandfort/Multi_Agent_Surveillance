@@ -1,4 +1,5 @@
 import controller.GameController;
+import gui.SimulationGUI;
 
 
 /**
@@ -11,6 +12,6 @@ public class App {
      * @param args
      */
     public static void main(String[] args) {
-        GameController gameController = new GameController();
+        new SimulationGUI().launchGUI();
     }
 }
