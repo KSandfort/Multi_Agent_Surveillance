@@ -1,30 +1,36 @@
 package model;
 
 public class Vector2D {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    public Vector2D(int x, int y){
+    public Vector2D(double x, double y){
         this.x = x;
         this.y = y;
     }
 
     public Vector2D(){}
 
-    public int getX(){
+    public double getX(){
         return x;
     }
 
-    public void setX(int x){
+    public void setX(double x){
         this.x = x;
     }
 
-    public int getY(){
+    public double getY(){
         return y;
     }
 
-    public void setY(int y){
+    public void setY(double y){
         this.y = y;
+    }
+
+    public void add(double deltaX, double deltaY)
+    {
+        x += deltaX;
+        y += deltaY;
     }
 
 }

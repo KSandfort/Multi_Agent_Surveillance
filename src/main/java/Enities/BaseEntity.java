@@ -1,9 +1,10 @@
 package Enities;
 
-public class BaseEntity {
+import model.*;
+
+public class BaseEntity extends MapItem {
 
     double movementSpeed;
-    double sprintFactor;//number by which the movement speed needs to be increased when sprinting
     double fovAngle;
     double visionRange;
     //angle of forward facing vector with respect to the entity,
@@ -12,6 +13,8 @@ public class BaseEntity {
     double turnSpeed;//rotation in degrees/sec
     boolean isIntruder = false;//set to false for now since we dont use it yet
     boolean isSprinting = true;
+    double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
+    double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
 
     public void update()
     {
@@ -26,19 +29,24 @@ public class BaseEntity {
     }
 
     //move the entity
-    public void move()
+    public void move(double timeStep)
     {
-        //calculate direction vector based on angle
-        double dirX = Math.cos(angle);
-        double dirY = Math.sin(angle);
+        //increase speed when sprinting
+        double speed = isSprinting ? movementSpeed * sprintMovementFactor : movementSpeed;
 
-        //TODO:update position using calculated direction
+        //calculate direction vector based on angle
+        double deltaX = Math.cos(angle) * speed * timeStep;
+        double deltaY = Math.sin(angle) * speed * timeStep;
+
+        getPosition().add(deltaX,deltaY);
     }
 
-    public void turn(boolean left)
+    public void turn(boolean left,double timeStep)
     {
-        double rotation = left ? 1 : -1;
-        //TODO: same as move method
+        double rotationDirection = left ? 1 : -1;
+        double rotationSpeed = isSprinting ? turnSpeed * sprintRotationFactor : turnSpeed;
+
+        angle += rotationSpeed * rotationDirection * timeStep;
     }
 
     //no idea if a see() and hear() method is appropriate should meybe be a percept() method instead
