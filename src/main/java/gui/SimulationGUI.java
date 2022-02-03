@@ -57,6 +57,8 @@ public class SimulationGUI extends Application {
     public void updateGUI1step() {
         mainLayout.circle.relocate(circleX, 20);
         circleX++;
+
+        mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
     }
 
@@ -83,10 +85,9 @@ public class SimulationGUI extends Application {
                 Thread.sleep(simulationDelay); // Adds a delay
             }
             catch (Exception e) {
-                System.out.println("GUI Thread error");
+                System.out.println("GUI Thread Delay Error!");
             }
             updateGUI1step();
-            System.out.println(currentStep);
         }
     }
 }

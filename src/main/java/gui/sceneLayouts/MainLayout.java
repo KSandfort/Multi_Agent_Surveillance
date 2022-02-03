@@ -19,6 +19,8 @@ public class MainLayout extends BorderPane {
 
     // Variables
     Pane canvas;
+    Label stepCountLabel;
+
     Button playPauseButton;
     Button stepButton;
     Slider simSpeedSlider;
@@ -32,7 +34,13 @@ public class MainLayout extends BorderPane {
      */
     public MainLayout() {
         this.setStyle("-fx-font: 12px 'Verdana';");
+        initComponents();
+    }
 
+    /**
+     * Creates all components on the main layout.
+     */
+    public void initComponents() {
         // Canvas - Center
         canvas = new Pane();
         canvas.setStyle("-fx-background-color: gray;");
@@ -43,8 +51,16 @@ public class MainLayout extends BorderPane {
         Rectangle rectangle = new Rectangle(100,100,Color.RED);
         rectangle.relocate(70,70);
         canvas.getChildren().addAll(circle,rectangle);
-
         this.setCenter(canvas);
+
+        // Info - Top
+        HBox infoBox = new HBox();
+        infoBox.setSpacing(20);
+        infoBox.setAlignment(Pos.CENTER);
+        infoBox.setPrefHeight(50);
+        stepCountLabel = new Label("Current Step: 0");
+        infoBox.getChildren().setAll(stepCountLabel);
+        this.setTop(infoBox);
 
         // Controls - Bottom
         HBox controlsContainer = new HBox();
@@ -64,5 +80,9 @@ public class MainLayout extends BorderPane {
 
         controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider);
         this.setBottom(controlsContainer);
+    }
+
+    public Label getStepCountLabel() {
+        return stepCountLabel;
     }
 }
