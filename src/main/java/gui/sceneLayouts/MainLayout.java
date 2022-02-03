@@ -38,7 +38,7 @@ public class MainLayout extends BorderPane {
         canvas.setStyle("-fx-background-color: gray;");
         canvas.setPrefSize(1200, 800);
 
-        Circle circle = new Circle(50, Color.BLUE);
+        circle = new Circle(50, Color.BLUE);
         circle.relocate(20, 20);
         Rectangle rectangle = new Rectangle(100,100,Color.RED);
         rectangle.relocate(70,70);
@@ -64,11 +64,5 @@ public class MainLayout extends BorderPane {
 
         controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider);
         this.setBottom(controlsContainer);
-    }
-
-    public void updateGUI(int x) {
-        circleX += x;
-        System.out.println(circleX);
-        circle.relocate(circleX, 20);
     }
 }

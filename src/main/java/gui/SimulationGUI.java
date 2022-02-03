@@ -14,9 +14,13 @@ import model.MapADT;
 public class SimulationGUI extends Application {
 
     // Variables
+    int currentStep;
     MapADT mapADT;
     MainLayout mainLayout;
     Scene mainScene;
+    int simulationDelay;
+
+    int circleX = 20; // temp var. should be deleted later
 
     public void setMapADT(MapADT map) {
         this.mapADT = map;
@@ -33,7 +37,10 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        initScene();
+        currentStep = 0;
+        simulationDelay = 200;
+        mainLayout = new MainLayout();
+        mainScene = new Scene(mainLayout, 1200, 800);
 
         // Animation timer
         AnimationTimer timer = new MyTimer();
@@ -44,18 +51,17 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
-    private void initScene() {
-        mainLayout = new MainLayout();
-        mainScene = new Scene(mainLayout, 1200, 800);
+    /**
+     * Updates the GUI one simulation step.
+     */
+    public void updateGUI1step() {
+        mainLayout.circle.relocate(circleX, 20);
+        circleX++;
+        currentStep++;
     }
 
     public MainLayout getMainLayout() {
         return mainLayout;
-    }
-
-    public void updateGUI1Step() {
-        // mainLayout.circle.relocate(mainLayout.circleX, 20);
-        mainLayout.circleX += 5;
     }
 
     /**
@@ -74,13 +80,13 @@ public class SimulationGUI extends Application {
          */
         private void doHandle() {
             try {
-                Thread.sleep(400);
-                // updateGUI1Step();
+                Thread.sleep(simulationDelay); // Adds a delay
             }
             catch (Exception e) {
                 System.out.println("GUI Thread error");
             }
-            mainLayout.updateGUI(5);
+            updateGUI1step();
+            System.out.println(currentStep);
         }
     }
 }
