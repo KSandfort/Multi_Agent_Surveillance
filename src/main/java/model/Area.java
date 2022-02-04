@@ -1,5 +1,7 @@
 package model;
 
+import Enities.BaseEntity;
+
 public class Area extends MapItem{
     private int length;
     private int width;
@@ -36,6 +38,16 @@ public class Area extends MapItem{
         boolean yInArea = position.getY() <= pos.getY() && (position.getY() + width) >= pos.getY();
 
         return (xInArea && yInArea);
+    }
+
+    public boolean isAgentInsideArea(BaseEntity agent)
+    {
+        return isInsideArea(agent.getPosition());
+    }
+
+    public void onAgentCollision(BaseEntity agent)
+    {
+        System.out.println("Entered area");
     }
 
 }

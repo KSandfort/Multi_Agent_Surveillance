@@ -2,8 +2,11 @@ package Enities;
 
 import model.*;
 
+import java.util.ArrayList;
+
 public class BaseEntity extends MapItem {
 
+    double radius;
     double movementSpeed;
     double fovAngle;
     double visionRange;
@@ -18,14 +21,31 @@ public class BaseEntity extends MapItem {
 
     public void update()
     {
-
-
+        //percept
+        //move
+        //check for collisions at new position
         checkCollision();
     }
 
     private void checkCollision()
     {
+        GameMap map = getMap();
+        ArrayList<MapItem> items = map.getMapItems();
+        for (int i = 0; i < items.size(); i++) {
+            MapItem item = items.get(i);
+            //check if body is an area, we maybe need a new method for this
+            //current solution is kinda cheaty imo
+            Area area;
+            try{area = (Area) item;}
+            catch (Exception ignored){
+                continue;//skip for loop iteration since the item is not an area
+            }
 
+            //check if were inside the area
+            if(!area.isInsideArea(getPosition())) {continue;}//were not in the area
+
+            area.onAgentCollision(this);
+        }
     }
 
     //move the entity
@@ -49,7 +69,7 @@ public class BaseEntity extends MapItem {
         angle += rotationSpeed * rotationDirection * timeStep;
     }
 
-    //no idea if a see() and hear() method is appropriate should meybe be a percept() method instead
+    //no idea if a see() and hear() method is appropriate should maybe be a percept() method instead
 
     //entity will have to be able to see its environments
     public void see()
@@ -72,8 +92,10 @@ public class BaseEntity extends MapItem {
     //entity needs to be able to place markers for indirect communication
     public void placeMarker(MarkerType markerType)
     {
-        Marker marker = new Marker(markerType,isIntruder);
-        //TODO: marker placement in map(need the map to be implemented first)
+        //make new marker and add it to the list of items
+        Marker marker = new Marker(markerType,new Vector2D(getPosition()),isIntruder);
+        getMap().addMapItem(marker);
     }
 
+    public double getRadius() {return radius;}
 }

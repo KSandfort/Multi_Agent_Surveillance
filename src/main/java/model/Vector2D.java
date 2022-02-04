@@ -9,6 +9,11 @@ public class Vector2D {
         this.y = y;
     }
 
+    public Vector2D(Vector2D vector){
+        this.x = vector.getX();
+        this.y = vector.getY();
+    }
+
     public Vector2D(){}
 
     public double getX(){
