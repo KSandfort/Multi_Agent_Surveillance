@@ -25,9 +25,11 @@ public class MainLayout extends BorderPane {
     Button stepButton;
     Slider simSpeedSlider;
     Label speedLabel;
+    public static int yOffset = 50;
 
     public Circle circle;
     public int circleX = 20;
+
 
     /**
      * Constructor
@@ -46,11 +48,6 @@ public class MainLayout extends BorderPane {
         canvas.setStyle("-fx-background-color: gray;");
         canvas.setPrefSize(1200, 800);
 
-        circle = new Circle(50, Color.BLUE);
-        circle.relocate(20, 20);
-        Rectangle rectangle = new Rectangle(100,100,Color.RED);
-        rectangle.relocate(70,70);
-        canvas.getChildren().addAll(circle,rectangle);
         this.setCenter(canvas);
 
         // Info - Top
@@ -66,7 +63,7 @@ public class MainLayout extends BorderPane {
         HBox controlsContainer = new HBox();
         controlsContainer.setSpacing(20);
         controlsContainer.setAlignment(Pos.CENTER);
-        controlsContainer.setPrefHeight(50);
+        controlsContainer.setPrefHeight(yOffset);
         playPauseButton = new Button("Play / Pause");
         stepButton = new Button("Step");
         int i = 50;

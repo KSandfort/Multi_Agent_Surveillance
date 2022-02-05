@@ -1,6 +1,8 @@
 package model;
 
-public class Area extends MapItem{
+import javafx.scene.Node;
+
+public abstract class Area extends MapItem{
     private int length;
     private int width;
 
