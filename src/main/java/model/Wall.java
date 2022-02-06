@@ -64,18 +64,33 @@ public class Wall extends Area{
             targetY += getLength();
         }
 
-        double xDiff = targetX - agentPos.getX();
-        double yDiff = targetY - agentPos.getY();
-        Vector2D delta;
+        //distance to nearest x/y edge
+        double xDiff = Math.abs(targetX - agentPos.getX());
+        double yDiff = Math.abs(targetY - agentPos.getY());
+        Vector2D newPos;
         if(xDiff < yDiff)
         {
-            delta = new Vector2D(xDiff, 0);
+            if(targetX == getPosition().getX())
+            {
+                targetX -= agent.getRadius();
+            }else
+            {
+                targetX += agent.getRadius();
+            }
+            newPos = new Vector2D(targetX, agentPos.getY());
         }else
         {
-            delta = new Vector2D(0, yDiff);
+            if(targetY == getPosition().getY())
+            {
+                targetY -= agent.getRadius();
+            }else
+            {
+                targetY += agent.getRadius();
+            }
+            newPos = new Vector2D(agentPos.getX(), targetY);
         }
 
-        //calculate new position based on delta to edge
+        agent.setPosition(newPos);
 
     }
 }
