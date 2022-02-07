@@ -3,9 +3,13 @@ package gui;
 import controller.GameController;
 import gui.sceneLayouts.MainLayout;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.GameMap;
 
 /**
@@ -20,7 +24,9 @@ public class SimulationGUI extends Application {
     MainLayout mainLayout;
     Scene mainScene;
     int simulationDelay;
+    Timeline timeline;
     GameController controller;
+    final int FPS = 2;
     final int WIDTH = 1200;
     final int HEIGHT = 800;
 
@@ -33,7 +39,6 @@ public class SimulationGUI extends Application {
 
 
     public void launchGUI() {
-
         String[] args = new String[0];
         launch(args);
     }
@@ -43,70 +48,50 @@ public class SimulationGUI extends Application {
         currentStep = 0;
         simulationDelay = 200;
         mainLayout = new MainLayout();
+        mainLayout.setSimulationInstance(this);
         mainScene = new Scene(mainLayout, 1200, 800);
         this.setController(new GameController());
-        // Animation timer
-        AnimationTimer timer = new MyTimer();
-        timer.start();
-
+        // Timeline Animation
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), this::updateGUI1step));
+        this.timeline.setCycleCount(Timeline.INDEFINITE);
+        // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
     }
 
     /**
+     * Starts the simulation.
+     */
+    public void startSimulation() {
+        this.timeline.play();
+    }
+
+    /**
+     * Stops the simulation.
+     */
+    public void stopSimulation() {
+        this.timeline.stop();
+    }
+
+    /**
+     * Pauses the simulation
+     */
+    public void pauseSimulation() {
+        this.timeline.pause();
+    }
+
+    /**
      * Updates the GUI one simulation step.
      */
-    public void updateGUI1step() {
-//        mainLayout.circle.relocate(circleX, 20);
-//        circleX++;
-
+    private void updateGUI1step(ActionEvent actionEvent) {
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
         this.controller.drawMap(mainLayout);
-
     }
 
     public MainLayout getMainLayout() {
         return mainLayout;
     }
 
-    /**
-     * Timer to handle the game loop.
-     * Acts as an inner class of the SimulationGUI.
-     */
-    private class MyTimer extends AnimationTimer {
-
-        @Override
-        public void handle(long now) {
-            doHandle();
-        }
-
-        /**
-         * Gets executed every frame.
-         */
-        private void doHandle() {
-            try {
-                Thread.sleep(simulationDelay); // Adds a delay
-
-            }
-            catch (Exception e) {
-                System.out.println("GUI Thread Delay Error!");
-            }
-            updateGUI1step();
-        }
-    }
-
-    public int getHEIGHT(){
-        return HEIGHT;
-    }
-
-    public int getWIDTH(){
-        return WIDTH;
-    }
-
-    public static void main(String [] args){
-
-    }
 }
-

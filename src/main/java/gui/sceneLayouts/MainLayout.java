@@ -1,5 +1,6 @@
 package gui.sceneLayouts;
 
+import gui.SimulationGUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,9 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 
 /**
  * This class represents the main layout, that contains a visual
@@ -18,13 +17,14 @@ import javafx.scene.shape.Rectangle;
 public class MainLayout extends BorderPane {
 
     // Variables
+    SimulationGUI simulationGUI;
     Pane canvas;
     Label stepCountLabel;
-
     Button playPauseButton;
     Button stepButton;
     Slider simSpeedSlider;
     Label speedLabel;
+    boolean isPlaying;
     public static int yOffset = 50;
 
     public Circle circle;
@@ -36,6 +36,7 @@ public class MainLayout extends BorderPane {
      */
     public MainLayout() {
         this.setStyle("-fx-font: 12px 'Verdana';");
+        isPlaying = false;
         initComponents();
     }
 
@@ -47,7 +48,6 @@ public class MainLayout extends BorderPane {
         canvas = new Pane();
         canvas.setStyle("-fx-background-color: gray;");
         canvas.setPrefSize(1200, 800);
-
         this.setCenter(canvas);
 
         // Info - Top
@@ -65,10 +65,20 @@ public class MainLayout extends BorderPane {
         controlsContainer.setAlignment(Pos.CENTER);
         controlsContainer.setPrefHeight(yOffset);
         playPauseButton = new Button("Play / Pause");
+        playPauseButton.setOnAction(event -> {
+            if (isPlaying) {
+                isPlaying = false;
+                simulationGUI.pauseSimulation();
+            }
+            else {
+                isPlaying = true;
+                simulationGUI.startSimulation();
+            }
+        });
         stepButton = new Button("Step");
         int i = 50;
         stepButton.setOnAction(e -> {
-            circle.relocate(i, 20);
+
         });
         simSpeedSlider = new Slider();
         simSpeedSlider.setMin(1);
@@ -81,5 +91,9 @@ public class MainLayout extends BorderPane {
 
     public Label getStepCountLabel() {
         return stepCountLabel;
+    }
+
+    public void setSimulationInstance(SimulationGUI simulationGUI) {
+        this.simulationGUI = simulationGUI;
     }
 }
