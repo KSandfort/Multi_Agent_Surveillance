@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.GameMap;
 
+import java.util.function.Consumer;
+
 /**
  * Parent class of all GUI elements.
  * Central unit to control the graphics.
@@ -52,7 +54,7 @@ public class SimulationGUI extends Application {
         mainScene = new Scene(mainLayout, 1200, 800);
         this.setController(new GameController());
         // Timeline Animation
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), this::updateGUI1step));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
@@ -84,7 +86,7 @@ public class SimulationGUI extends Application {
     /**
      * Updates the GUI one simulation step.
      */
-    private void updateGUI1step(ActionEvent actionEvent) {
+    public void updateGUI1step() {
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
         this.controller.drawMap(mainLayout);

@@ -78,7 +78,9 @@ public class MainLayout extends BorderPane {
         stepButton = new Button("Step");
         int i = 50;
         stepButton.setOnAction(e -> {
-
+            if (!isPlaying) {
+                simulationGUI.updateGUI1step();
+            }
         });
         simSpeedSlider = new Slider();
         simSpeedSlider.setMin(1);
