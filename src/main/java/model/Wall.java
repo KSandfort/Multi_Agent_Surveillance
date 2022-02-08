@@ -12,7 +12,6 @@ public class Wall extends Area {
         super(posX, posY, posXend, posYend);
     }
 
-
     //returns javafx component
     @Override
     public Node getComponent() {
