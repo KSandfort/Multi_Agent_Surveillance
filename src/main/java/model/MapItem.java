@@ -1,8 +1,10 @@
 package model;
 
-public class MapItem {
-    Vector2D position = new Vector2D();
-    GameMap map = new GameMap();
+import javafx.scene.Node;
+
+public abstract class MapItem {
+    Vector2D position;
+    GameMap map;
 
     public Vector2D getPosition(){
         return position;
@@ -10,5 +12,11 @@ public class MapItem {
     public void setPosition(Vector2D position){
         this.position = position;
     };
+
+    public void update() {
+
+    };
+
+    public abstract Node getComponent();
     public GameMap getMap() { return map; }
 }

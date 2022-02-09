@@ -1,8 +1,9 @@
 package model;
 
 import Enities.BaseEntity;
+import javafx.scene.Node;
 
-public class Area extends MapItem{
+public abstract class Area extends MapItem{
     private int length;
     private int width;
 

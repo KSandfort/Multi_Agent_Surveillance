@@ -1,5 +1,8 @@
 package model;
 
+import Enities.Guard;
+import Enities.Intruder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,7 +37,7 @@ public class GameMap {
     public void initTestGameMap() {
         sizeX = 80;
         sizeY = 120;
-        MapItem targetArea = new TargetArea(20, 40, 25, 45);
+        MapItem targetArea = new TargetArea(30, 30, 100, 100);
         MapItem spawnAreaIntruders = new SpawnArea(2, 2, 20, 10);
         MapItem wall1 = new Wall(50, 60, 55, 63);
         MapItem wall2 = new Wall(70, 80, 75, 90);
