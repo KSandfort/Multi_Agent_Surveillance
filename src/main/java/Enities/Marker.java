@@ -1,6 +1,9 @@
 package Enities;
 
+import javafx.scene.Node;
 import model.*;
+
+import java.util.ArrayList;
 
 public class Marker extends MapItem {
     boolean isFromIntruder;
@@ -16,5 +19,10 @@ public class Marker extends MapItem {
     public boolean compareMarker(boolean isIntruder, MarkerType type)
     {
         return (isIntruder == isFromIntruder && type == markerType);
+    }
+
+    @Override
+    public ArrayList<Node> getComponents() {
+        return null;
     }
 }

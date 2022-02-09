@@ -1,60 +1,49 @@
 package model;
 
 import Enities.BaseEntity;
+import gui.SimulationGUI;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Wall extends Area {
-    public Wall(int length, int width) {
-        super(length, width);
+    public Wall(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
+        super(pos1, pos2, pos3, pos4);
     }
 
-    public Wall(int posX, int posY, int posXend, int posYend) {
-        super(posX, posY, posXend, posYend);
-    }
-
-    //returns javafx component
+    /**
+     * Returns JavaFX component.
+     * @return
+     */
     @Override
-    public Node getComponent() {
-        Rectangle rect = new Rectangle();
-        rect.setX(getPosition().getX());
-        rect.setY(getPosition().getY());
-        rect.setWidth(getWidth());
-        rect.setHeight(getLength());
-        return rect;
+    public ArrayList<Node> getComponents() {
+        ArrayList<Node> components = new ArrayList<>();
+        int offset = SimulationGUI.CANVAS_OFFSET;
+        double sf = SimulationGUI.SCALING_FACTOR;
+
+        for (int i = 0; i < cornerPoints.length; i++) {
+            components.add(new Line(
+                    (cornerPoints[i].getX() * sf) + offset,
+                    (cornerPoints[i].getY() * sf) + offset,
+                    (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
+                    (cornerPoints[(i + 1) % 4].getY() * sf) + offset));
+        }
+        return components;
     }
 
     @Override
     public boolean isAgentInsideArea(BaseEntity agent) {
         Vector2D agentPos = agent.getPosition();
         //the position of the closest point inside the wall relative to the agent
-        double xComp = agentPos.getX();
-        double yComp = agentPos.getY();
-
-        //get x-coordinate of the closest left/right edge
-        if(getPosition().getX() <= agentPos.getX())
-            xComp = getPosition().getX();
-        else
-            xComp = getPosition().getX() + getWidth();
-
-        //get the y-coordinate of the closest top/bottom edge
-        if(getPosition().getY() <= agentPos.getY())
-            yComp = getPosition().getY();
-        else
-            yComp = getPosition().getY() + getLength();
-
-        //delta position
-        double deltaX = xComp - agentPos.getX();
-        double deltaY = yComp - agentPos.getY();
-
-        //calculate square of the distance to the wall
-        double dist = deltaX*deltaX + deltaY*deltaY;
-        //calculate the square of the size of the agent
-        double size = agent.getRadius() * agent.getRadius();
-
-        return dist < size;
+        return false;
+        //TODO: Implement functionality
     }
 
+    /*
     //this function assumes an agent is inside of the area
     @Override
     public void onAgentCollision(BaseEntity agent)
@@ -106,4 +95,6 @@ public class Wall extends Area {
         agent.setPosition(newPos);
 
     }
+
+     */
 }

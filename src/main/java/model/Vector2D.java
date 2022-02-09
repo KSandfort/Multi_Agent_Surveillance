@@ -64,6 +64,40 @@ public class Vector2D {
     }
 
     /**
+     * Scales vector by a scalar and returns the result as a new vector.
+     * @param a
+     * @param factor
+     * @return
+     */
+    public static Vector2D scalar(Vector2D a, double factor) {
+        return new Vector2D(a.getX() * factor, a.getY() * factor);
+    }
+
+    /**
+     * Returns true, if the line from a to b intersects with the line from c to d.
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @return
+     */
+    public static boolean doTwoLinesCross(Vector2D a, Vector2D b, Vector2D c, Vector2D d) {
+        Vector2D e = Vector2D.subtract(b, a);
+        Vector2D f = Vector2D.subtract(d, c);
+        Vector2D p = new Vector2D(-e.getY(), e.getX());
+        if (Vector2D.dotProduct(f, p) == 0) {
+            return false;
+        }
+        double h = Vector2D.dotProduct(Vector2D.subtract(a, c), p) / Vector2D.dotProduct(f, p);
+        if (h > 0 && h < 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * Getter for x-coordinate.
      * @return
      */

@@ -30,7 +30,6 @@ public class MainLayout extends BorderPane {
     public Circle circle;
     public int circleX = 20;
 
-
     /**
      * Constructor
      */
@@ -48,6 +47,7 @@ public class MainLayout extends BorderPane {
         canvas = new Pane();
         canvas.setStyle("-fx-background-color: gray;");
         canvas.setPrefSize(1200, 800);
+
         this.setCenter(canvas);
 
         // Info - Top
@@ -89,6 +89,10 @@ public class MainLayout extends BorderPane {
 
         controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider);
         this.setBottom(controlsContainer);
+    }
+
+    public Pane getCanvas() {
+        return this.canvas;
     }
 
     public Label getStepCountLabel() {
