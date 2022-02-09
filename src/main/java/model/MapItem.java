@@ -18,5 +18,6 @@ public abstract class MapItem {
     };
 
     public abstract Node getComponent();
+
     public GameMap getMap() { return map; }
 }

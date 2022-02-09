@@ -1,23 +1,21 @@
 package Enities;
 
+import javafx.scene.Node;
 import model.*;
 
 import java.util.ArrayList;
 
-public class BaseEntity extends MapItem {
+public class BaseEntity extends Entity {
 
-    double radius;
-    double movementSpeed;
-    double fovAngle;
-    double visionRange;
+
     //angle of forward facing vector with respect to the entity,
     //0 degrees is in +x direction turning counter clockwise with an increase of angle
-    double angle;
-    double turnSpeed;//rotation in degrees/sec
-    boolean isIntruder = false;//set to false for now since we dont use it yet
-    boolean isSprinting = true;
-    double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
-    double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
+
+    public BaseEntity(int x, int y)
+    {
+        super(x,y);
+    }
+
 
     public void update()
     {
@@ -26,6 +24,12 @@ public class BaseEntity extends MapItem {
         //check for collisions at new position
         checkCollision();
     }
+
+    public Node getComponent()
+    {
+        return null;//needs to be changed to circle no idea how
+    }
+
 
     private void checkCollision()
     {
@@ -52,13 +56,15 @@ public class BaseEntity extends MapItem {
     public void move(double timeStep)
     {
         //increase speed when sprinting
-        double speed = isSprinting ? movementSpeed * sprintMovementFactor : movementSpeed;
+        double speed = isSprinting ? this.speed * sprintMovementFactor : this.speed;
 
         //calculate direction vector based on angle
         double deltaX = Math.cos(angle) * speed * timeStep;
         double deltaY = Math.sin(angle) * speed * timeStep;
 
-        getPosition().add(deltaX,deltaY);
+        Vector2D currPos = getPosition();
+        Vector2D newPos = new Vector2D(currPos.getX() + deltaX, currPos.getY() + deltaY);
+        setPosition(newPos);
     }
 
     public void turn(boolean left,double timeStep)
@@ -93,7 +99,7 @@ public class BaseEntity extends MapItem {
     public void placeMarker(MarkerType markerType)
     {
         //make new marker and add it to the list of items
-        Marker marker = new Marker(markerType,new Vector2D(getPosition()),isIntruder);
+        Marker marker = new Marker(markerType,new Vector2D(getPosition().getX(),getPosition().getY()),isIntruder);
         getMap().addMapItem(marker);
     }
 
