@@ -5,6 +5,9 @@ import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
 import model.GameMap;
 import model.MapItem;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import java.util.ArrayList;
 
@@ -17,6 +20,8 @@ public class GameController {
     // Variables
     GameMap map;
     SimulationGUI simulationGUI;
+    int updatesPerSecond;
+    int step;
 
     public GameController() {
         GameMap map = new GameMap();
@@ -26,8 +31,12 @@ public class GameController {
         simulationGUI.setController(this);
     }
 
-    public void update(){
-
+    // do the update magic...
+    public void update() {
+        ArrayList<MapItem> items = map.getMapItems();
+        for(MapItem item : items) {
+            item.update();
+        }
     }
 
     public void drawMap(MainLayout layout){

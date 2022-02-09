@@ -48,7 +48,7 @@ public class SimulationGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         currentStep = 0;
-        simulationDelay = 200;
+        simulationDelay = 1;
         mainLayout = new MainLayout();
         mainLayout.setSimulationInstance(this);
         mainScene = new Scene(mainLayout, 1200, 800);
@@ -87,6 +87,7 @@ public class SimulationGUI extends Application {
      * Updates the GUI one simulation step.
      */
     public void updateGUI1step() {
+        this.controller.update();
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
         this.controller.drawMap(mainLayout);

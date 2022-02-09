@@ -13,5 +13,9 @@ public abstract class MapItem {
         this.position = position;
     };
 
+    public void update() {
+        
+    };
+
     public abstract Node getComponent();
 }
