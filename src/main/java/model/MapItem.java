@@ -14,8 +14,10 @@ public abstract class MapItem {
     };
 
     public void update() {
-        
+
     };
 
     public abstract Node getComponent();
+
+    public GameMap getMap() { return map; }
 }

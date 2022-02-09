@@ -1,34 +1,81 @@
 package Enities;
 
-public class BaseEntity {
+import javafx.scene.Node;
+import model.*;
 
-    double movementSpeed;
-    double sprintFactor;//number by which the movement speed needs to be increased when sprinting
-    double fovAngle;
-    double visionRange;
+import java.util.ArrayList;
+
+public class BaseEntity extends Entity {
+
+
     //angle of forward facing vector with respect to the entity,
     //0 degrees is in +x direction turning counter clockwise with an increase of angle
-    double angle;
-    double turnSpeed;//rotation in degrees/sec
-    boolean isIntruder = false;//set to false for now since we dont use it yet
-    boolean isSprinting = true;
+
+    public BaseEntity(int x, int y)
+    {
+        super(x,y);
+    }
+
+
+    public void update()
+    {
+        //percept
+        //move
+        //check for collisions at new position
+        checkCollision();
+    }
+
+    public Node getComponent()
+    {
+        return null;//needs to be changed to circle no idea how
+    }
+
+
+    private void checkCollision()
+    {
+        GameMap map = getMap();
+        ArrayList<MapItem> items = map.getMapItems();
+        for (int i = 0; i < items.size(); i++) {
+            MapItem item = items.get(i);
+            //check if body is an area, we maybe need a new method for this
+            //current solution is kinda cheaty imo
+            Area area;
+            try{area = (Area) item;}
+            catch (Exception ignored){
+                continue;//skip for loop iteration since the item is not an area
+            }
+
+            //check if were inside the area
+            if(!area.isInsideArea(getPosition())) {continue;}//were not in the area
+
+            area.onAgentCollision(this);
+        }
+    }
+
     //move the entity
-    public void move()
+    public void move(double timeStep)
     {
+        //increase speed when sprinting
+        double speed = isSprinting ? this.speed * sprintMovementFactor : this.speed;
+
         //calculate direction vector based on angle
-        double dirX = Math.cos(angle);
-        double dirY = Math.sin(angle);
+        double deltaX = Math.cos(angle) * speed * timeStep;
+        double deltaY = Math.sin(angle) * speed * timeStep;
 
-        //TODO:update position using calculated direction
+        Vector2D currPos = getPosition();
+        Vector2D newPos = new Vector2D(currPos.getX() + deltaX, currPos.getY() + deltaY);
+        setPosition(newPos);
     }
 
-    public void turn(boolean left)
+    public void turn(boolean left,double timeStep)
     {
-        double rotation = left ? 1 : -1;
-        //TODO: same as move method
+        double rotationDirection = left ? 1 : -1;
+        double rotationSpeed = isSprinting ? turnSpeed * sprintRotationFactor : turnSpeed;
+
+        angle += rotationSpeed * rotationDirection * timeStep;
     }
 
-    //no idea if a see() and hear() method is appropriate should meybe be a percept() method instead
+    //no idea if a see() and hear() method is appropriate should maybe be a percept() method instead
 
     //entity will have to be able to see its environments
     public void see()
@@ -51,8 +98,10 @@ public class BaseEntity {
     //entity needs to be able to place markers for indirect communication
     public void placeMarker(MarkerType markerType)
     {
-        Marker marker = new Marker(markerType,isIntruder);
-        //TODO: marker placement in map(need the map to be implemented first)
+        //make new marker and add it to the list of items
+        Marker marker = new Marker(markerType,new Vector2D(getPosition().getX(),getPosition().getY()),isIntruder);
+        getMap().addMapItem(marker);
     }
 
+    public double getRadius() {return radius;}
 }
