@@ -41,7 +41,7 @@ public class SimulationGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         currentStep = 0;
-        simulationDelay = 200;
+        simulationDelay = 1;
         mainLayout = new MainLayout();
         mainScene = new Scene(mainLayout, 1200, 800);
         this.setController(new GameController());
@@ -60,7 +60,7 @@ public class SimulationGUI extends Application {
     public void updateGUI1step() {
 //        mainLayout.circle.relocate(circleX, 20);
 //        circleX++;
-
+        this.controller.update();
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
         this.controller.drawMap(mainLayout);
@@ -93,6 +93,11 @@ public class SimulationGUI extends Application {
             catch (Exception e) {
                 System.out.println("GUI Thread Delay Error!");
             }
+
+            // Logic update
+            controller.update());
+            
+            // GUI update
             updateGUI1step();
         }
     }
