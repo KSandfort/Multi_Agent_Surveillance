@@ -25,7 +25,7 @@ public class BaseEntity extends Entity {
         checkCollision();
     }
 
-    public Node getComponent()
+    public ArrayList<Node> getComponents()
     {
         return null;//needs to be changed to circle no idea how
     }
@@ -34,7 +34,7 @@ public class BaseEntity extends Entity {
     private void checkCollision()
     {
         GameMap map = getMap();
-        ArrayList<MapItem> items = map.getMapItems();
+        ArrayList<MapItem> items = map.getFixedItems();
         for (int i = 0; i < items.size(); i++) {
             MapItem item = items.get(i);
             //check if body is an area, we maybe need a new method for this
@@ -100,7 +100,7 @@ public class BaseEntity extends Entity {
     {
         //make new marker and add it to the list of items
         Marker marker = new Marker(markerType,new Vector2D(getPosition().getX(),getPosition().getY()),isIntruder);
-        getMap().addMapItem(marker);
+        getMap().addToFixedItems(marker);
     }
 
     public double getRadius() {return radius;}
