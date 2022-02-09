@@ -54,12 +54,17 @@ public class SimulationGUI extends Application {
         mainScene = new Scene(mainLayout, 1200, 800);
         this.setController(new GameController());
         // Timeline Animation
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
+    }
+
+    public void update() {
+        controller.update();
+        updateGUI1step();
     }
 
     /**
