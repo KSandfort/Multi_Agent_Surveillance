@@ -32,8 +32,6 @@ public class SimulationGUI extends Application {
     final int WIDTH = 1200;
     final int HEIGHT = 800;
 
-    int circleX = 20; // temp var. should be deleted later
-
 
     public void setController(GameController controller){
         this.controller = controller;
@@ -51,8 +49,8 @@ public class SimulationGUI extends Application {
         simulationDelay = 1;
         mainLayout = new MainLayout();
         mainLayout.setSimulationInstance(this);
-        mainScene = new Scene(mainLayout, 1200, 800);
         this.setController(new GameController());
+        mainScene = new Scene(mainLayout, controller.getMap().getSizeX(), controller.getMap().getSizeY());
         // Timeline Animation
         this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
