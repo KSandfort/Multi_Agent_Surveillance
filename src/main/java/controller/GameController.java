@@ -56,6 +56,9 @@ public class GameController {
         ArrayList<MapItem> items = map.getMovingItems();
         for (MapItem item : items){
             for (Node n : item.getComponents()) {
+                if (simulationGUI.getCurrentStep() != 0) {
+                    layout.getCanvas().getChildren().remove(layout.getCanvas().getChildren().size() - 1); // Remove old node
+                }
                 nodes.add(n);
             }
         }
@@ -77,4 +80,5 @@ public class GameController {
     public void setSimulationGUI(SimulationGUI simulationGUI) {
         this.simulationGUI = simulationGUI;
     }
+
 }

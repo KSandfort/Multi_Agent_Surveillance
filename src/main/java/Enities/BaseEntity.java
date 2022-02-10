@@ -56,7 +56,7 @@ public class BaseEntity extends Entity {
     public void move(double timeStep)
     {
         //increase speed when sprinting
-        double speed = isSprinting ? this.speed * sprintMovementFactor : this.speed;
+        double speed = isSprinting ? this.velocity * sprintMovementFactor : this.velocity;
 
         //calculate direction vector based on angle
         double deltaX = Math.cos(angle) * speed * timeStep;

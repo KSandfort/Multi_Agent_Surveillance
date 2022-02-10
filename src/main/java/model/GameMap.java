@@ -53,6 +53,7 @@ public class GameMap {
         createBorderWalls();
         MapItem testWall = new Wall(new Vector2D(20, 20), new Vector2D(25, 27), new Vector2D(28, 21), new Vector2D(24, 18));
         this.fixedItems.add(testWall);
+
         Guard guard = new Guard(30, 30);
         guard.map = this;
         guard.setRemote();
