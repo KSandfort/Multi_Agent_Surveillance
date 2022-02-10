@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 /**
  * Class that represents a two-dimensional vector.
  */
@@ -127,6 +129,13 @@ public class Vector2D {
      */
     public void setY(double y){
         this.y = y;
+    }
+
+    public static Vector2D randomVector(){
+        Random rand = new Random();
+        double newX = rand.nextDouble()*100;
+        double newY = rand.nextDouble()*100;
+        return new Vector2D(newX, newY);
     }
 
 }

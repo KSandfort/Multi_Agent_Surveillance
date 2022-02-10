@@ -25,6 +25,7 @@ public class GameController {
         GameMap map = new GameMap(this);
         this.simulationGUI = gui;
         this.map = map;
+        //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
     }
 
@@ -69,6 +70,10 @@ public class GameController {
         this.map = map;
     }
 
+
+    public GameMap getMap(){
+        return this.map;
+    }
     /**
      * Executes the loop to run the simulation
      */
