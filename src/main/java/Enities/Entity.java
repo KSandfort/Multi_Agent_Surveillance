@@ -2,7 +2,10 @@ package Enities;
 
 import javafx.scene.Node;
 import model.MapItem;
+import model.SpawnArea;
 import model.Vector2D;
+
+import java.util.Random;
 
 public abstract class Entity extends MapItem {
     double explorationFactor;
@@ -28,5 +31,11 @@ public abstract class Entity extends MapItem {
 
     public void update() {
         this.setPosition(Vector2D.add(getPosition(), velocity));
+    }
+
+    public Entity(SpawnArea spawnArea){
+        Random rand = new Random();
+        double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
+        double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
     }
 }
