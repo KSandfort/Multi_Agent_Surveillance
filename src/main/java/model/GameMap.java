@@ -2,13 +2,13 @@ package model;
 
 import Enities.Entity;
 import Enities.Guard;
-import Enities.Intruder;
+import controller.GameController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GameMap {
 
+    private GameController gameController;
     private int sizeX; //height
     private int sizeY; //width
     private ArrayList<MapItem> fixedItems = new ArrayList<>();
@@ -21,7 +21,8 @@ public class GameMap {
      List<int[]> shadedAreas;
      int[] texture; */
 
-    public GameMap() {
+    public GameMap(GameController controller) {
+        this.gameController = controller;
     }
 
     public GameMap(int sizeX, int sizeY) {
@@ -52,6 +53,10 @@ public class GameMap {
         createBorderWalls();
         MapItem testWall = new Wall(new Vector2D(20, 20), new Vector2D(25, 27), new Vector2D(28, 21), new Vector2D(24, 18));
         this.fixedItems.add(testWall);
+        Guard guard = new Guard(30, 30);
+        guard.map = this;
+        guard.setRemote();
+        this.movingItems.add(guard);
     }
 
     public void createBorderWalls() {
@@ -97,5 +102,13 @@ public class GameMap {
 
     public void setMovingItems(ArrayList<MapItem> movingItems) {
         this.movingItems = movingItems;
+    }
+
+    public GameController getGameController() {
+        return gameController;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 }

@@ -11,9 +11,9 @@ public class BaseEntity extends Entity {
     //angle of forward facing vector with respect to the entity,
     //0 degrees is in +x direction turning counter clockwise with an increase of angle
 
-    public BaseEntity(int x, int y)
+    public BaseEntity(double x, double y)
     {
-        super(x,y);
+        super(x, y);
     }
 
 

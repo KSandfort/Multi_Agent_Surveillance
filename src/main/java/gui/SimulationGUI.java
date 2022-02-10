@@ -6,6 +6,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -44,7 +46,7 @@ public class SimulationGUI extends Application {
         mainLayout = new MainLayout();
         mainLayout.setSimulationInstance(this);
         mainScene = new Scene(mainLayout, 1300, 1000);
-        this.setController(new GameController());
+        this.setController(new GameController(this));
         this.controller.drawFixedItems(mainLayout);
         // Timeline Animation
         this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
@@ -91,8 +93,16 @@ public class SimulationGUI extends Application {
         this.controller.drawMovingItems(mainLayout);
     }
 
+    public Scene getMainScene() {
+        return mainScene;
+    }
+
     public MainLayout getMainLayout() {
         return mainLayout;
+    }
+
+    public void setMainScene(Scene mainScene) {
+        this.mainScene = mainScene;
     }
 
 }

@@ -1,9 +1,11 @@
 package Enities;
 
-import javafx.scene.Node;
 import model.MapItem;
 import model.Vector2D;
 
+/**
+ * Abstract class of an entity on the map.
+ */
 public abstract class Entity extends MapItem {
     double explorationFactor;
     double speed;
@@ -18,11 +20,11 @@ public abstract class Entity extends MapItem {
 
     double turnSpeed;//rotation in degrees/sec
     double radius;//width of the entity
-
     Vector2D velocity;
 
-    public Entity(int x, int y){
+    public Entity(double x, double y) {
         this.setPosition(new Vector2D(x,y));
+        this.angle = 0;
         velocity = new Vector2D(0, 0);
     }
 
