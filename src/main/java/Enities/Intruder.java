@@ -2,6 +2,7 @@ package Enities;
 
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
+import model.GameMap;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ public class Intruder extends Entity{
 
     boolean isAlive = true;
 
-    public Intruder(int x, int y) {
+    public Intruder(double x, double y) {
         super(x, y);
     }
 

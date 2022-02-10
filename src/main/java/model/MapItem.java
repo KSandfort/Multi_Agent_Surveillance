@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public abstract class MapItem {
     Vector2D position;
-    GameMap map;
+    protected GameMap map;
 
     public Vector2D getPosition(){
         return position;

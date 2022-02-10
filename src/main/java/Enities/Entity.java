@@ -1,19 +1,20 @@
 package Enities;
 
-import javafx.scene.Node;
 import model.MapItem;
 import model.SpawnArea;
 import model.Vector2D;
-
 import java.util.Random;
 
+/**
+ * Abstract class of an entity on the map.
+ */
 public abstract class Entity extends MapItem {
     double explorationFactor;
-    double speed;
     double fovAngle;
     double fovLength;
-    //Vector2D fovDirection;
     double angle;
+    //Vector2D fovDirection;
+    Vector2D direction;
     boolean isIntruder;
     double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
     double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
@@ -22,15 +23,36 @@ public abstract class Entity extends MapItem {
     double turnSpeed;//rotation in degrees/sec
     double radius;//width of the entity
 
-    Vector2D velocity;
+    protected double velocity;
 
-    public Entity(int x, int y){
+    public Entity(double x, double y) {
         this.setPosition(new Vector2D(x,y));
-        velocity = new Vector2D(0, 0);
+        this.direction = new Vector2D(1, 0);
+        velocity = 0;
     }
 
+    /**
+     * Gives the Entity a new position, based on the direction the Entity is looking at and the
+     * current velocity.
+     */
     public void update() {
-        this.setPosition(Vector2D.add(getPosition(), velocity));
+        this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
+    }
+
+    public Vector2D getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector2D direction) {
+        this.direction = direction;
+    }
+
+    public double getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
     }
 
     public Entity(SpawnArea spawnArea){

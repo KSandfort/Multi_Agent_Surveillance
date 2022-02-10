@@ -3,8 +3,6 @@ package controller;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import model.GameMap;
 import model.MapItem;
 
@@ -18,17 +16,17 @@ public class GameController {
 
     // Variables
     GameMap map;
+
     SimulationGUI simulationGUI;
     int updatesPerSecond;
     int step;
 
-    public GameController() {
-        GameMap map = new GameMap();
+    public GameController(SimulationGUI gui) {
+        GameMap map = new GameMap(this);
+        this.simulationGUI = gui;
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
-        simulationGUI = new SimulationGUI();
-        simulationGUI.setController(this);
     }
 
     // do the update magic...
@@ -59,6 +57,9 @@ public class GameController {
         ArrayList<MapItem> items = map.getMovingItems();
         for (MapItem item : items){
             for (Node n : item.getComponents()) {
+                if (simulationGUI.getCurrentStep() != 0) {
+                    layout.getCanvas().getChildren().remove(layout.getCanvas().getChildren().size() - 1); // Remove old node
+                }
                 nodes.add(n);
             }
         }
@@ -76,5 +77,13 @@ public class GameController {
     /**
      * Executes the loop to run the simulation
      */
+
+    public SimulationGUI getSimulationGUI() {
+        return simulationGUI;
+    }
+
+    public void setSimulationGUI(SimulationGUI simulationGUI) {
+        this.simulationGUI = simulationGUI;
+    }
 
 }
