@@ -1,6 +1,4 @@
-import controller.GameController;
 import gui.SimulationGUI;
-
 
 /**
  * Class to start the code.

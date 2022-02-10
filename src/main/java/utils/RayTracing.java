@@ -21,9 +21,7 @@ public class RayTracing {
     public static double getRayLength(Vector2D position, Vector2D direction, GameMap currentMap, double maxLength) {
         // Iterate over all items on the map and see if the given ray hits an object.
         // Needs to find the CLOSEST object from the initial position.
-        for (MapItem item : currentMap.getMapItems()) {
-
-        }
+        // TODO: implement lol
         return 0;
     }
 }

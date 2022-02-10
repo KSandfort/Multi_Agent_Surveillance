@@ -2,17 +2,12 @@ package gui;
 
 import controller.GameController;
 import gui.sceneLayouts.MainLayout;
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.GameMap;
-
-import java.util.function.Consumer;
 
 /**
  * Parent class of all GUI elements.
@@ -22,7 +17,6 @@ public class SimulationGUI extends Application {
 
     // Variables
     int currentStep;
-    GameMap map;
     MainLayout mainLayout;
     Scene mainScene;
     int simulationDelay;
@@ -31,12 +25,12 @@ public class SimulationGUI extends Application {
     final int FPS = 2;
     final int WIDTH = 1200;
     final int HEIGHT = 800;
-
+    public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
+    public static final double SCALING_FACTOR = 10;
 
     public void setController(GameController controller){
         this.controller = controller;
     }
-
 
     public void launchGUI() {
         String[] args = new String[0];
@@ -51,13 +45,19 @@ public class SimulationGUI extends Application {
         mainLayout.setSimulationInstance(this);
         this.setController(new GameController());
         mainScene = new Scene(mainLayout, controller.getMap().getSizeX(), controller.getMap().getSizeY());
+        this.controller.drawFixedItems(mainLayout);
         // Timeline Animation
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
+    }
+
+    public void update() {
+        controller.update();
+        updateGUI1step();
     }
 
     /**
@@ -88,7 +88,7 @@ public class SimulationGUI extends Application {
         this.controller.update();
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         currentStep++;
-        this.controller.drawMap(mainLayout);
+        this.controller.drawMovingItems(mainLayout);
     }
 
     public MainLayout getMainLayout() {

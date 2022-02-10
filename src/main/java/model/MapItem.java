@@ -2,6 +2,8 @@ package model;
 
 import javafx.scene.Node;
 
+import java.util.ArrayList;
+
 public abstract class MapItem {
     Vector2D position;
     GameMap map;
@@ -14,8 +16,10 @@ public abstract class MapItem {
     };
 
     public void update() {
-        
+
     };
 
-    public abstract Node getComponent();
+    public abstract ArrayList<Node> getComponents();
+
+    public GameMap getMap() { return map; }
 }

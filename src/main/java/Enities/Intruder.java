@@ -1,8 +1,9 @@
 package Enities;
 
-import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
+
+import java.util.ArrayList;
 
 public class Intruder extends Entity{
 
@@ -21,13 +22,15 @@ public class Intruder extends Entity{
     }
 
     @Override
-    public Node getComponent() {
+    public ArrayList<Node> getComponents() {
         if (isAlive()){
+            ArrayList<Node> components = new ArrayList<>();
             Circle circle = new Circle();
             circle.setCenterX(getPosition().getX());
             circle.setCenterY(getPosition().getY());
             circle.setRadius(20);
-            return circle;
+            components.add(circle);
+            return components;
         }
         return null;
     }
