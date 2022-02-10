@@ -1,6 +1,8 @@
 package Enities;
 
+import gui.SimulationGUI;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import model.GameMap;
 
@@ -25,11 +27,14 @@ public class Intruder extends Entity{
     @Override
     public ArrayList<Node> getComponents() {
         if (isAlive()){
+            double sf = SimulationGUI.SCALING_FACTOR;
+            int offset = SimulationGUI.CANVAS_OFFSET;
             ArrayList<Node> components = new ArrayList<>();
             Circle circle = new Circle();
-            circle.setCenterX(getPosition().getX());
-            circle.setCenterY(getPosition().getY());
-            circle.setRadius(20);
+            circle.setFill(Color.web("#FF0000", 1));
+            circle.setCenterX((getPosition().getX() * sf) + offset);
+            circle.setCenterY((getPosition().getY() * sf) + offset);
+            circle.setRadius(1 * sf);
             components.add(circle);
             return components;
         }

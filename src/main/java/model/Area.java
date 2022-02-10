@@ -2,9 +2,20 @@ package model;
 
 import Enities.BaseEntity;
 
+/**
+ * Abstract class for any area placed on a map.
+ */
 public abstract class Area extends MapItem{
 
     protected Vector2D[] cornerPoints = new Vector2D[4];
+
+    public Area(double xFrom, double yFrom, double xTo, double yTo) {
+        cornerPoints[0] = new Vector2D(xFrom, yTo); // Bottom left
+        cornerPoints[1] = new Vector2D(xFrom, yFrom); // Top Left
+        cornerPoints[2] = new Vector2D(xTo, yFrom); // Top Right
+        cornerPoints[3] = new Vector2D(xTo, yTo); // Bottom Right
+        position = cornerPoints[1];
+    }
 
     public Area(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         position = pos1;

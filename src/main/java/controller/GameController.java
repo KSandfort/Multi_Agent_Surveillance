@@ -22,8 +22,8 @@ public class GameController {
     int step;
 
     public GameController(SimulationGUI gui) {
-        GameMap map = new GameMap(this);
         this.simulationGUI = gui;
+        GameMap map = new GameMap(this);
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();

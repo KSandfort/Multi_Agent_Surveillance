@@ -43,8 +43,8 @@ public class SimulationGUI extends Application {
         simulationDelay = 1;
         mainLayout = new MainLayout();
         mainLayout.setSimulationInstance(this);
-        this.setController(new GameController());
-        mainScene = new Scene(mainLayout, controller.getMap().getSizeX(), controller.getMap().getSizeY());
+        mainScene = new Scene(mainLayout, 1300, 1000);
+        this.setController(new GameController(this));
         this.controller.drawFixedItems(mainLayout);
         // Timeline Animation
         this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));

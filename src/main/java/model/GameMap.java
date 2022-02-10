@@ -2,8 +2,8 @@ package model;
 
 import Enities.Entity;
 import Enities.Guard;
+import Enities.Intruder;
 import controller.GameController;
-
 import java.util.ArrayList;
 
 public class GameMap {
@@ -40,42 +40,26 @@ public class GameMap {
     // TODO: move this
     // initializes map for testing purposes
     public void initTestGameMap() {
-        sizeX = 1000;
-        sizeY = 1000;
-        MapItem spawnAreaIntruders = new SpawnArea(2, 2, 20, 10);
-        MapItem wall1 = new Wall(50, 60, 55, 63);
-        MapItem wall2 = new Wall(70, 80, 75, 90);
-        items = new ArrayList<>(Arrays.asList(
-                new SpawnArea(2, 2, 20, 10),
-                new Wall(50, 60, 55, 63),
-                new Wall(70, 80, 75, 90),
-                new Wall(70, 80, 75, 90),
-                new Intruder(20,20),
-                new Guard(300,300)
-                ));
+        sizeX = 120;
+        sizeY = 80;
+        createBorderWalls();
+        fixedItems.add(new SpawnArea(2, 2, 20, 10));
+        fixedItems.add(new Wall(50, 60, 55, 63));
+        fixedItems.add(new Wall(70, 70, 75, 80));
+        fixedItems.add(new Wall(60, 10, 75, 50));
+        movingItems.add(new Intruder(20,20));
+        Guard remoteGuard = new Guard(40, 40);
+        remoteGuard.map = this;
+        remoteGuard.setRemote();
+        movingItems.add(remoteGuard);
     }
-  
+
     public void addToFixedItems(MapItem item) {
         fixedItems.add(item);
     }
 
     public void addToMovingItems(Entity entity) {
         movingItems.add(entity);
-    }
-
-    // TODO: move this
-    // initializes map for testing purposes
-    public void initTestGameMap() {
-        sizeX = 120;
-        sizeY = 80;
-        createBorderWalls();
-        MapItem testWall = new Wall(new Vector2D(20, 20), new Vector2D(25, 27), new Vector2D(28, 21), new Vector2D(24, 18));
-        this.fixedItems.add(testWall);
-
-        Guard guard = new Guard(30, 30);
-        guard.map = this;
-        guard.setRemote();
-        this.movingItems.add(guard);
     }
 
     public void createBorderWalls() {

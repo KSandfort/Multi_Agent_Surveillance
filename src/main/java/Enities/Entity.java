@@ -55,9 +55,14 @@ public abstract class Entity extends MapItem {
         this.velocity = velocity;
     }
 
-    public Entity(SpawnArea spawnArea){
+    public Entity(SpawnArea spawnArea) {
         Random rand = new Random();
+
+        //TODO: Place entity in spawn area. Since it is no perfect rectangle, we need to choose a different
+        // algorithm.
+        /*
         double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
         double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
+         */
     }
 }

@@ -3,16 +3,27 @@ package model;
 import Enities.BaseEntity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
+/**
+ * Wall that can be placed on a map.
+ */
 public class Wall extends Area {
+
+    /**
+     * Constructor
+     * @param pos1
+     * @param pos2
+     * @param pos3
+     * @param pos4
+     */
     public Wall(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
+    }
+
+    public Wall(double xFrom, double yFrom, double xTo, double yTo) {
+        super(xFrom, yFrom, xTo, yTo);
     }
 
     /**

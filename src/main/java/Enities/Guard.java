@@ -2,9 +2,9 @@ package Enities;
 
 import agents.AbstractAgent;
 import agents.GuardRemote;
-import controller.GameController;
 import gui.SimulationGUI;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import model.GameMap;
 
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class Guard extends Entity {
 
     // Variables
-    GameMap gameMap;
     AbstractAgent agent;
 
     /**
@@ -43,6 +42,7 @@ public class Guard extends Entity {
         int offset = SimulationGUI.CANVAS_OFFSET;
         ArrayList<Node> components = new ArrayList<>();
         Circle circle = new Circle();
+        circle.setFill(Color.web("#0000FF", 1));
         circle.setCenterX((getPosition().getX() * sf) + offset);
         circle.setCenterY((getPosition().getY() * sf) + offset);
         circle.setRadius(1 * sf);
