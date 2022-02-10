@@ -6,7 +6,8 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import model.GameMap;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,19 @@ public class Guard extends Entity {
         circle.setCenterX((getPosition().getX() * sf) + offset);
         circle.setCenterY((getPosition().getY() * sf) + offset);
         circle.setRadius(1 * sf);
+        Line line = new Line(
+                (getPosition().getX() * sf) + offset,
+                (getPosition().getY() * sf) + offset,
+                (getPosition().getX() * sf) + offset + 10,
+                (getPosition().getY() * sf) + offset );
+        line.setStroke(Color.web("#C8E1E7", 1));
+        line.setStrokeWidth(5);
+        Text text= new Text("Guard 1");
+        text.setX((getPosition().getX() * sf) + offset -20);
+        text.setY((getPosition().getY() * sf) + offset -12);
+        components.add(text);
         components.add(circle);
+        components.add(line);
         return components;
     }
 }
