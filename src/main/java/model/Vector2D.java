@@ -55,6 +55,12 @@ public class Vector2D {
         return new Vector2D(a.getX()/length, a.getY()/length);
     }
 
+    public void normalize(){
+        double length = Vector2D.length(this);
+        this.setX(getX()/length);
+        this.setY(getY()/length);
+    }
+
     /**
      * Calculates the dot product of two given vectors
      * @param a first vector
@@ -99,6 +105,7 @@ public class Vector2D {
         }
     }
 
+
     /**
      * Getter for x-coordinate.
      * @return
@@ -136,6 +143,12 @@ public class Vector2D {
         double newX = rand.nextDouble()*100;
         double newY = rand.nextDouble()*100;
         return new Vector2D(newX, newY);
+    }
+
+    public double dist(Vector2D other){
+        double a = other.getX() - getX();
+        double b = other.getY() - getY();
+        return Math.sqrt(Math.pow(a,2) + Math.pow(b,2));
     }
 
 }

@@ -36,6 +36,10 @@ public class Intruder extends Entity{
             circle.setCenterY((getPosition().getY() * sf) + offset);
             circle.setRadius(1 * sf);
             components.add(circle);
+            ArrayList<Ray> rays = this.FOV();
+            for (Ray ray : rays){
+                components.add(ray.getComponent());
+            }
             return components;
         }
         return null;

@@ -59,8 +59,8 @@ public class BaseEntity extends Entity {
         double speed = isSprinting ? this.velocity * sprintMovementFactor : this.velocity;
 
         //calculate direction vector based on angle
-        double deltaX = Math.cos(angle) * speed * timeStep;
-        double deltaY = Math.sin(angle) * speed * timeStep;
+        double deltaX = Math.cos(fovAngle) * speed * timeStep;
+        double deltaY = Math.sin(fovAngle) * speed * timeStep;
 
         Vector2D currPos = getPosition();
         Vector2D newPos = new Vector2D(currPos.getX() + deltaX, currPos.getY() + deltaY);
@@ -72,7 +72,7 @@ public class BaseEntity extends Entity {
         double rotationDirection = left ? 1 : -1;
         double rotationSpeed = isSprinting ? turnSpeed * sprintRotationFactor : turnSpeed;
 
-        angle += rotationSpeed * rotationDirection * timeStep;
+        fovAngle += rotationSpeed * rotationDirection * timeStep;
     }
 
     //no idea if a see() and hear() method is appropriate should maybe be a percept() method instead

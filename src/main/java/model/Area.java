@@ -33,7 +33,6 @@ public abstract class Area extends MapItem{
             throw new Exception("Invalid number of corner points. 4 Required, " + pos.length + " given.");
         }
     }
-
     /**
      * Checks whether a point is inside an area.
      * @param pos point
