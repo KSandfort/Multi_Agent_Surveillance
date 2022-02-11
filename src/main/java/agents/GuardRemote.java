@@ -18,7 +18,7 @@ public class GuardRemote extends AbstractAgent {
         // Get the remote agent
         this.entityInstance.getMap().getGameController().getSimulationGUI().getMainScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if(key.getCode()== KeyCode.W) {
-                entityInstance.setVelocity(0.1);
+                entityInstance.setVelocity(0.01);
             }
             if(key.getCode()== KeyCode.S) {
                 entityInstance.setVelocity(0);

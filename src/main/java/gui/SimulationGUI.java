@@ -22,7 +22,7 @@ public class SimulationGUI extends Application {
     int simulationDelay;
     Timeline timeline;
     GameController controller;
-    final int FPS = 25;
+    final int FPS = 10;
     final int WIDTH = 1200;
     final int HEIGHT = 800;
     public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
