@@ -11,7 +11,7 @@ import java.util.Random;
 public abstract class Entity extends MapItem {
     double explorationFactor;
     double fovAngle = 80;
-    double fovDepth = 60;
+    double fovDepth = 50;
     //Vector2D fovDirection;
     Vector2D direction;
     boolean isIntruder;
@@ -69,24 +69,35 @@ public abstract class Entity extends MapItem {
          */
     }
 
-    public ArrayList<Ray> FOV(){
+    /**
+     * Creates a field of view for an entity.
+     * @return
+     */
+    public ArrayList<Ray> FOV() {
         ArrayList<Ray> rays = new ArrayList<>();
-        for (double i = -0.5*fovAngle; i <= 0.5*fovAngle; i+=1){
+        // Create all the rays
+        for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 1){
             Vector2D direction = new Vector2D(
-                    getDirection().getX()*Math.cos(Math.toRadians(i))- getDirection().getY()*Math.sin(Math.toRadians(i)),
+                    getDirection().getX()*Math.cos(Math.toRadians(i)) - getDirection().getY()*Math.sin(Math.toRadians(i)),
                     getDirection().getX()*Math.sin(Math.toRadians(i)) + getDirection().getY()*Math.cos(Math.toRadians(i))
             );
             Ray ray = new Ray(getPosition(), Vector2D.resize(direction, fovDepth));
             GameMap map = this.map;
-            for (MapItem item: map.getFixedItems()){
+            double minDistance = fovDepth;
+            // Scan all fixed items on the map
+            for (MapItem item: map.getFixedItems()) {
                 Area area = (Area) item;
-                for (int j = 0; j < area.getCornerPoints().length - 1;j++){
-                    ray.cast(area.getCornerPoints()[j],area.getCornerPoints()[j+ 1]);
+                // Find the closest object to avoid "seeing through walls"
+                for (int j = 0; j < area.getCornerPoints().length; j++){
+                    double currentDistance = Vector2D.distance(ray.getOrigin(), ray.getPoint(), area.getCornerPoints()[j], area.getCornerPoints()[(j + 1) % 4]);
+                    if (currentDistance < minDistance && currentDistance > 0) {
+                        minDistance = currentDistance;
+                    }
                 }
-                ray.cast(area.getCornerPoints()[0],area.getCornerPoints()[3]);
             }
+            // Set the length of the ray accordingly.
+            ray.setDirection(Vector2D.resize(ray.getDirection(), minDistance));
             rays.add(ray);
-
         }
         return rays;
     }

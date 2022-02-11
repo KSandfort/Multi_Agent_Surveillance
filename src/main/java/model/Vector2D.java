@@ -45,6 +45,46 @@ public class Vector2D {
         return Math.sqrt(Math.pow(a.getX(), 2) + Math.pow(a.getY(), 2));
     }
 
+    public static double distance(Vector2D a, Vector2D b) {
+        return Vector2D.length(Vector2D.subtract(a, b));
+    }
+
+    /**
+     * Distance from the line a -> b to the line c -> d.
+     * Returns the Double.MAX_VALUE if the lines don't touch or the distance is "negative".
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @return
+     */
+    public static double distance(Vector2D a, Vector2D b, Vector2D c, Vector2D d) {
+        Vector2D e = Vector2D.subtract(b, a);
+        Vector2D f = Vector2D.subtract(d, c);
+        Vector2D p = new Vector2D(-e.getY(), e.getX());
+
+        // Check that the distance isn't calculated in a negative direction.
+        Vector2D p2 = new Vector2D(-f.getY(), f.getX());
+        if (Vector2D.dotProduct(e, p2) == 0) {
+            return Double.MAX_VALUE;
+        }
+        double h2 = Vector2D.dotProduct(Vector2D.subtract(c, a), p2) / Vector2D.dotProduct(e, p2);
+        if (h2 < 0) {
+            return Double.MAX_VALUE;
+        }
+
+        if (Vector2D.dotProduct(f, p) == 0) {
+            return Double.MAX_VALUE;
+        }
+        double h = Vector2D.dotProduct(Vector2D.subtract(a, c), p) / Vector2D.dotProduct(f, p);
+        if (h >= 0 && h <= 1) {
+            return Vector2D.distance(a, Vector2D.add(c, Vector2D.scalar(f, h)));
+        }
+        else {
+            return Double.MAX_VALUE;
+        }
+    }
+
     /**
      * Returns a new vector that is the normalized version of an input vector a.
      * @param a
@@ -154,6 +194,10 @@ public class Vector2D {
         double a = other.getX() - getX();
         double b = other.getY() - getY();
         return Math.sqrt(Math.pow(a,2) + Math.pow(b,2));
+    }
+
+    public String print() {
+        return ("Vector: x = " + x + ", y = " + y);
     }
 
 }
