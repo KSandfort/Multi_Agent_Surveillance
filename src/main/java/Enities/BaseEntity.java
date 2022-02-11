@@ -30,11 +30,26 @@ public class BaseEntity extends Entity {
         return null;//needs to be changed to circle no idea how
     }
 
+    @Override
+    public boolean isSolidBody() {
+        return false;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return true;
+    }
+
+    @Override
+    public boolean isStaticObject() {
+        return false;
+    }
+
 
     private void checkCollision()
     {
         GameMap map = getMap();
-        ArrayList<MapItem> items = map.getFixedItems();
+        ArrayList<MapItem> items = map.getStaticItems();
         for (int i = 0; i < items.size(); i++) {
             MapItem item = items.get(i);
             //check if body is an area, we maybe need a new method for this
@@ -100,7 +115,7 @@ public class BaseEntity extends Entity {
     {
         //make new marker and add it to the list of items
         Marker marker = new Marker(markerType,new Vector2D(getPosition().getX(),getPosition().getY()),isIntruder);
-        getMap().addToFixedItems(marker);
+        getMap().addToStaticItems(marker);
     }
 
     public double getRadius() {return radius;}

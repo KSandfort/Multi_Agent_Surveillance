@@ -10,8 +10,8 @@ import java.util.Random;
  */
 public abstract class Entity extends MapItem {
     double explorationFactor;
-    double fovAngle = 80;
-    double fovDepth = 50;
+    double fovAngle = 30;
+    double fovDepth = 60;
     //Vector2D fovDirection;
     Vector2D direction;
     boolean isIntruder;

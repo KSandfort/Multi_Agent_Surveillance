@@ -43,7 +43,7 @@ public class GameController {
      */
     public void drawFixedItems(MainLayout layout) {
         ArrayList<Node> nodes = new ArrayList<>();
-        for (MapItem item : map.getFixedItems()) {
+        for (MapItem item : map.getStaticItems()) {
             for (Node n : item.getComponents()) {
                 nodes.add(n);
             }
