@@ -33,7 +33,6 @@ public abstract class Area extends MapItem{
             throw new Exception("Invalid number of corner points. 4 Required, " + pos.length + " given.");
         }
     }
-
     /**
      * Checks whether a point is inside an area.
      * @param pos point
@@ -55,6 +54,9 @@ public abstract class Area extends MapItem{
         else {
             return false;
         }
+    }
+    public Vector2D [] getCornerPoints(){
+        return cornerPoints;
     }
 
     public boolean isAgentInsideArea(BaseEntity agent)

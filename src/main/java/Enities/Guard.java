@@ -59,7 +59,25 @@ public class Guard extends Entity {
         text.setY((getPosition().getY() * sf) + offset -12);
         components.add(text);
         components.add(circle);
-        components.add(line);
+        ArrayList<Ray> rays = this.FOV();
+        for (Ray ray : rays){
+            components.add(ray.getComponent());
+        }
         return components;
+    }
+
+    @Override
+    public boolean isSolidBody() {
+        return false;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return true;
+    }
+
+    @Override
+    public boolean isStaticObject() {
+        return false;
     }
 }

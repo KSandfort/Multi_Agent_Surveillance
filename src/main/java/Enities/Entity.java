@@ -1,8 +1,8 @@
 package Enities;
 
-import model.MapItem;
-import model.SpawnArea;
-import model.Vector2D;
+import model.*;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -10,16 +10,15 @@ import java.util.Random;
  */
 public abstract class Entity extends MapItem {
     double explorationFactor;
-    double fovAngle;
-    double fovLength;
-    double angle;
+    double fovAngle = 30;
+    double fovDepth = 60;
     //Vector2D fovDirection;
     Vector2D direction;
     boolean isIntruder;
     double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
     double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
     boolean isSprinting = true;
-
+    ArrayList<Ray> fov;
     double turnSpeed;//rotation in degrees/sec
     double radius;//width of the entity
 
@@ -27,8 +26,12 @@ public abstract class Entity extends MapItem {
 
     public Entity(double x, double y) {
         this.setPosition(new Vector2D(x,y));
-        this.direction = new Vector2D(1, 0);
+        this.direction = Vector2D.randomVector();
         velocity = 0;
+    }
+
+    public void setMap(GameMap map){
+        this.map = map;
     }
 
     /**
@@ -64,5 +67,27 @@ public abstract class Entity extends MapItem {
         double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
         double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
          */
+    }
+
+    public ArrayList<Ray> FOV(){
+        ArrayList<Ray> rays = new ArrayList<>();
+        for (double i = -0.5*fovAngle; i <= 0.5*fovAngle; i+=1){
+            Vector2D direction = new Vector2D(
+                    getDirection().getX()*Math.cos(Math.toRadians(i))- getDirection().getY()*Math.sin(Math.toRadians(i)),
+                    getDirection().getX()*Math.sin(Math.toRadians(i)) + getDirection().getY()*Math.cos(Math.toRadians(i))
+            );
+            Ray ray = new Ray(getPosition(), Vector2D.resize(direction, fovDepth));
+            GameMap map = this.map;
+            for (MapItem item: map.getStaticItems()){
+                Area area = (Area) item;
+                for (int j = 0; j < area.getCornerPoints().length - 1;j++){
+                    ray.cast(area.getCornerPoints()[j],area.getCornerPoints()[j+ 1]);
+                }
+                ray.cast(area.getCornerPoints()[3],area.getCornerPoints()[0]);
+            }
+            rays.add(ray);
+
+        }
+        return rays;
     }
 }

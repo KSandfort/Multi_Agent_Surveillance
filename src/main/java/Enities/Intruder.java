@@ -49,9 +49,27 @@ public class Intruder extends Entity{
             line.setStroke(Color.web("#000099", 1));
             components.add(text);
             components.add(circle);
-            components.add(line);
+            ArrayList<Ray> rays = this.FOV();
+            for (Ray ray : rays){
+                components.add(ray.getComponent());
+            }
             return components;
         }
         return null;
+    }
+
+    @Override
+    public boolean isSolidBody() {
+        return false;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return true;
+    }
+
+    @Override
+    public boolean isStaticObject() {
+        return false;
     }
 }
