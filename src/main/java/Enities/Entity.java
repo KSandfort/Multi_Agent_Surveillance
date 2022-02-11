@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public abstract class Entity extends MapItem {
     double explorationFactor;
-    double fovAngle = 80;
+    double fovAngle = 30;
     double fovDepth = 60;
     //Vector2D fovDirection;
     Vector2D direction;
@@ -78,12 +78,12 @@ public abstract class Entity extends MapItem {
             );
             Ray ray = new Ray(getPosition(), Vector2D.resize(direction, fovDepth));
             GameMap map = this.map;
-            for (MapItem item: map.getFixedItems()){
+            for (MapItem item: map.getStaticItems()){
                 Area area = (Area) item;
                 for (int j = 0; j < area.getCornerPoints().length - 1;j++){
                     ray.cast(area.getCornerPoints()[j],area.getCornerPoints()[j+ 1]);
                 }
-                ray.cast(area.getCornerPoints()[0],area.getCornerPoints()[3]);
+                ray.cast(area.getCornerPoints()[3],area.getCornerPoints()[0]);
             }
             rays.add(ray);
 

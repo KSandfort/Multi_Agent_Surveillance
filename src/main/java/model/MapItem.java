@@ -19,7 +19,19 @@ public abstract class MapItem {
 
     };
 
+    public void setMap(GameMap map){
+        this.map = map;
+    }
+
     public abstract ArrayList<Node> getComponents();
 
     public GameMap getMap() { return map; }
+
+    public abstract boolean isSolidBody();
+
+    public abstract boolean isDynamicObject();
+
+    public abstract boolean isStaticObject();
+
+
 }

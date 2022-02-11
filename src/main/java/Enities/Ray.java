@@ -21,12 +21,20 @@ public class Ray {
     public void cast(Vector2D c, Vector2D d){
         Vector2D a = origin;
         Vector2D b = getPoint();
-        Vector2D e = Vector2D.subtract(b, a);
-        Vector2D f = Vector2D.subtract(d, c);
-        Vector2D p = new Vector2D(-e.getY(), e.getX());
-        if (Vector2D.dotProduct(f, p) != 0) {
-            double h = Vector2D.dotProduct(Vector2D.subtract(a, c), p) / Vector2D.dotProduct(f, p);
-            direction = Vector2D.scalar(direction, h);
+        double a1 = b.getY() - a.getY();
+        double b1 = a.getX() - b.getX();
+        double c1 = a1*(a.getX()) + b1*(a.getY());
+
+        double a2 = d.getY() - c.getY();
+        double b2 = c.getX() - d.getX();
+        double c2 = a2*(c.getX())+ b2*(c.getY());
+
+        double determinant = a1*b2 - a2*b1;
+        if (determinant != 0){
+            double x = (b2*c1 - b1*c2)/determinant;
+            double y = (a1*c2 - a2*c1)/determinant;
+            Vector2D point = new Vector2D(x,y);
+            direction = Vector2D.subtract(point, origin);
         }
     }
 

@@ -47,6 +47,21 @@ public class Wall extends Area {
     }
 
     @Override
+    public boolean isSolidBody() {
+        return true;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return false;
+    }
+
+    @Override
+    public boolean isStaticObject() {
+        return true;
+    }
+
+    @Override
     public boolean isAgentInsideArea(BaseEntity agent) {
         Vector2D agentPos = agent.getPosition();
         //the position of the closest point inside the wall relative to the agent

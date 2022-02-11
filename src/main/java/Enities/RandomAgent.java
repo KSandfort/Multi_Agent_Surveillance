@@ -17,4 +17,19 @@ public class RandomAgent extends Entity{
     public ArrayList<Node> getComponents() {
         return null;
     }
+
+    @Override
+    public boolean isSolidBody() {
+        return false;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return true;
+    }
+
+    @Override
+    public boolean isStaticObject() {
+        return false;
+    }
 }
