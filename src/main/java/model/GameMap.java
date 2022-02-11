@@ -47,7 +47,7 @@ public class GameMap {
         fixedItems.add(new Wall(50, 60, 55, 63));
         fixedItems.add(new Wall(70, 70, 75, 80));
         fixedItems.add(new Wall(60, 10, 75, 50));
-        movingItems.add(new Intruder(20,20));
+//        movingItems.add(new Intruder(20,20));
         Guard remoteGuard = new Guard(40, 40);
         remoteGuard.map = this;
         remoteGuard.setRemote();

@@ -81,6 +81,11 @@ public class Vector2D {
         return new Vector2D(a.getX() * factor, a.getY() * factor);
     }
 
+    public static Vector2D resize(Vector2D vector, double scalar){
+        Vector2D norm = Vector2D.normalize(vector);
+        return Vector2D.scalar(norm, scalar);
+    }
+
     /**
      * Returns true, if the line from a to b intersects with the line from c to d.
      * @param a
@@ -140,8 +145,8 @@ public class Vector2D {
 
     public static Vector2D randomVector(){
         Random rand = new Random();
-        double newX = rand.nextDouble()*100;
-        double newY = rand.nextDouble()*100;
+        double newX = rand.nextDouble()*100 - 50;
+        double newY = rand.nextDouble()*100 - 50;
         return new Vector2D(newX, newY);
     }
 

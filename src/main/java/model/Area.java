@@ -55,6 +55,9 @@ public abstract class Area extends MapItem{
             return false;
         }
     }
+    public Vector2D [] getCornerPoints(){
+        return cornerPoints;
+    }
 
     public boolean isAgentInsideArea(BaseEntity agent)
     {
