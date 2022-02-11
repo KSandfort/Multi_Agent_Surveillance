@@ -48,6 +48,11 @@ public class GameController {
                 nodes.add(n);
             }
         }
+        for (MapItem item : map.getSolidBodies()) {
+            for (Node n : item.getComponents()) {
+                nodes.add(n);
+            }
+        }
         layout.getCanvas().getChildren().addAll(nodes);
     }
 

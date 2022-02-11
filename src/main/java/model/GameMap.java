@@ -88,10 +88,10 @@ public class GameMap {
         c2 = new Vector2D(sizeX, 0);
         c3 = new Vector2D(sizeX, sizeY);
         c4 = new Vector2D(0, sizeY);
-        staticItems.add(new Wall(new Vector2D(c1.getX(), c1.getY() - 2), new Vector2D(c2.getX(), c2.getY() - 2), c2, c1)); // Top wall
-        staticItems.add(new Wall(c2, new Vector2D(c2.getX() + 2, c2.getY()), new Vector2D(c3.getX() + 2, c3.getY()), c3)); // Right wall
-        staticItems.add(new Wall(c4, c3, new Vector2D(c3.getX(), c3.getY() + 2), new Vector2D(c4.getX(), c4.getY() + 2))); // Bottom wall
-        staticItems.add(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
+        solidBodies.add(new Wall(new Vector2D(c1.getX(), c1.getY() - 2), new Vector2D(c2.getX(), c2.getY() - 2), c2, c1)); // Top wall
+        solidBodies.add(new Wall(c2, new Vector2D(c2.getX() + 2, c2.getY()), new Vector2D(c3.getX() + 2, c3.getY()), c3)); // Right wall
+        solidBodies.add(new Wall(c4, c3, new Vector2D(c3.getX(), c3.getY() + 2), new Vector2D(c4.getX(), c4.getY() + 2))); // Bottom wall
+        solidBodies.add(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
     }
 
     public int getSizeX() {
@@ -124,6 +124,14 @@ public class GameMap {
 
     public void setMovingItems(ArrayList<MapItem> movingItems) {
         this.movingItems = movingItems;
+    }
+
+    public ArrayList<MapItem> getSolidBodies() {
+        return solidBodies;
+    }
+
+    public void setSolidBodies(ArrayList<MapItem> solidBodies) {
+        this.solidBodies = solidBodies;
     }
 
     public GameController getGameController() {

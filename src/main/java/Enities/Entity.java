@@ -85,7 +85,7 @@ public abstract class Entity extends MapItem {
             GameMap map = this.map;
             double minDistance = fovDepth;
             // Scan all fixed items on the map
-            for (MapItem item: map.getFixedItems()) {
+            for (MapItem item: map.getSolidBodies()) {
                 Area area = (Area) item;
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){
