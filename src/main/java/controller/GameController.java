@@ -33,7 +33,8 @@ public class GameController {
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
         for(MapItem item : items) {
-            item.update();
+            item.update(map.getStaticItems());
+            item.update(map.getSolidBodies());
         }
     }
 

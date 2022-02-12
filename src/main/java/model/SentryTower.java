@@ -4,19 +4,29 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-
-public class SpawnArea extends Area{
-
-    public SpawnArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
+/**
+ * this area increases the visual range an angle of an entity
+ */
+public class SentryTower extends Area{
+    public SentryTower(double xFrom, double yFrom, double xTo, double yTo) {
+        super(xFrom, yFrom, xTo, yTo);
+        setVisionAngle(getVisionAngle()*1.5);
+        setVisionDepth(getVisionDepth()*1.5);
     }
 
-    public SpawnArea(double xFrom, double yFrom, double xTo, double yTo) {
-        super(xFrom, yFrom, xTo, yTo);
+    public SentryTower(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
+        super(pos1, pos2, pos3, pos4);
+        setVisionAngle(getVisionAngle()*1.5);
+        setVisionDepth(getVisionDepth()*1.5);
+    }
+
+    public SentryTower(Vector2D[] pos) throws Exception {
+        super(pos);
+        setVisionAngle(getVisionAngle()*1.5);
+        setVisionDepth(getVisionDepth()*1.5);
     }
 
     @Override
@@ -31,7 +41,7 @@ public class SpawnArea extends Area{
                     (cornerPoints[i].getY() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getY() * sf) + offset);
-            line.setStroke(Color.web("#0000FF", 0.2));
+            line.setStroke(Color.web("#5C5F61", 1));
             line.setStrokeWidth(4);
             components.add(line);
         }
@@ -40,7 +50,7 @@ public class SpawnArea extends Area{
 
     @Override
     public boolean isSolidBody() {
-        return false;
+        return true;
     }
 
     @Override
@@ -50,6 +60,6 @@ public class SpawnArea extends Area{
 
     @Override
     public boolean isStaticObject() {
-        return true;
+        return false;
     }
 }

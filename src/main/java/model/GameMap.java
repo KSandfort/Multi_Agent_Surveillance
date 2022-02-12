@@ -1,6 +1,7 @@
 package model;
 
 import Enities.Guard;
+import Enities.Intruder;
 import controller.GameController;
 import java.util.ArrayList;
 
@@ -46,7 +47,8 @@ public class GameMap {
         addToMap(new Wall(50, 60, 55, 63));
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
-//        movingItems.add(new Intruder(20,20));
+        addToMap(new Teleport(60, 10, 75, 50, 50, 40, 5,50));
+        //addToMap(new Intruder(20,20));
         Guard remoteGuard = new Guard(55, 30);
         addToMap(remoteGuard);
         remoteGuard.setRemote();
