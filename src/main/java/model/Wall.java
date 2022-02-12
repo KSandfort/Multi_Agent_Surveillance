@@ -74,7 +74,6 @@ public class Wall extends Area {
     public void onAgentCollision(Entity agent)
     {
         super.onAgentCollision(agent);
-        //TODO
         System.out.println("Entered area");
     }
 
