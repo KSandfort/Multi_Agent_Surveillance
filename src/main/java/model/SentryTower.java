@@ -13,20 +13,20 @@ import java.util.ArrayList;
 public class SentryTower extends Area{
     public SentryTower(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setVisionAngle(getVisionAngle()*1.5);
-        setVisionDepth(getVisionDepth()*1.5);
+        setAreaFovAngle(getAreaFovAngle()*1.5);
+        setAreaFovDepth(getAreaFovDepth()*1.5);
     }
 
     public SentryTower(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setVisionAngle(getVisionAngle()*1.5);
-        setVisionDepth(getVisionDepth()*1.5);
+        setAreaFovAngle(getAreaFovAngle()*1.5);
+        setAreaFovDepth(getAreaFovDepth()*1.5);
     }
 
     public SentryTower(Vector2D[] pos) throws Exception {
         super(pos);
-        setVisionAngle(getVisionAngle()*1.5);
-        setVisionDepth(getVisionDepth()*1.5);
+        setAreaFovAngle(getAreaFovAngle()*1.5);
+        setAreaFovDepth(getAreaFovDepth()*1.5);
     }
 
     @Override
@@ -51,15 +51,5 @@ public class SentryTower extends Area{
     @Override
     public boolean isSolidBody() {
         return true;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return false;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return false;
     }
 }

@@ -64,25 +64,10 @@ public class Teleport extends Area{
             line.setStrokeWidth(4);
             components.add(line);
         }
-        Rectangle rect = new Rectangle((target.getX() * sf), (target.getY() * sf), 10, 10);
+        Rectangle rect = new Rectangle((target.getX() * sf) + offset, (target.getY() * sf) + offset, 10, 10);
         rect.setFill(Color.web("#FFAC12", 1));
         components.add(rect);
 
         return components;
-    }
-
-    @Override
-    public boolean isSolidBody() {
-        return false;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return false;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return true;
     }
 }

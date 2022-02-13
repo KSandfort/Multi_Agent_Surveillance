@@ -37,18 +37,4 @@ public class TargetArea extends Area{
         return components;
     }
 
-    @Override
-    public boolean isSolidBody() {
-        return false;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return false;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return true;
-    }
 }

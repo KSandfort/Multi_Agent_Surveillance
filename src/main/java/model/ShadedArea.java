@@ -13,20 +13,20 @@ import java.util.ArrayList;
 public class ShadedArea extends Area{
     public ShadedArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setVisionAngle(getVisionAngle()*0.5);
-        setVisionDepth(getVisionDepth()*0.5);
+        setAreaFovAngle(getAreaFovAngle()*0.5);
+        setAreaFovDepth(getAreaFovDepth()*0.5);
     }
 
     public ShadedArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setVisionAngle(getVisionAngle()*0.5);
-        setVisionDepth(getVisionDepth()*0.5);
+        setAreaFovAngle(getAreaFovAngle()*0.5);
+        setAreaFovDepth(getAreaFovDepth()*0.5);
     }
 
     public ShadedArea(Vector2D[] pos) throws Exception {
         super(pos);
-        setVisionAngle(getVisionAngle()*0.5);
-        setVisionDepth(getVisionDepth()*0.5);
+        setAreaFovAngle(getAreaFovAngle()*0.5);
+        setAreaFovDepth(getAreaFovDepth()*0.5);
     }
 
     @Override
@@ -46,20 +46,5 @@ public class ShadedArea extends Area{
             components.add(line);
         }
         return components;
-    }
-
-    @Override
-    public boolean isSolidBody() {
-        return false;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return false;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return true;
     }
 }

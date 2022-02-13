@@ -1,5 +1,6 @@
 package controller;
 
+import Enities.Entity;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;

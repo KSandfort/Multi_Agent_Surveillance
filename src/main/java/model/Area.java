@@ -1,6 +1,5 @@
 package model;
 
-import Enities.BaseEntity;
 import Enities.Entity;
 
 /**
@@ -9,9 +8,9 @@ import Enities.Entity;
 public abstract class Area extends MapItem{
 
     protected Vector2D[] cornerPoints = new Vector2D[4];
-    private double visionDepth = 60;
-    private double visionAngle = 30;
-    private double speedFactor = 0.01;
+    private double areaFovDepth = 60;
+    private double areaFovAngle = 30;
+    private double areaSpeed = 0.01;
     private double hearingFactor = 1;
 
     public Area(double xFrom, double yFrom, double xTo, double yTo) {
@@ -54,7 +53,6 @@ public abstract class Area extends MapItem{
             if (Vector2D.doTwoSegmentsCross(pos, new Vector2D(pos.getX() + 1E4, pos.getY()), c, d)) {
                 edgeCount++;
             }
-
         }
         if (edgeCount == 1) {
             return true;
@@ -80,34 +78,49 @@ public abstract class Area extends MapItem{
 
     public void onAgentCollision(Entity agent)
     {
-        agent.setVelocity(getSpeedFactor());
-        agent.setFovAngle(getVisionAngle());
-        agent.setFovDepth(getVisionDepth());
+        agent.setVelocity(getAreaSpeed());
+        agent.setFovAngle(getAreaFovAngle());
+        agent.setFovDepth(getAreaFovDepth());
         //TODO add hearing
     }
 
-    public double getVisionDepth() {
-        return visionDepth;
+    @Override
+    public boolean isSolidBody() {
+        return false;
     }
 
-    public void setVisionDepth(double visionDepth) {
-        this.visionDepth = visionDepth;
+    @Override
+    public boolean isDynamicObject() {
+        return false;
     }
 
-    public double getVisionAngle() {
-        return visionAngle;
+    @Override
+    public boolean isStaticObject() {
+        return true;
     }
 
-    public void setVisionAngle(double visionAngle) {
-        this.visionAngle = visionAngle;
+    public double getAreaFovDepth() {
+        return areaFovDepth;
     }
 
-    public double getSpeedFactor() {
-        return speedFactor;
+    public void setAreaFovDepth(double areaFovDepth) {
+        this.areaFovDepth = areaFovDepth;
     }
 
-    public void setSpeedFactor(double speedFactor) {
-        this.speedFactor = speedFactor;
+    public double getAreaFovAngle() {
+        return areaFovAngle;
+    }
+
+    public void setAreaFovAngle(double areaFovAngle) {
+        this.areaFovAngle = areaFovAngle;
+    }
+
+    public double getAreaSpeed() {
+        return areaSpeed;
+    }
+
+    public void setAreaSpeed(double areaSpeed) {
+        this.areaSpeed = areaSpeed;
     }
 
     public double getHearingFactor() {

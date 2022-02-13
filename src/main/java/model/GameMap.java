@@ -47,12 +47,13 @@ public class GameMap {
         addToMap(new Wall(50, 60, 55, 63));
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
-        addToMap(new Teleport(60, 10, 75, 50, 50, 40, 5,50));
+        addToMap(new ShadedArea(40, 20, 10, 40));
+        addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
+        //addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
         //addToMap(new Intruder(20,20));
         Guard remoteGuard = new Guard(55, 30);
         addToMap(remoteGuard);
         remoteGuard.setRemote();
-
     }
 
     public void addToMap(MapItem item){
