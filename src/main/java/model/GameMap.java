@@ -1,6 +1,7 @@
 package model;
 
 import Enities.Guard;
+import Enities.Intruder;
 import controller.GameController;
 import java.util.ArrayList;
 
@@ -47,9 +48,8 @@ public class GameMap {
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
 //        movingItems.add(new Intruder(20,20));
-        Guard remoteGuard = new Guard(55, 30);
-        addToMap(remoteGuard);
-        remoteGuard.setRemote();
+        addGuards(60);
+        addIntruders(70);
 
     }
 
@@ -62,6 +62,22 @@ public class GameMap {
         }
         if (item.isStaticObject()){
             addToStaticItems(item);
+        }
+    }
+
+    public void addGuards(int numGuards){
+        for (int i = 0; i < numGuards; i++){
+            Guard remoteGuard = new Guard(55, 30);
+            addToMap(remoteGuard);
+            remoteGuard.setRemote();
+        }
+    }
+
+    public void addIntruders(int numIntruders){
+        for (int i = 0; i < numIntruders; i++){
+            Intruder remoteIntruder = new Intruder(55, 30);
+            addToMap(remoteIntruder);
+            remoteIntruder.setRemote();
         }
     }
 

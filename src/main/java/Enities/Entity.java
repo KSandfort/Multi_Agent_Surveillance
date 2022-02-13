@@ -9,9 +9,9 @@ import java.util.Random;
  * Abstract class of an entity on the map.
  */
 public abstract class Entity extends MapItem {
-    double explorationFactor;
+    double explorationFactor = 0.2;
     double fovAngle = 30;
-    double fovDepth = 60;
+    double fovDepth = 20;
     //Vector2D fovDirection;
     Vector2D direction;
     boolean isIntruder;
@@ -21,6 +21,7 @@ public abstract class Entity extends MapItem {
     ArrayList<Ray> fov;
     double turnSpeed;//rotation in degrees/sec
     double radius;//width of the entity
+    int ID;
 
     protected double velocity;
 
@@ -40,6 +41,7 @@ public abstract class Entity extends MapItem {
      */
     public void update() {
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
+        direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
     }
 
     public Vector2D getDirection() {

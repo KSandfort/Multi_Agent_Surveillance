@@ -18,7 +18,7 @@ public class Guard extends Entity {
 
     // Variables
     AbstractAgent agent;
-
+    static int guardCount = 0;
     /**
      * Constructor
      * @param x
@@ -26,6 +26,8 @@ public class Guard extends Entity {
      */
     public Guard(double x, double y){
         super(x, y);
+        guardCount++;
+        this.ID = guardCount;
     }
 
     /**
@@ -54,7 +56,7 @@ public class Guard extends Entity {
                 (getPosition().getY() * sf) + offset );
         line.setStroke(Color.web("#C8E1E7", 1));
         line.setStrokeWidth(5);
-        Text text= new Text("Guard 1");
+        Text text= new Text("Guard " + ID);
         text.setX((getPosition().getX() * sf) + offset -20);
         text.setY((getPosition().getY() * sf) + offset -12);
         components.add(text);
