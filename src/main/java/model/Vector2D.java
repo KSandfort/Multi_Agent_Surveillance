@@ -150,6 +150,86 @@ public class Vector2D {
         }
     }
 
+    /**
+     * checks if 2 line segments ab, cd intersect
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @return
+     */
+    public static boolean doTwoSegmentsCross(Vector2D a, Vector2D b, Vector2D c, Vector2D d){
+        int orientA = checkOrientation(a, c, d);
+        int orientB = checkOrientation(b, c, d);
+        int orientC = checkOrientation(c, a, b);
+        int orientD = checkOrientation(d, a, b);
+
+        if (orientA != orientB && orientC != orientD) return true;
+
+        //check collinearity
+        return (checkCollinearity(orientA, a, c, d) || checkCollinearity(orientB, b, c, d) ||
+                checkCollinearity(orientC, c, a, b) ||checkCollinearity(orientD, d, a, b));
+    }
+
+    /**
+     * checks if vector a lies on the line segment between b and c
+     * @return true if
+     */
+    public static boolean checkCollinearity(int o, Vector2D a,Vector2D b, Vector2D c){
+
+        return (o == 0 && isOnSegment(a,b,c));
+    }
+
+    /**
+     * checks if a point is on the line segment of two other points
+     * @param a point that is to be checked
+     * @param b start of line segment
+     * @param c end of line segment
+     * @return
+     */
+    public static boolean isOnSegment(Vector2D a,Vector2D b, Vector2D c){
+        boolean lineOnX = (a.getX() <= Math.max(b.getX(), c.getX())) && (a.getX() >= Math.min(b.getX(), c.getX()));
+        boolean lineOnY = (a.getY() <= Math.max(b.getY(), c.getY())) && (a.getY() >= Math.min(b.getY(), c.getY()));
+        return (lineOnX && lineOnY);
+    }
+
+    /**
+     * finds orientation of one point to a line segment
+     * @param a point to check orientation
+     * @param b start of the line segment
+     * @param c end of the line segment
+     * @return 0 if the point lies on the line segment, 1 for clockwise orientation, 2 for counterclockwise orientation
+     */
+    public static int checkOrientation(Vector2D a, Vector2D b, Vector2D c){
+        Vector2D intersectB = subtractVector(a, b);
+        Vector2D intersectC = subtractVector(a, c);
+        double orientation = crossProduct(intersectB, intersectC);
+
+        if (orientation == 0) return 0;
+        else if (orientation > 0) return 1; //clockwise
+        else return 2;
+    }
+
+
+    /**
+     * calculates cross product of two vectors
+     * @param a
+     * @param b
+     * @return
+     */
+    private static double crossProduct(Vector2D a, Vector2D b){
+        return (a.getX()*b.getY()) - (a.getY()* b.getX());
+    }
+
+    /**
+     * subtracts vector b from vector a
+     * @param a
+     * @param b
+     * @return
+     */
+    private static Vector2D subtractVector(Vector2D a, Vector2D b){
+        return new Vector2D(b.getX()-a.getX(), b.getY()-a.getY());
+    }
 
     /**
      * Getter for x-coordinate.

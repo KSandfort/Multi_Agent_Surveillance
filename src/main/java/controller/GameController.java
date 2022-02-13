@@ -1,5 +1,6 @@
 package controller;
 
+import Enities.Entity;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
@@ -33,7 +34,8 @@ public class GameController {
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
         for(MapItem item : items) {
-            item.update();
+            item.update(map.getStaticItems());
+            item.update(map.getSolidBodies());
         }
     }
 

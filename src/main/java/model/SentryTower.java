@@ -4,18 +4,29 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class TargetArea extends Area{
-
-    public TargetArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
+/**
+ * this area increases the visual range an angle of an entity
+ */
+public class SentryTower extends Area{
+    public SentryTower(double xFrom, double yFrom, double xTo, double yTo) {
+        super(xFrom, yFrom, xTo, yTo);
+        setAreaFovAngle(getAreaFovAngle()*1.5);
+        setAreaFovDepth(getAreaFovDepth()*1.5);
     }
 
-    public boolean insideTargetArea(Vector2D coordinates){
-        return isInsideArea(coordinates);
+    public SentryTower(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
+        super(pos1, pos2, pos3, pos4);
+        setAreaFovAngle(getAreaFovAngle()*1.5);
+        setAreaFovDepth(getAreaFovDepth()*1.5);
+    }
+
+    public SentryTower(Vector2D[] pos) throws Exception {
+        super(pos);
+        setAreaFovAngle(getAreaFovAngle()*1.5);
+        setAreaFovDepth(getAreaFovDepth()*1.5);
     }
 
     @Override
@@ -30,11 +41,15 @@ public class TargetArea extends Area{
                     (cornerPoints[i].getY() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getY() * sf) + offset);
-            line.setStroke(Color.web("#FF124d", 0.2));
+            line.setStroke(Color.web("#5C5F61", 1));
             line.setStrokeWidth(4);
             components.add(line);
         }
         return components;
     }
 
+    @Override
+    public boolean isSolidBody() {
+        return true;
+    }
 }

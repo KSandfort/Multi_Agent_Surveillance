@@ -8,6 +8,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
+
 public class SpawnArea extends Area{
 
     public SpawnArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
