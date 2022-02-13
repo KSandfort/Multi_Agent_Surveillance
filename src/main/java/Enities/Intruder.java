@@ -1,5 +1,7 @@
 package Enities;
 
+import agents.AbstractAgent;
+import agents.GuardRemote;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -13,9 +15,13 @@ import java.util.ArrayList;
 public class Intruder extends Entity{
 
     boolean isAlive = true;
+    AbstractAgent agent;
+    static int intruderCount = 0;
 
     public Intruder(double x, double y) {
         super(x, y);
+        intruderCount++;
+        this.ID = intruderCount;
     }
 
     public boolean isAlive(){
@@ -37,7 +43,7 @@ public class Intruder extends Entity{
             circle.setCenterX((getPosition().getX() * sf) + offset);
             circle.setCenterY((getPosition().getY() * sf) + offset);
             circle.setRadius(1 * sf);
-            Text text= new Text("Intruder 1");
+            Text text= new Text("Intruder " + ID);
             text.setX((getPosition().getX() * sf) + offset - 25);
             text.setY((getPosition().getY() * sf) + offset -12);
             Line line= new Line();
@@ -72,4 +78,12 @@ public class Intruder extends Entity{
     public boolean isStaticObject() {
         return false;
     }
+
+    public void setRemote() {
+        this.agent = new GuardRemote();
+        this.agent.setEntityInstance(this); // Agent needs to be able to access the Entity (this class).
+        agent.addControls();
+    }
+
 }
+

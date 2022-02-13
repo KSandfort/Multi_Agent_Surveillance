@@ -47,6 +47,10 @@ public class GameMap {
         addToMap(new Wall(50, 60, 55, 63));
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
+//        movingItems.add(new Intruder(20,20));
+        addGuards(60);
+        addIntruders(70);
+
         addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
         //addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
@@ -65,6 +69,22 @@ public class GameMap {
         }
         if (item.isStaticObject()){
             addToStaticItems(item);
+        }
+    }
+
+    public void addGuards(int numGuards){
+        for (int i = 0; i < numGuards; i++){
+            Guard remoteGuard = new Guard(55, 30);
+            addToMap(remoteGuard);
+            remoteGuard.setRemote();
+        }
+    }
+
+    public void addIntruders(int numIntruders){
+        for (int i = 0; i < numIntruders; i++){
+            Intruder remoteIntruder = new Intruder(55, 30);
+            addToMap(remoteIntruder);
+            remoteIntruder.setRemote();
         }
     }
 
