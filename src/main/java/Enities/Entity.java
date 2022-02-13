@@ -39,9 +39,15 @@ public abstract class Entity extends MapItem {
      * Gives the Entity a new position, based on the direction the Entity is looking at and the
      * current velocity.
      */
-    public void update() {
+    public void update(ArrayList<MapItem> items) {
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
         direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
+        for(MapItem item : items) {
+            if (((Area) item).isAgentInsideArea(this)){
+                Area areaItem = (Area) item;
+                areaItem.onAgentCollision(this);
+            }
+        }
     }
 
     public Vector2D getDirection() {
@@ -58,6 +64,22 @@ public abstract class Entity extends MapItem {
 
     public void setVelocity(double velocity) {
         this.velocity = velocity;
+    }
+
+    public double getFovAngle() {
+        return fovAngle;
+    }
+
+    public void setFovAngle(double fovAngle) {
+        this.fovAngle = fovAngle;
+    }
+
+    public double getFovDepth() {
+        return fovDepth;
+    }
+
+    public void setFovDepth(double fovDepth) {
+        this.fovDepth = fovDepth;
     }
 
     public Entity(SpawnArea spawnArea) {

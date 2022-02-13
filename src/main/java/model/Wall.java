@@ -1,6 +1,7 @@
 package model;
 
 import Enities.BaseEntity;
+import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.shape.Line;
@@ -52,21 +53,14 @@ public class Wall extends Area {
     }
 
     @Override
-    public boolean isDynamicObject() {
-        return false;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return true;
-    }
-
-    @Override
-    public boolean isAgentInsideArea(BaseEntity agent) {
-        Vector2D agentPos = agent.getPosition();
-        //the position of the closest point inside the wall relative to the agent
-        return false;
-        //TODO: Implement functionality
+    public void onAgentCollision(Entity agent)
+    {
+        super.onAgentCollision(agent);
+        Vector2D delta = Vector2D.scalar(agent.getDirection(), agent.getVelocity());
+        while (isInsideArea(agent.getPosition())){
+            agent.setPosition(Vector2D.subtract(agent.getPosition(), delta));
+        }
+        agent.setDirection(Vector2D.add(agent.getDirection(), Vector2D.randomVector()));
     }
 
     /*

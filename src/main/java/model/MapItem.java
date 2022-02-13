@@ -15,7 +15,7 @@ public abstract class MapItem {
         this.position = position;
     };
 
-    public void update() {
+    public void update(ArrayList<MapItem> items) {
 
     };
 
