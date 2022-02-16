@@ -79,7 +79,7 @@ public abstract class Area extends MapItem{
     public void onAgentCollision(Entity agent)
     {
         agent.setVelocity(getAreaSpeed());
-        agent.setFovAngle(getAreaFovAngle());
+//        agent.setFovAngle(getAreaFovAngle());
         agent.setFovDepth(getAreaFovDepth());
         //TODO add hearing
     }

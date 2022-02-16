@@ -8,7 +8,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import model.HitBox;
+import model.MapItem;
+import model.Vector2D;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -28,6 +32,32 @@ public class Guard extends Entity {
         super(x, y);
         guardCount++;
         this.ID = guardCount;
+    }
+
+    @Override
+    public boolean isIntruder() {
+        return false;
+    }
+
+    public ArrayList<Intruder> detected(){
+        ArrayList<Intruder> detected = new ArrayList<>();
+        ArrayList<Ray> rays = FOV();
+        for (Ray ray : rays){
+            ArrayList<MapItem> items = this.map.getMovingItems();
+            for (MapItem item : items){
+                Entity intruder = (Entity) item;
+                if (intruder.isIntruder){
+                    HitBox intruderHitBox = intruder.hitBox;
+//                    for (int i = 0; i < intruderHitBox.getCornerPoints().length; i++)
+                }
+            }
+        }
+        return null;
+    }
+
+    public void chase(Vector2D position){
+        Vector2D difference = Vector2D.subtract(position, getPosition());
+        this.direction = difference;
     }
 
     /**
@@ -65,6 +95,7 @@ public class Guard extends Entity {
         for (Ray ray : rays){
             components.add(ray.getComponent());
         }
+        components.addAll(hitBox.getComponents());
         return components;
     }
 
