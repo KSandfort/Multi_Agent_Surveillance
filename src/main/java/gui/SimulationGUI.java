@@ -2,6 +2,7 @@ package gui;
 
 import controller.GameController;
 import gui.sceneLayouts.MainLayout;
+import gui.sceneLayouts.StartLayout;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -17,6 +18,7 @@ public class SimulationGUI extends Application {
 
     // Variables
     int currentStep;
+    StartLayout startLayout;
     MainLayout mainLayout;
     Scene mainScene;
     int simulationDelay;
@@ -39,6 +41,15 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        startLayout = new StartLayout(primaryStage);
+        startLayout.setSimulationInstance(this);
+        mainScene = new Scene(startLayout, 1300, 1000);
+        primaryStage.setTitle("Multi-Agent Simulation");
+        primaryStage.setScene(mainScene);
+        primaryStage.show();
+    }
+
+    public void startSimulationGUI(Stage primaryStage) {
         currentStep = 0;
         simulationDelay = 1;
         mainLayout = new MainLayout();
