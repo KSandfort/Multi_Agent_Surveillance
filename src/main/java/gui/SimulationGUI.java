@@ -41,6 +41,13 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        startTitleScreenGUI(primaryStage);
+    }
+
+    public void startTitleScreenGUI(Stage primaryStage) {
+        if (mainLayout != null)
+            mainLayout = null;
+
         startLayout = new StartLayout(primaryStage);
         startLayout.setSimulationInstance(this);
         mainScene = new Scene(startLayout, 1300, 1000);
@@ -49,14 +56,24 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
-    public void startSimulationGUI(Stage primaryStage) {
+    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
+        if (startLayout != null)
+            startLayout = null;
+
         currentStep = 0;
         simulationDelay = 1;
-        mainLayout = new MainLayout();
+        mainLayout = new MainLayout(primaryStage);
         mainLayout.setSimulationInstance(this);
         mainScene = new Scene(mainLayout, 1300, 1000);
+
+        GameController.amountOfGuards = guardAmount;
+        GameController.amountOfIntruders = intruderAmount;
+
         this.setController(new GameController(this));
         this.controller.drawFixedItems(mainLayout);
+
+
+
         // Timeline Animation
         this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
