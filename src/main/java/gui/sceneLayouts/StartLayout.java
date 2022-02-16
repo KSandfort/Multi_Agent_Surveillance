@@ -86,9 +86,6 @@ public class StartLayout extends BorderPane {
         projectLabel = new Label("Project 2-2: Group 3");
         infoBox.getChildren().setAll(projectLabel);
 
-        projectLabel = new Label("Current Step: 0");
-        infoBox.getChildren().setAll(projectLabel);
-
         this.setTop(infoBox);
 
         // Controls - Bottom
@@ -110,7 +107,6 @@ public class StartLayout extends BorderPane {
 
                     dialogVbox.setPadding(new Insets(10, 50, 50, 50));
                     dialogVbox.setSpacing(5);
-
 
                     map = new ComboBox(mapsList);
                     map.getSelectionModel().selectFirst();
