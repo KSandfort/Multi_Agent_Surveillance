@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 /**
  * This class represents the main layout, that contains a visual
@@ -22,10 +23,13 @@ public class MainLayout extends BorderPane {
     Label stepCountLabel;
     Button playPauseButton;
     Button stepButton;
+    Button returnToStartButton;
     Slider simSpeedSlider;
     Label speedLabel;
     boolean isPlaying;
     public static int yOffset = 50;
+
+    Stage primaryStage;
 
     public Circle circle;
     public int circleX = 20;
@@ -33,8 +37,9 @@ public class MainLayout extends BorderPane {
     /**
      * Constructor
      */
-    public MainLayout() {
+    public MainLayout(Stage primaryStage) {
         this.setStyle("-fx-font: 12px 'Verdana';");
+        this.primaryStage = primaryStage;
         isPlaying = false;
         initComponents();
     }
@@ -87,7 +92,13 @@ public class MainLayout extends BorderPane {
         simSpeedSlider.setMax(1000);
         speedLabel = new Label("Simulation Speed:");
 
-        controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider);
+        returnToStartButton = new Button("Return to start");
+        returnToStartButton.setOnAction(e -> {
+           // simulationGUI.startTitleScreenGUI(primaryStage);
+            System.out.println("Todo...");
+        });
+
+        controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider, returnToStartButton);
         this.setBottom(controlsContainer);
     }
 
