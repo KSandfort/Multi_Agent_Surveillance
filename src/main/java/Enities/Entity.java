@@ -52,6 +52,7 @@ public abstract class Entity extends MapItem {
         prevPos = getPosition();
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
         direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
+        direction.normalize();
         hitBox.transform(this);
         for(MapItem item : items) {
             if (((Area) item).isAgentInsideArea(this)){
