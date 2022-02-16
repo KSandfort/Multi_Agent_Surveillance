@@ -54,7 +54,7 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
-    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
+    public void startSimulationGUI(Stage primaryStage) {
         currentStep = 0;
         simulationDelay = 1;
         mainLayout = new MainLayout(primaryStage);
