@@ -16,8 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 /**
@@ -81,8 +82,13 @@ public class StartLayout extends BorderPane {
         infoBox.setSpacing(20);
         infoBox.setAlignment(Pos.CENTER);
         infoBox.setPrefHeight(50);
+
         projectLabel = new Label("Project 2-2: Group 3");
         infoBox.getChildren().setAll(projectLabel);
+
+        projectLabel = new Label("Current Step: 0");
+        infoBox.getChildren().setAll(projectLabel);
+
         this.setTop(infoBox);
 
         // Controls - Bottom
@@ -91,6 +97,7 @@ public class StartLayout extends BorderPane {
         controlsContainer.setAlignment(Pos.CENTER);
         controlsContainer.setPrefHeight(yOffset);
         startTestMap = new Button("Start test map");
+
         startTestMap.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -129,7 +136,6 @@ public class StartLayout extends BorderPane {
                 }
             });
             // simulationGUI.startSimulationGUI(primaryStage);
-
 
         controlsContainer.getChildren().addAll(startTestMap);
         this.setBottom(controlsContainer);
