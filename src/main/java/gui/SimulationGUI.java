@@ -116,7 +116,6 @@ public class SimulationGUI extends Application {
         this.controller.update();
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         this.controller.drawMovingItems(mainLayout);
-//        System.out.println(controller.getMap().getMovingItems().size());
         currentStep++;
     }
 
