@@ -1,5 +1,7 @@
 package Enities;
 
+import com.sun.javafx.scene.text.TextLayout;
+import javafx.scene.Node;
 import model.*;
 
 import java.util.ArrayList;
@@ -20,15 +22,21 @@ public abstract class Entity extends MapItem {
     boolean isSprinting = true;
     ArrayList<Ray> fov;
     double turnSpeed;//rotation in degrees/sec
-    double radius;//width of the entity
+    public double radius = 1;//width of the entity
     int ID;
-
+    HitBox hitBox;
     protected double velocity;
 
     public Entity(double x, double y) {
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
         velocity = 0;
+        Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));
+        Vector2D c2 = Vector2D.add(getPosition(), new Vector2D(radius,-radius));
+        Vector2D c3 = Vector2D.add(getPosition(), new Vector2D(-radius,radius));
+        Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
+        hitBox = new HitBox(c1,c2,c3,c4);
+
     }
 
     public void setMap(GameMap map){
@@ -42,9 +50,11 @@ public abstract class Entity extends MapItem {
     public void update(ArrayList<MapItem> items) {
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
         direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
+        hitBox.transform(this);
         for(MapItem item : items) {
             if (((Area) item).isAgentInsideArea(this)){
                 Area areaItem = (Area) item;
+//                this.setFovDepth(2);
                 areaItem.onAgentCollision(this);
             }
         }
@@ -92,6 +102,8 @@ public abstract class Entity extends MapItem {
         double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
          */
     }
+
+    public abstract boolean isIntruder();
 
     /**
      * Creates a field of view for an entity.

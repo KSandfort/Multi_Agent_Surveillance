@@ -1,6 +1,5 @@
 package model;
 
-import Enities.BaseEntity;
 import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;

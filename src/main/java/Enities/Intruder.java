@@ -24,6 +24,11 @@ public class Intruder extends Entity{
         this.ID = intruderCount;
     }
 
+    @Override
+    public boolean isIntruder() {
+        return true;
+    }
+
     public boolean isAlive(){
         return isAlive;
     }
@@ -55,10 +60,11 @@ public class Intruder extends Entity{
             line.setStroke(Color.web("#000099", 1));
             components.add(text);
             components.add(circle);
-            ArrayList<Ray> rays = this.FOV();
+            ArrayList<Ray> rays = FOV();
             for (Ray ray : rays){
                 components.add(ray.getComponent());
             }
+            components.addAll(hitBox.getComponents());
             return components;
         }
         return null;

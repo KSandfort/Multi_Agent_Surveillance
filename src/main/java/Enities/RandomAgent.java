@@ -32,4 +32,9 @@ public class RandomAgent extends Entity{
     public boolean isStaticObject() {
         return false;
     }
+
+    @Override
+    public boolean isIntruder() {
+        return false;
+    }
 }
