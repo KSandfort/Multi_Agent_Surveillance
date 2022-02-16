@@ -22,12 +22,17 @@ public class GameController {
     int updatesPerSecond;
     int step;
 
+    // TEMPORARY - for testing purpose of the title screen
+    static public int amountOfGuards = 1;
+    static public int amountOfIntruders = 1;
+
     public GameController(SimulationGUI gui) {
         this.simulationGUI = gui;
         GameMap map = new GameMap(this);
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
+        this.map.populateMap(amountOfGuards, amountOfIntruders);
     }
 
     // do the update magic...
