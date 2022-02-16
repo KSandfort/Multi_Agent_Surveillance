@@ -25,6 +25,7 @@ public abstract class Entity extends MapItem {
     public double radius = 1;//width of the entity
     int ID;
     HitBox hitBox;
+    Vector2D prevPos;
     protected double velocity;
 
     public Entity(double x, double y) {
@@ -48,6 +49,7 @@ public abstract class Entity extends MapItem {
      * current velocity.
      */
     public void update(ArrayList<MapItem> items) {
+        prevPos = getPosition();
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
         direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
         hitBox.transform(this);
@@ -59,6 +61,10 @@ public abstract class Entity extends MapItem {
             }
         }
     }
+
+    public Vector2D getPrevPos() { return prevPos; }
+
+    public double getRadius() { return radius; }
 
     public Vector2D getDirection() {
         return direction;
