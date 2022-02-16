@@ -45,8 +45,6 @@ public class SimulationGUI extends Application {
     }
 
     public void startTitleScreenGUI(Stage primaryStage) {
-        if (mainLayout != null)
-            mainLayout = null;
 
         startLayout = new StartLayout(primaryStage);
         startLayout.setSimulationInstance(this);
@@ -57,9 +55,6 @@ public class SimulationGUI extends Application {
     }
 
     public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
-        if (startLayout != null)
-            startLayout = null;
-
         currentStep = 0;
         simulationDelay = 1;
         mainLayout = new MainLayout(primaryStage);
