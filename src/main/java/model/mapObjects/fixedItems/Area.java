@@ -1,16 +1,18 @@
-package model;
+package model.mapObjects.fixedItems;
 
-import Enities.Entity;
+import model.mapObjects.MapItem;
+import model.mapObjects.enities.Entity;
+import model.Vector2D;
 
 /**
  * Abstract class for any area placed on a map.
  */
-public abstract class Area extends MapItem{
+public abstract class Area extends MapItem {
 
     protected Vector2D[] cornerPoints = new Vector2D[4];
     private double areaFovDepth = 60;
     private double areaFovAngle = 30;
-    private double areaSpeed = 0.01;
+    private double areaSpeed = 0.001;
     private double hearingFactor = 1;
 
     public Area(double xFrom, double yFrom, double xTo, double yTo) {
@@ -92,11 +94,6 @@ public abstract class Area extends MapItem{
     @Override
     public boolean isDynamicObject() {
         return false;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return true;
     }
 
     public double getAreaFovDepth() {

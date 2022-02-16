@@ -1,14 +1,15 @@
-package model;
+package model.mapObjects.fixedItems;
 
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
+import model.Vector2D;
+import model.mapObjects.fixedItems.Area;
 
 import java.util.ArrayList;
 
-public class TargetArea extends Area{
+public class TargetArea extends Area {
 
     public TargetArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);

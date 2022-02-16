@@ -1,11 +1,13 @@
-package model;
+package model.mapObjects.fixedItems;
 
-import Enities.Entity;
+import model.mapObjects.enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import model.Vector2D;
+import model.mapObjects.fixedItems.Area;
 
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  * target is the area that the agent will be teleported to
  * agent will face in new 'direction'
  */
-public class Teleport extends Area{
+public class Teleport extends Area {
     private Vector2D target;
     private Vector2D direction;
 

@@ -1,7 +1,6 @@
-package Enities;
+package model.mapObjects.enities;
 
 import javafx.scene.Node;
-import model.Vector2D;
 
 import java.util.ArrayList;
 
@@ -28,8 +27,4 @@ public class RandomAgent extends Entity{
         return true;
     }
 
-    @Override
-    public boolean isStaticObject() {
-        return false;
-    }
 }

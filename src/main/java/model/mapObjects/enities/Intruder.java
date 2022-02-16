@@ -1,14 +1,13 @@
-package Enities;
+package model.mapObjects.enities;
 
-import agents.AbstractAgent;
-import agents.GuardRemote;
+import controller.agents.AbstractAgent;
+import controller.agents.GuardRemote;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import model.GameMap;
 
 import java.util.ArrayList;
 
@@ -72,11 +71,6 @@ public class Intruder extends Entity{
     @Override
     public boolean isDynamicObject() {
         return true;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return false;
     }
 
     public void setRemote() {

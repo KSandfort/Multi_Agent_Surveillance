@@ -1,4 +1,4 @@
-package Enities;
+package model.mapObjects.enities;
 
 import gui.SimulationGUI;
 import javafx.scene.Node;

@@ -1,10 +1,12 @@
-package model;
+package model.mapObjects.fixedItems;
 
-import Enities.BaseEntity;
-import Enities.Entity;
+import model.mapObjects.enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.shape.Line;
+import model.Vector2D;
+import model.mapObjects.fixedItems.Area;
+
 import java.util.ArrayList;
 
 /**

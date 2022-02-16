@@ -1,4 +1,4 @@
-package agents;
+package controller.agents;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -18,7 +18,7 @@ public class GuardRemote extends AbstractAgent {
         // Get the remote agent
         this.entityInstance.getMap().getGameController().getSimulationGUI().getMainScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if(key.getCode()== KeyCode.W) {
-                entityInstance.setVelocity(0.01);
+                entityInstance.setVelocity(0.001);
             }
             if(key.getCode()== KeyCode.S) {
                 entityInstance.setVelocity(0);

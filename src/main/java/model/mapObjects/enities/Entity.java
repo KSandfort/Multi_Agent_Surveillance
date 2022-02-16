@@ -1,6 +1,10 @@
-package Enities;
+package model.mapObjects.enities;
 
 import model.*;
+import model.GameMap;
+import model.mapObjects.fixedItems.Area;
+import model.mapObjects.MapItem;
+import model.mapObjects.fixedItems.SpawnArea;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -9,10 +13,11 @@ import java.util.Random;
  * Abstract class of an entity on the map.
  */
 public abstract class Entity extends MapItem {
+
+    // Variables
     double explorationFactor = 0.2;
     double fovAngle = 30;
     double fovDepth = 20;
-    //Vector2D fovDirection;
     Vector2D direction;
     boolean isIntruder;
     double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
@@ -22,13 +27,32 @@ public abstract class Entity extends MapItem {
     double turnSpeed;//rotation in degrees/sec
     double radius;//width of the entity
     int ID;
+    private double velocity;
 
-    protected double velocity;
-
+    /**
+     * Constructor
+     * @param x x-Position
+     * @param y y-Position
+     */
     public Entity(double x, double y) {
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
-        velocity = 0;
+        velocity = 0.01;
+    }
+
+    /**
+     * Constructor
+     * @param spawnArea area where the entity can spawn in
+     */
+    public Entity(SpawnArea spawnArea) {
+        Random rand = new Random();
+
+        //TODO: Place entity in spawn area. Since it is no perfect rectangle, we need to choose a different
+        // algorithm.
+        /*
+        double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
+        double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
+         */
     }
 
     public void setMap(GameMap map){
@@ -41,7 +65,7 @@ public abstract class Entity extends MapItem {
      */
     public void update(ArrayList<MapItem> items) {
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
-        direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
+        //direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
         for(MapItem item : items) {
             if (((Area) item).isAgentInsideArea(this)){
                 Area areaItem = (Area) item;
@@ -82,17 +106,6 @@ public abstract class Entity extends MapItem {
         this.fovDepth = fovDepth;
     }
 
-    public Entity(SpawnArea spawnArea) {
-        Random rand = new Random();
-
-        //TODO: Place entity in spawn area. Since it is no perfect rectangle, we need to choose a different
-        // algorithm.
-        /*
-        double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
-        double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
-         */
-    }
-
     /**
      * Creates a field of view for an entity.
      * @return
@@ -124,5 +137,10 @@ public abstract class Entity extends MapItem {
             rays.add(ray);
         }
         return rays;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return true;
     }
 }

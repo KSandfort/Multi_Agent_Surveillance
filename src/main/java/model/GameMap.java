@@ -1,8 +1,14 @@
 package model;
 
-import Enities.Guard;
-import Enities.Intruder;
+import model.mapObjects.enities.Guard;
+import model.mapObjects.enities.Intruder;
 import controller.GameController;
+import model.mapObjects.*;
+import model.mapObjects.fixedItems.ShadedArea;
+import model.mapObjects.fixedItems.SpawnArea;
+import model.mapObjects.fixedItems.Teleport;
+import model.mapObjects.fixedItems.Wall;
+
 import java.util.ArrayList;
 
 public class GameMap {
@@ -48,8 +54,8 @@ public class GameMap {
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
 //        movingItems.add(new Intruder(20,20));
-        addGuards(60);
-        addIntruders(70);
+        addGuards(6);
+        addIntruders(7);
 
         addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
@@ -64,10 +70,10 @@ public class GameMap {
         if (item.isDynamicObject()){
             addToDynamicItems(item);
         }
-        if (item.isSolidBody()){
+        else if (item.isSolidBody()){
             addToSolidItems(item);
         }
-        if (item.isStaticObject()){
+        else {
             addToStaticItems(item);
         }
     }
@@ -76,7 +82,7 @@ public class GameMap {
         for (int i = 0; i < numGuards; i++){
             Guard remoteGuard = new Guard(55, 30);
             addToMap(remoteGuard);
-            remoteGuard.setRemote();
+            // remoteGuard.setRemote();
         }
     }
 

@@ -1,7 +1,7 @@
-package Enities;
+package model.mapObjects.enities;
 
-import agents.AbstractAgent;
-import agents.GuardRemote;
+import controller.agents.AbstractAgent;
+import controller.agents.GuardRemote;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -76,10 +76,5 @@ public class Guard extends Entity {
     @Override
     public boolean isDynamicObject() {
         return true;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return false;
     }
 }

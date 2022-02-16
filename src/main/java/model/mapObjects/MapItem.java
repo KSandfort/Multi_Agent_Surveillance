@@ -1,11 +1,16 @@
-package model;
+package model.mapObjects;
 
 import javafx.scene.Node;
+import model.GameMap;
+import model.Vector2D;
 
 import java.util.ArrayList;
 
+/**
+ * Represents every item that can be placed on a map.
+ */
 public abstract class MapItem {
-    Vector2D position;
+    protected Vector2D position;
     protected GameMap map;
 
     public Vector2D getPosition(){
@@ -16,7 +21,6 @@ public abstract class MapItem {
     };
 
     public void update(ArrayList<MapItem> items) {
-
     };
 
     public void setMap(GameMap map){
@@ -30,8 +34,5 @@ public abstract class MapItem {
     public abstract boolean isSolidBody();
 
     public abstract boolean isDynamicObject();
-
-    public abstract boolean isStaticObject();
-
 
 }

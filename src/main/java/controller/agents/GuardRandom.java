@@ -1,4 +1,4 @@
-package agents;
+package controller.agents;
 
 /**
  * A guard that moves around randomly.

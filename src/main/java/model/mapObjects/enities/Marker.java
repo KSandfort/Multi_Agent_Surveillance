@@ -1,7 +1,8 @@
-package Enities;
+package model.mapObjects.enities;
 
 import javafx.scene.Node;
 import model.*;
+import model.mapObjects.MapItem;
 
 import java.util.ArrayList;
 
@@ -34,11 +35,6 @@ public class Marker extends MapItem {
     @Override
     public boolean isDynamicObject() {
         return true;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return false;
     }
 
 }

@@ -1,16 +1,18 @@
-package model;
+package model.mapObjects.fixedItems;
 
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import model.Vector2D;
+import model.mapObjects.fixedItems.Area;
 
 import java.util.ArrayList;
 
 /**
  * this area decreases the visual range an angle of an entity
  */
-public class ShadedArea extends Area{
+public class ShadedArea extends Area {
     public ShadedArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaFovAngle(getAreaFovAngle()*0.5);

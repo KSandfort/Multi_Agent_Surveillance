@@ -1,16 +1,17 @@
-package model;
+package model.mapObjects.fixedItems;
 
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import model.Vector2D;
 
 import java.util.ArrayList;
 
 /**
  * this area increases the visual range an angle of an entity
  */
-public class SentryTower extends Area{
+public class SentryTower extends Area {
     public SentryTower(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaFovAngle(getAreaFovAngle()*1.5);

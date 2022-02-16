@@ -1,6 +1,6 @@
-package agents;
+package controller.agents;
 
-import Enities.Entity;
+import model.mapObjects.enities.Entity;
 
 /**
  * This is the abstract class of any agent.

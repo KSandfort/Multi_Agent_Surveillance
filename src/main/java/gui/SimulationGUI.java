@@ -61,6 +61,16 @@ public class SimulationGUI extends Application {
     }
 
     /**
+     * Updates the GUI one simulation step.
+     */
+    public void updateGUI1step() {
+        this.controller.update();
+        mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
+        this.controller.drawMovingItems(mainLayout);
+        currentStep++;
+    }
+
+    /**
      * Starts the simulation.
      */
     public void startSimulation() {
@@ -79,16 +89,6 @@ public class SimulationGUI extends Application {
      */
     public void pauseSimulation() {
         this.timeline.pause();
-    }
-
-    /**
-     * Updates the GUI one simulation step.
-     */
-    public void updateGUI1step() {
-        this.controller.update();
-        mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
-        this.controller.drawMovingItems(mainLayout);
-        currentStep++;
     }
 
     public Scene getMainScene() {

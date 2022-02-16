@@ -1,11 +1,10 @@
 package controller;
 
-import Enities.Entity;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
 import model.GameMap;
-import model.MapItem;
+import model.mapObjects.MapItem;
 
 import java.util.ArrayList;
 
@@ -60,12 +59,14 @@ public class GameController {
 
 
     public void drawMovingItems(MainLayout layout){
+        layout.getCanvas().getChildren().clear();
+        drawFixedItems(layout);
         ArrayList<Node> nodes = new ArrayList<>();
         ArrayList<MapItem> items = map.getMovingItems();
         for (MapItem item : items){
             for (Node n : item.getComponents()) {
                 if (simulationGUI.getCurrentStep() != 0) {
-                    layout.getCanvas().getChildren().remove(layout.getCanvas().getChildren().size() - 1); // Remove old node
+                    //layout.getCanvas().getChildren().remove(layout.getCanvas().getChildren().size() - 1); // Remove old node
                 }
                 nodes.add(n);
             }
