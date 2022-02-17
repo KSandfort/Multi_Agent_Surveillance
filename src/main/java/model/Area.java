@@ -8,9 +8,9 @@ import Enities.Entity;
 public abstract class Area extends MapItem{
 
     protected Vector2D[] cornerPoints = new Vector2D[4];
-    private double areaFovDepth = 60;
+    private double areaFovDepth = 20;
     private double areaFovAngle = 30;
-    private double areaSpeed = 0.01;
+    private double areaSpeed = 0.1;
     private double hearingFactor = 1;
 
     public Area(double xFrom, double yFrom, double xTo, double yTo) {
@@ -79,7 +79,7 @@ public abstract class Area extends MapItem{
     public void onAgentCollision(Entity agent)
     {
         agent.setVelocity(getAreaSpeed());
-//        agent.setFovAngle(getAreaFovAngle());
+        agent.setFovAngle(getAreaFovAngle());
         agent.setFovDepth(getAreaFovDepth());
         //TODO add hearing
     }
@@ -95,7 +95,7 @@ public abstract class Area extends MapItem{
     }
 
     @Override
-    public boolean isStaticObject() {
+    public boolean isTransparentObject() {
         return true;
     }
 

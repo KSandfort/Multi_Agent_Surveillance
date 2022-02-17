@@ -48,16 +48,22 @@ public abstract class Entity extends MapItem {
      * current velocity.
      */
     public void update(ArrayList<MapItem> items) {
+        boolean inSpecialArea = false;
         this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
         direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
+        direction.normalize();
         hitBox.transform(this);
         for(MapItem item : items) {
             if (((Area) item).isAgentInsideArea(this)){
                 Area areaItem = (Area) item;
-//                this.setFovDepth(2);
                 areaItem.onAgentCollision(this);
+                inSpecialArea = true;
             }
         }
+        if(!inSpecialArea){
+            this.resetEntityParam();
+        }
+
     }
 
     public Vector2D getDirection() {
@@ -90,6 +96,12 @@ public abstract class Entity extends MapItem {
 
     public void setFovDepth(double fovDepth) {
         this.fovDepth = fovDepth;
+    }
+
+    public void resetEntityParam(){
+        this.setVelocity(0.1);
+        this.setFovAngle(30);
+        this.setFovDepth(20);
     }
 
     public Entity(SpawnArea spawnArea) {
@@ -136,5 +148,20 @@ public abstract class Entity extends MapItem {
             rays.add(ray);
         }
         return rays;
+    }
+
+    @Override
+    public boolean isSolidBody() {
+        return false;
+    }
+
+    @Override
+    public boolean isDynamicObject() {
+        return true;
+    }
+
+    @Override
+    public boolean isTransparentObject() {
+        return false;
     }
 }
