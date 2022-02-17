@@ -35,7 +35,6 @@ public class GameController {
         ArrayList<MapItem> items = map.getMovingItems();
         for(MapItem item : items) {
             item.update(map.getStaticItems());
-            item.update(map.getSolidBodies());
         }
     }
 

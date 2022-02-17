@@ -31,7 +31,6 @@ public abstract class MapItem {
 
     public abstract boolean isDynamicObject();
 
-    public abstract boolean isStaticObject();
-
+    public abstract boolean isTransparentObject();
 
 }

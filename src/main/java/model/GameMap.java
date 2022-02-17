@@ -13,12 +13,11 @@ public class GameMap {
     private ArrayList<MapItem> staticItems = new ArrayList<>();
     private ArrayList<MapItem> movingItems = new ArrayList<>();
     private ArrayList<MapItem> solidBodies = new ArrayList<>();
+    private ArrayList<MapItem> transparentItems = new ArrayList<>();
 
 /* private double scaling;
      private double timeStep;
      private int gameMode;
-     int[] teleport;
-     List<int[]> shadedAreas;
      int[] texture; */
 
     public GameMap(GameController controller) {
@@ -49,9 +48,9 @@ public class GameMap {
         addToMap(new Wall(60, 10, 75, 50));
 //        movingItems.add(new Intruder(20,20));
 //        addGuards(1);
-        addIntruders(1);
-
-        addToMap(new ShadedArea(40, 20, 10, 40));
+        addIntruders(10);
+        addToMap(new WallWithDoor(40, 20, 10, 40, true));
+        //addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
         //addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
         //addToMap(new Intruder(20,20));
@@ -63,12 +62,14 @@ public class GameMap {
     public void addToMap(MapItem item){
         if (item.isDynamicObject()){
             addToDynamicItems(item);
+        }else{
+            addToStaticItems(item);
         }
         if (item.isSolidBody()){
             addToSolidItems(item);
         }
-        if (item.isStaticObject()){
-            addToStaticItems(item);
+        if (item.isTransparentObject()){
+            addToTransparentItems(item);
         }
     }
 
@@ -88,7 +89,6 @@ public class GameMap {
         }
     }
 
-
     public void addToStaticItems(MapItem item) {
         staticItems.add(item);
         item.setMap(this);
@@ -101,6 +101,11 @@ public class GameMap {
 
     public void addToSolidItems(MapItem item) {
         solidBodies.add(item);
+        item.setMap(this);
+    }
+
+    public void addToTransparentItems(MapItem item) {
+        transparentItems.add(item);
         item.setMap(this);
     }
 
@@ -155,6 +160,14 @@ public class GameMap {
 
     public void setSolidBodies(ArrayList<MapItem> solidBodies) {
         this.solidBodies = solidBodies;
+    }
+
+    public ArrayList<MapItem> getTransparentItems() {
+        return transparentItems;
+    }
+
+    public void setTransparentItems(ArrayList<MapItem> transparentItems) {
+        this.transparentItems = transparentItems;
     }
 
     public GameController getGameController() {

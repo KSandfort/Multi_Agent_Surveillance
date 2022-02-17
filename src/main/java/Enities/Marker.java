@@ -37,7 +37,7 @@ public class Marker extends MapItem {
     }
 
     @Override
-    public boolean isStaticObject() {
+    public boolean isTransparentObject() {
         return false;
     }
 

@@ -52,6 +52,7 @@ public class Wall extends Area {
     }
 
     @Override
+
     public boolean isAgentInsideArea(Entity agent) {
         Vector2D pos = agent.getPosition();
 
@@ -102,6 +103,10 @@ public class Wall extends Area {
             agent.setPosition(Vector2D.add(pos, push));
             return true;
         }
+    }
+
+    public boolean isTransparentObject() {
+        return false;
     }
 
     @Override
