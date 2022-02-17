@@ -9,24 +9,28 @@ import java.util.ArrayList;
 
 /**
  * this area increases the visual range an angle of an entity
+ * decreases the velocity of the agents to simulate climbing the tower
  */
 public class SentryTower extends Area{
     public SentryTower(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaFovAngle(getAreaFovAngle()*1.5);
         setAreaFovDepth(getAreaFovDepth()*1.5);
+        setAreaSpeed(getAreaSpeed()*0.5);
     }
 
     public SentryTower(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
         setAreaFovAngle(getAreaFovAngle()*1.5);
         setAreaFovDepth(getAreaFovDepth()*1.5);
+        setAreaSpeed(getAreaSpeed()*0.5);
     }
 
     public SentryTower(Vector2D[] pos) throws Exception {
         super(pos);
         setAreaFovAngle(getAreaFovAngle()*1.5);
         setAreaFovDepth(getAreaFovDepth()*1.5);
+        setAreaSpeed(getAreaSpeed()*0.5);
     }
 
     @Override
@@ -51,5 +55,10 @@ public class SentryTower extends Area{
     @Override
     public boolean isSolidBody() {
         return true;
+    }
+
+    @Override
+    public boolean isTransparentObject() {
+        return false;
     }
 }

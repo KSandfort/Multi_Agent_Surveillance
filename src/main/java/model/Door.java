@@ -8,16 +8,23 @@ import javafx.scene.shape.Line;
 import java.util.ArrayList;
 
 /**
- * area that the entities are placed in at the start of the game
+ * decreases the agents velocity to simulate the time it takes to go through the door
+ * TODO makes a sound when entering
  */
-public class SpawnArea extends Area{
-
-    public SpawnArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
+public class Door extends Area{
+    public Door(double xFrom, double yFrom, double xTo, double yTo) {
+        super(xFrom, yFrom, xTo, yTo);
+        setAreaSpeed(getAreaSpeed()*0.7);
     }
 
-    public SpawnArea(double xFrom, double yFrom, double xTo, double yTo) {
-        super(xFrom, yFrom, xTo, yTo);
+    public Door(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
+        super(pos1, pos2, pos3, pos4);
+        setAreaSpeed(getAreaSpeed()*0.7);
+    }
+
+    public Door(Vector2D[] pos) throws Exception {
+        super(pos);
+        setAreaSpeed(getAreaSpeed()*0.7);
     }
 
     @Override
@@ -32,21 +39,10 @@ public class SpawnArea extends Area{
                     (cornerPoints[i].getY() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getY() * sf) + offset);
-            line.setStroke(Color.web("#0000FF", 0.2));
-            line.setStrokeWidth(4);
+            line.setStroke(Color.web("#b8ad51", 1));
+            line.setStrokeWidth(2);
             components.add(line);
         }
         return components;
     }
-
-    @Override
-    public boolean isSolidBody() {
-        return false;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return false;
-    }
-
 }

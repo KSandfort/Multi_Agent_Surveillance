@@ -8,7 +8,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import model.GameMap;
 
 import java.util.ArrayList;
 
@@ -70,20 +69,6 @@ public class Intruder extends Entity{
         return null;
     }
 
-    @Override
-    public boolean isSolidBody() {
-        return false;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return true;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return false;
-    }
 
     public void setRemote() {
         this.agent = new GuardRemote();

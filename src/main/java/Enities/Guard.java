@@ -12,7 +12,6 @@ import model.HitBox;
 import model.MapItem;
 import model.Vector2D;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -97,20 +96,5 @@ public class Guard extends Entity {
         }
         components.addAll(hitBox.getComponents());
         return components;
-    }
-
-    @Override
-    public boolean isSolidBody() {
-        return false;
-    }
-
-    @Override
-    public boolean isDynamicObject() {
-        return true;
-    }
-
-    @Override
-    public boolean isStaticObject() {
-        return false;
     }
 }

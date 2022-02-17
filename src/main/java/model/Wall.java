@@ -52,6 +52,11 @@ public class Wall extends Area {
     }
 
     @Override
+    public boolean isTransparentObject() {
+        return false;
+    }
+
+    @Override
     public void onAgentCollision(Entity agent)
     {
         super.onAgentCollision(agent);
