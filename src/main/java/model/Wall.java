@@ -52,6 +52,59 @@ public class Wall extends Area {
     }
 
     @Override
+
+    public boolean isAgentInsideArea(Entity agent) {
+        Vector2D pos = agent.getPosition();
+
+        Vector2D dir = null;
+        for (int i = 0; i < cornerPoints.length; i++) {
+            Vector2D c1 = cornerPoints[i];
+            Vector2D c2 = cornerPoints[(i + 1)%4];
+
+            //calculate closest point on edge using vector projection
+            //following the math on https://en.wikipedia.org/wiki/Vector_projection
+            Vector2D a = Vector2D.subtract(pos,c1);
+            Vector2D b = Vector2D.subtract(c2, c1);
+
+            double scalar = Vector2D.dotProduct(a,b) / Vector2D.dotProduct(b,b);
+            Vector2D a1 = Vector2D.scalar(b,scalar);
+            Vector2D a2 = Vector2D.subtract(a,a1);
+
+            if(scalar < 0){a2 = a;}
+            else if(scalar > 1){a2 = Vector2D.subtract(pos,c2);}
+
+            Vector2D delta = a2;
+            double dist = Vector2D.length(delta);
+            if(dist <= agent.getRadius())
+            {
+                if(dir == null)
+                {
+                    dir = delta;
+                }else
+                {
+                    double currDist = Vector2D.length(dir);
+                    if(dist < currDist)
+                    {
+                        dir = delta;
+                    }
+                }
+            }
+        }
+        //assuming collision always happens outside the wall
+        if(dir == null){return false;}
+        if(dir.getX() == 0 && dir.getY() == 0)
+        {
+            agent.setPosition(agent.getPrevPos());
+            return true;
+        }else {
+            double length = Vector2D.length(dir);
+            double diff = agent.getRadius() - length;
+            Vector2D push = Vector2D.scalar(dir, diff / length);
+            agent.setPosition(Vector2D.add(pos, push));
+            return true;
+        }
+    }
+
     public boolean isTransparentObject() {
         return false;
     }
@@ -60,11 +113,6 @@ public class Wall extends Area {
     public void onAgentCollision(Entity agent)
     {
         super.onAgentCollision(agent);
-        Vector2D delta = Vector2D.scalar(agent.getDirection(), agent.getVelocity());
-        while (isInsideArea(agent.getPosition())){
-            agent.setPosition(Vector2D.subtract(agent.getPosition(), delta));
-        }
-        agent.setDirection(Vector2D.add(agent.getDirection(), Vector2D.randomVector()));
     }
 
     /*
