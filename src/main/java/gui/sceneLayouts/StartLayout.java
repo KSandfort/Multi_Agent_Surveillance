@@ -31,7 +31,7 @@ public class StartLayout extends BorderPane {
     SimulationGUI simulationGUI;
     Pane canvas;
     Label projectLabel;
-    Button startTestMap;
+    Button startConfigButton;
     boolean isPlaying;
     public static int yOffset = 50;
 
@@ -93,9 +93,13 @@ public class StartLayout extends BorderPane {
         controlsContainer.setSpacing(20);
         controlsContainer.setAlignment(Pos.CENTER);
         controlsContainer.setPrefHeight(yOffset);
-        startTestMap = new Button("Start test map");
+        startConfigButton = new Button("Start");
 
-        startTestMap.setOnAction(new EventHandler<ActionEvent>() {
+        startConfigButton.setPrefHeight(90);
+        startConfigButton.setPrefWidth(120);
+
+        // Small submenu to configure guards/intruders/other agents
+        startConfigButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     final Stage dialog = new Stage();
@@ -133,8 +137,8 @@ public class StartLayout extends BorderPane {
             });
             // simulationGUI.startSimulationGUI(primaryStage);
 
-        controlsContainer.getChildren().addAll(startTestMap);
-        this.setBottom(controlsContainer);
+        controlsContainer.getChildren().addAll(startConfigButton);
+        this.setCenter(controlsContainer);
     }
 
     public Pane getCanvas() {
