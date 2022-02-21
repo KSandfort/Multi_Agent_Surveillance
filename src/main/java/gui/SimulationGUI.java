@@ -2,6 +2,7 @@ package gui;
 
 import controller.GameController;
 import gui.sceneLayouts.MainLayout;
+import gui.sceneLayouts.StartLayout;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -17,6 +18,7 @@ public class SimulationGUI extends Application {
 
     // Variables
     int currentStep;
+    StartLayout startLayout;
     MainLayout mainLayout;
     Scene mainScene;
     int simulationDelay;
@@ -39,13 +41,36 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        startTitleScreenGUI(primaryStage);
+    }
+
+    // Launches the start screen GUI
+    public void startTitleScreenGUI(Stage primaryStage) {
+
+        startLayout = new StartLayout(primaryStage);
+        startLayout.setSimulationInstance(this);
+        mainScene = new Scene(startLayout, 1300, 1000);
+        primaryStage.setTitle("Multi-Agent Simulation");
+        primaryStage.setScene(mainScene);
+        primaryStage.show();
+    }
+
+    // Launches the actual game GUI (with guard and intruder amount from the start screen)
+    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
         currentStep = 0;
         simulationDelay = 1;
-        mainLayout = new MainLayout();
+        mainLayout = new MainLayout(primaryStage);
         mainLayout.setSimulationInstance(this);
         mainScene = new Scene(mainLayout, 1300, 1000);
+
+        GameController.amountOfGuards = guardAmount;
+        GameController.amountOfIntruders = intruderAmount;
+
         this.setController(new GameController(this));
         this.controller.drawFixedItems(mainLayout);
+
+
+
         // Timeline Animation
         this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
@@ -88,7 +113,6 @@ public class SimulationGUI extends Application {
         this.controller.update();
         mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
         this.controller.drawMovingItems(mainLayout);
-//        System.out.println(controller.getMap().getMovingItems().size());
         currentStep++;
     }
 
