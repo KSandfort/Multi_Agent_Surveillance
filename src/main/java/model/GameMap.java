@@ -46,18 +46,20 @@ public class GameMap {
         addToMap(new Wall(50, 60, 55, 63));
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
-//        movingItems.add(new Intruder(20,20));
-//        addGuards(1);
+        // movingItems.add(new Intruder(20,20));
+        // addGuards(1);
+
         addToMap(new WallWithDoor(40, 20, 10, 40, true));
         //addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
-        //addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
-        //addToMap(new Intruder(20,20));
-//        Guard remoteGuard = new Guard(55, 30);
-//        addToMap(remoteGuard);
-//        remoteGuard.setRemote();
+        // addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
+        // addToMap(new Intruder(20,20));
+        // Guard remoteGuard = new Guard(55, 30);
+        // addToMap(remoteGuard);
+        // remoteGuard.setRemote();
     }
 
+    // Temporary map population method, can be changed once spawn areas are properly implemented
     public void populateMap(int guards, int intruders) {
         addGuards(guards);
         addIntruders(intruders);
@@ -120,10 +122,11 @@ public class GameMap {
         c2 = new Vector2D(sizeX, 0);
         c3 = new Vector2D(sizeX, sizeY);
         c4 = new Vector2D(0, sizeY);
-        solidBodies.add(new Wall(new Vector2D(c1.getX(), c1.getY() - 2), new Vector2D(c2.getX(), c2.getY() - 2), c2, c1)); // Top wall
-        solidBodies.add(new Wall(c2, new Vector2D(c2.getX() + 2, c2.getY()), new Vector2D(c3.getX() + 2, c3.getY()), c3)); // Right wall
-        solidBodies.add(new Wall(c4, c3, new Vector2D(c3.getX(), c3.getY() + 2), new Vector2D(c4.getX(), c4.getY() + 2))); // Bottom wall
-        solidBodies.add(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
+
+        addToMap(new Wall(new Vector2D(c1.getX(), c1.getY() - 2), new Vector2D(c2.getX(), c2.getY() - 2), c2, c1)); // Top wall
+        addToMap(new Wall(c2, new Vector2D(c2.getX() + 2, c2.getY()), new Vector2D(c3.getX() + 2, c3.getY()), c3)); // Right wall
+        addToMap(new Wall(c4, c3, new Vector2D(c3.getX(), c3.getY() + 2), new Vector2D(c4.getX(), c4.getY() + 2))); // Bottom wall
+        addToMap(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
     }
 
     public int getSizeX() {

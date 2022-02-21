@@ -44,6 +44,7 @@ public class SimulationGUI extends Application {
         startTitleScreenGUI(primaryStage);
     }
 
+    // Launches the start screen GUI
     public void startTitleScreenGUI(Stage primaryStage) {
 
         startLayout = new StartLayout(primaryStage);
@@ -54,6 +55,7 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
+    // Launches the actual game GUI (with guard and intruder amount from the start screen)
     public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
         currentStep = 0;
         simulationDelay = 1;
