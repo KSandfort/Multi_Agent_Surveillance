@@ -31,7 +31,7 @@ public class Matrix {
     {
         if(rows != m.rows || columns != m.columns)
         {
-            throw new IllegalArgumentException("Shape of matrices does not match ")
+            throw new IllegalArgumentException("Shape of matrices does not match ");
         }
 
         for (int i = 0; i < rows; i++) {
@@ -54,7 +54,7 @@ public class Matrix {
     {
         if(rows != m.rows || columns != m.columns)
         {
-            throw new IllegalArgumentException("Shape of matrices does not match ")
+            throw new IllegalArgumentException("Shape of matrices does not match ");
         }
 
         for (int i = 0; i < rows; i++) {
@@ -95,7 +95,7 @@ public class Matrix {
     {
         if(rows != m.rows || columns != m.columns)
         {
-            throw new IllegalArgumentException("Shape of matrices does not match ")
+            throw new IllegalArgumentException("Shape of matrices does not match ");
         }
 
         for (int i = 0; i < rows; i++) {
@@ -114,4 +114,32 @@ public class Matrix {
             }
         }
     }
+
+    public Matrix sigmoid()
+    {
+        Matrix output = new Matrix(rows,columns);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++) {
+                output.values[i][j] = 1/(1 + Math.exp(-values[i][j]));
+            }
+        }
+        return output;
+    }
+
+    public Matrix dSigmoid()
+    {
+        Matrix output = sigmoid();
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++) {
+                output.values[i][j] = output.values[i][j] * (1 - output.values[i][j]);
+            }
+        }
+
+        return output;
+    }
 }
+
