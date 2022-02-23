@@ -2,6 +2,7 @@ package model;
 
 import Enities.Entity;
 
+
 /**
  * Abstract class for any area placed on a map.
  */
@@ -130,4 +131,5 @@ public abstract class Area extends MapItem{
     public void setHearingFactor(double hearingFactor) {
         this.hearingFactor = hearingFactor;
     }
+
 }

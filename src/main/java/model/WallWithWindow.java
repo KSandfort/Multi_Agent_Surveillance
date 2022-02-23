@@ -24,5 +24,4 @@ public class WallWithWindow extends WallWithItem{
             setItem(new Window((xFrom - (length/3)), yFrom, xFrom - 2*(length/3), yTo));
         }
     }
-
 }
