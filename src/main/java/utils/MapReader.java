@@ -2,6 +2,8 @@ package utils;
 
 import gui.SimulationGUI;
 import model.GameMap;
+import model.ShadedArea;
+import model.Teleport;
 import model.Wall;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,7 +25,7 @@ public class MapReader {
      */
     public static GameMap readMapFromFile(String path) {
         if (MAP_READER_DEBUG) System.out.println("--- Map Reader Debug: ---");
-        GameMap gameMap = new GameMap(120, 0, new ArrayList<>(), new ArrayList<>());
+        GameMap gameMap = new GameMap(120, 80, new ArrayList<>(), new ArrayList<>());
 
         try {
             File mapFile = new File(path);
@@ -60,11 +62,40 @@ public class MapReader {
                         break;
                     }
                     case "wall": {
-                        gameMap.addToSolidItems(new Wall(
+                        gameMap.addToMap(new Wall(
                                 Double.parseDouble(words[2]),
                                 Double.parseDouble(words[3]),
                                 Double.parseDouble(words[4]),
                                 Double.parseDouble(words[5])));
+                        break;
+                    }
+                    case "teleport": {
+                        double x1 = Double.parseDouble(words[2]);
+                        double y1 = Double.parseDouble(words[3]);
+                        double x2 = Double.parseDouble(words[4]);
+                        double y2 = Double.parseDouble(words[5]);
+                        double xt = Double.parseDouble(words[6]);
+                        double yt = Double.parseDouble(words[2]);
+                        double angle;
+                        Teleport tp = new Teleport(x1, y1, x2, y2, xt, yt, 1, 0);
+                        //TODO: correct angle
+                        gameMap.addToMap(tp);
+                        if (MAP_READER_DEBUG) System.out.println("Teleport added!");
+                        break;
+                    }
+                    case "shaded": {
+                        double x1 = Double.parseDouble(words[2]);
+                        double y1 = Double.parseDouble(words[3]);
+                        double x2 = Double.parseDouble(words[4]);
+                        double y2 = Double.parseDouble(words[5]);
+                        ShadedArea shadedArea = new ShadedArea(x1, y1, x2, y2);
+                        gameMap.addToMap(shadedArea);
+                        if (MAP_READER_DEBUG) System.out.println("Shaded area added!");
+                        break;
+                    }
+                    case "texture": {
+                        //TODO: add after implementing texture area
+                        if (MAP_READER_DEBUG) System.out.println("Texture areas not yet implemented!");
                         break;
                     }
                     default: {
