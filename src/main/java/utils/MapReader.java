@@ -1,0 +1,87 @@
+package utils;
+
+import gui.SimulationGUI;
+import model.GameMap;
+import model.Wall;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+/**
+ * Translates a text file to a map object.
+ */
+public class MapReader {
+
+    // Variables
+    public static final boolean MAP_READER_DEBUG = true;
+
+    /**
+     * Returns a new map based on the properties given by a .txt file
+     * @param path path to input file
+     * @return new map instance
+     */
+    public static GameMap readMapFromFile(String path) {
+        if (MAP_READER_DEBUG) System.out.println("--- Map Reader Debug: ---");
+        GameMap gameMap = new GameMap(120, 0, new ArrayList<>(), new ArrayList<>());
+
+        try {
+            File mapFile = new File(path);
+            Scanner sc = new Scanner(mapFile);
+            while (sc.hasNextLine()) {
+                String currentLine = sc.nextLine();
+                String[] words = currentLine.split(" ");
+                switch (words[0]) {
+                    case "name": {
+                        // TODO: Add name to GameMap
+                        break;
+                    }
+                    case "height": {
+                        gameMap.setSizeY(Integer.parseInt(words[2]));
+                        if (MAP_READER_DEBUG) System.out.println("Height: " + gameMap.getSizeY());
+                        break;
+                    }
+                    case "width": {
+                        gameMap.setSizeX(Integer.parseInt(words[2]));
+                        if (MAP_READER_DEBUG) System.out.println("Width: " + gameMap.getSizeX());
+                        break;
+                    }
+                    case "scaling": {
+                        SimulationGUI.SCALING_FACTOR = 1 / Double.parseDouble(words[2]);
+                        if (MAP_READER_DEBUG) System.out.println("Scaling: " + SimulationGUI.SCALING_FACTOR);
+                        break;
+                    }
+                    case "numGuards": {
+                        gameMap.addGuards(Integer.parseInt(words[2]));
+                        break;
+                    }
+                    case "numIntruders": {
+                        gameMap.addIntruders(Integer.parseInt(words[2]));
+                        break;
+                    }
+                    case "wall": {
+                        gameMap.addToSolidItems(new Wall(
+                                Double.parseDouble(words[2]),
+                                Double.parseDouble(words[3]),
+                                Double.parseDouble(words[4]),
+                                Double.parseDouble(words[5])));
+                        break;
+                    }
+                    default: {
+                        if (MAP_READER_DEBUG) System.out.println("Keyword " + words[0] + " is not defined.");
+                        break;
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot find map file!");
+            e.printStackTrace();
+        }
+        gameMap.createBorderWalls();
+        return gameMap;
+    }
+
+    public static void main(String[] args) {
+        readMapFromFile("src/main/resources/testmap.txt");
+    }
+}
