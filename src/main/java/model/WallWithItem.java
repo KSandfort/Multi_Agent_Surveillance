@@ -5,11 +5,12 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * wall containing a window or door in the middle
  */
-public abstract class WallWithItem extends Area{
+public abstract class WallWithItem extends Wall{
 
     private Wall leftWall;
     private Wall rightWall;
@@ -60,13 +61,31 @@ public abstract class WallWithItem extends Area{
         this.item = item;
     }
 
+    public Wall getLeftWall() {
+        return leftWall;
+    }
+
+    public Wall getRightWall() {
+        return rightWall;
+    }
+
+    public ArrayList<Wall> getWalls(){
+        return new ArrayList<>(Arrays.asList(getLeftWall(), getRightWall()));
+    }
+
     @Override
     public void onAgentCollision(Entity agent) {
         if (item.isAgentInsideArea(agent))
         {
-            item.onAgentCollision(agent);
+            if(leftWall.isAgentInsideArea(agent)){
+                leftWall.onAgentCollision(agent);
+            }else if (rightWall.isAgentInsideArea(agent)){
+                rightWall.onAgentCollision(agent);
+            }else{
+                item.onAgentCollision(agent);
+            }
         }else{
-            leftWall.onAgentCollision(agent);
+            super.onAgentCollision(agent);
         }
     }
 

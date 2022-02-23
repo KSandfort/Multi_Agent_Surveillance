@@ -52,8 +52,12 @@ public class Wall extends Area {
     }
 
     @Override
-
     public boolean isAgentInsideArea(Entity agent) {
+        Vector2D dir = getAgentCollisionDirection(agent);
+        return (super.isAgentInsideArea(agent) || dir != null);
+    }
+
+    public Vector2D getAgentCollisionDirection(Entity agent){
         Vector2D pos = agent.getPosition();
 
         Vector2D dir = null;
@@ -90,19 +94,7 @@ public class Wall extends Area {
                 }
             }
         }
-        //assuming collision always happens outside the wall
-        if(dir == null){return false;}
-        if(dir.getX() == 0 && dir.getY() == 0)
-        {
-            agent.setPosition(agent.getPrevPos());
-            return true;
-        }else {
-            double length = Vector2D.length(dir);
-            double diff = agent.getRadius() - length;
-            Vector2D push = Vector2D.scalar(dir, diff / length);
-            agent.setPosition(Vector2D.add(pos, push));
-            return true;
-        }
+        return dir;
     }
 
     public boolean isTransparentObject() {
@@ -112,7 +104,18 @@ public class Wall extends Area {
     @Override
     public void onAgentCollision(Entity agent)
     {
-        super.onAgentCollision(agent);
+        Vector2D pos = agent.getPosition();
+        Vector2D dir = getAgentCollisionDirection(agent);
+        if (dir == null) return;
+        if(dir.getX() == 0 && dir.getY() == 0)
+        {
+            agent.setPosition(agent.getPrevPos());
+        }else {
+            double length = Vector2D.length(dir);
+            double diff = agent.getRadius() - length;
+            Vector2D push = Vector2D.scalar(dir, diff / length);
+            agent.setPosition(Vector2D.add(pos, push));
+        }
     }
 
     /*

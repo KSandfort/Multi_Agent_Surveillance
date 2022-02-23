@@ -24,5 +24,4 @@ public class WallWithDoor extends WallWithItem{
             setItem(new Door((xFrom - (length/3)), yFrom, xFrom - 2*(length/3), yTo));
         }
     }
-
 }

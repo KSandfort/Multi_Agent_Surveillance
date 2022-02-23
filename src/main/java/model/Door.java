@@ -1,5 +1,6 @@
 package model;
 
+import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * decreases the agents velocity to simulate the time it takes to go through the door
  * TODO makes a sound when entering
  */
-public class Door extends Area{
+public class Door extends Wall{
     public Door(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaSpeed(getAreaSpeed()*0.7);
@@ -19,11 +20,6 @@ public class Door extends Area{
 
     public Door(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setAreaSpeed(getAreaSpeed()*0.7);
-    }
-
-    public Door(Vector2D[] pos) throws Exception {
-        super(pos);
         setAreaSpeed(getAreaSpeed()*0.7);
     }
 
@@ -44,5 +40,14 @@ public class Door extends Area{
             components.add(line);
         }
         return components;
+    }
+
+    @Override
+    public void onAgentCollision(Entity agent)
+    {
+        agent.setVelocity(getAreaSpeed());
+        agent.setFovAngle(getAreaFovAngle());
+        agent.setFovDepth(getAreaFovDepth());
+        //TODO add hearing
     }
 }

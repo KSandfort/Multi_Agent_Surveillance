@@ -11,24 +11,13 @@ import java.util.ArrayList;
 /**
  * object that the agent can see through, but not walks through
  */
-public class Window extends Area{
+public class Window extends Wall{
     public Window(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
     }
 
     public Window(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-    }
-
-    @Override
-    public void onAgentCollision(Entity agent)
-    {
-        super.onAgentCollision(agent);
-        Vector2D delta = Vector2D.scalar(agent.getDirection(), agent.getVelocity());
-        while (isInsideArea(agent.getPosition())){
-            agent.setPosition(Vector2D.subtract(agent.getPosition(), delta));
-        }
-        agent.setDirection(Vector2D.add(agent.getDirection(), Vector2D.randomVector()));
     }
 
     @Override
@@ -48,10 +37,5 @@ public class Window extends Area{
             components.add(line);
         }
         return components;
-    }
-
-    @Override
-    public boolean isSolidBody() {
-        return true;
     }
 }

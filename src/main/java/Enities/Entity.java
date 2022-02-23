@@ -6,6 +6,7 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 /**
  * Abstract class of an entity on the map.
@@ -37,7 +38,6 @@ public abstract class Entity extends MapItem {
         Vector2D c3 = Vector2D.add(getPosition(), new Vector2D(-radius,radius));
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
-
     }
 
     public void setMap(GameMap map){
@@ -68,7 +68,6 @@ public abstract class Entity extends MapItem {
         if(!inSpecialArea){
             this.resetEntityParam();
         }
-
     }
 
     public Vector2D getPrevPos() { return prevPos; }
@@ -115,7 +114,6 @@ public abstract class Entity extends MapItem {
 
     public Entity(SpawnArea spawnArea) {
         Random rand = new Random();
-
         //TODO: Place entity in spawn area. Since it is no perfect rectangle, we need to choose a different
         // algorithm.
         /*

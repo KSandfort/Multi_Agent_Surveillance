@@ -49,7 +49,7 @@ public class GameMap {
         // movingItems.add(new Intruder(20,20));
         // addGuards(1);
 
-        addToMap(new WallWithDoor(40, 20, 10, 40, true));
+        addToMap(new WallWithWindow(40, 20, 10, 40, true));
         //addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
         // addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
@@ -72,7 +72,12 @@ public class GameMap {
             addToStaticItems(item);
         }
         if (item.isSolidBody()){
-            addToSolidItems(item);
+            if (item instanceof WallWithItem){
+                addToSolidItems(((WallWithItem) item).getWalls().get(0));
+                addToSolidItems(((WallWithItem) item).getWalls().get(1));
+            }if (!(item instanceof WallWithWindow)){
+                addToSolidItems(item);
+            }
         }
         if (item.isTransparentObject()){
             addToTransparentItems(item);
