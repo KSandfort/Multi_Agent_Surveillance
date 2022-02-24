@@ -36,6 +36,11 @@ public class MapReader {
                         // TODO: Add name to GameMap
                         break;
                     }
+                    case "gameMode": {
+                        // TODO: Set gameMode automatically
+                        if (MAP_READER_DEBUG) System.out.println("To be done!");
+                        break;
+                    }
                     case "height": {
                         gameMap.setSizeY(Integer.parseInt(words[2]));
                         if (MAP_READER_DEBUG) System.out.println("Height: " + gameMap.getSizeY());

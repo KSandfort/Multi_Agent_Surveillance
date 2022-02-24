@@ -57,8 +57,8 @@ public class StartLayout extends BorderPane {
         Label gameModeLabel = new Label("Gamemode");
         gameModeLabel.setStyle("-fx-font: 12px 'Verdana';");
         HBox gameModeButtonBox = new HBox();
-        Button gameModeButton1 = new Button("Explore");
-        Button gameModeButton2 = new Button("G. vs I.");
+        Button gameModeButton1 = new Button("Exploration");
+        Button gameModeButton2 = new Button("Guards vs Intruders.");
         gameModeButton1.setStyle("-fx-font: 12px 'Verdana';");
         gameModeButton2.setStyle("-fx-font: 12px 'Verdana';");
         gameModeButton1.setDisable(true);
@@ -104,7 +104,6 @@ public class StartLayout extends BorderPane {
         mainGrid.add(map, 1, 3);
 
         // Add mainGrid
-        //mainGrid.add(dialogVbox, 0, 0);
         mainGrid.setPadding(new Insets(10, 10, 10, 10));
         mainGrid.setHgap(10);
         mainGrid.setVgap(10);
@@ -137,7 +136,6 @@ public class StartLayout extends BorderPane {
             else {
                 amountIntruders = Integer.parseInt(intruderAmount.getText());
             }
-
             simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders);
         });
         controlsBox.getChildren().add(startButton);

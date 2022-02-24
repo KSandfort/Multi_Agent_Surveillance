@@ -50,8 +50,9 @@ public class GameMap {
         this.movingItems = movingItems;
     }
 
-    // TODO: move this
-    // initializes map for testing purposes
+    /**
+     * Initializes map for testing purposes
+     */
     public void initTestGameMap() {
         sizeX = 120;
         sizeY = 80;
@@ -61,24 +62,30 @@ public class GameMap {
         addToMap(new Wall(50, 60, 55, 63));
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
-        // movingItems.add(new Intruder(20,20));
-        // addGuards(1);
         addToMap(new WallWithWindow(40, 20, 10, 40, true));
-        //addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
-        // addToMap(new Teleport(60, 10, 75, 50, 90, 40, 5,50));
-        // addToMap(new Intruder(20,20));
-        // Guard remoteGuard = new Guard(55, 30);
-        // addToMap(remoteGuard);
-        // remoteGuard.setRemote();
     }
 
-    // Temporary map population method, can be changed once spawn areas are properly implemented
-    public void populateMap(int guards, int intruders, int agentType) {
+    /**
+     * Populates the map with guards and intruders.
+     * @param guards number of guards
+     * @param intruders number of intruders
+     * @param agentTypeGuard agent type of the guards
+     * @param agentTypeIntruder agent type of the intruders
+     */
+    public void populateMap(int guards, int intruders, int agentTypeGuard, int agentTypeIntruder) {
         addGuards(guards);
         addIntruders(intruders);
     }
 
+    /**
+     * Adds items to the map.
+     * It automatically puts the item in the corresponding list.
+     * - DynamicItems
+     * - StaticItems
+     * - SolidItems
+     * @param item item to put on the map
+     */
     public void addToMap(MapItem item){
         if (item.isDynamicObject()){
             addToDynamicItems(item);
@@ -98,6 +105,10 @@ public class GameMap {
         }
     }
 
+    /**
+     * Add guards in the intruder spawn-area.
+     * @param numGuards number of guards to spawn
+     */
     public void addGuards(int numGuards){
         for (int i = 0; i < numGuards; i++){
             Guard guard;
@@ -114,10 +125,22 @@ public class GameMap {
         }
     }
 
+    /**
+     * Add intruders in the intruder spawn-area.
+     * @param numIntruders number of intruders to spawn
+     */
     public void addIntruders(int numIntruders){
         for (int i = 0; i < numIntruders; i++){
-            Intruder remoteIntruder = new Intruder(55, 30);
-            addToMap(remoteIntruder);
+            Intruder intruder;
+            if (spawnAreaGuards == null) {
+                intruder = new Intruder(55, 30);
+            }
+            else {
+                int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.x1, (int) spawnAreaIntruders.x2 + 1);
+                int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.y1, (int) spawnAreaIntruders.y2 + 1);
+                intruder = new Intruder(randomX, randomY);
+            }
+            addToMap(intruder);
             // remoteIntruder.setRemote();
         }
     }

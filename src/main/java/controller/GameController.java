@@ -1,6 +1,5 @@
 package controller;
 
-import Enities.Entity;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
@@ -17,14 +16,11 @@ public class GameController {
 
     // Variables
     GameMap map;
-
     SimulationGUI simulationGUI;
-    int updatesPerSecond;
-    int step;
 
     // TEMPORARY - for testing purpose of the title screen
-    static public int amountOfGuards = 1;
-    static public int amountOfIntruders = 1;
+    static public int amountOfGuards;
+    static public int amountOfIntruders;
 
     public GameController(SimulationGUI gui) {
         this.simulationGUI = gui;
@@ -32,7 +28,7 @@ public class GameController {
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
-        this.map.populateMap(amountOfGuards, amountOfIntruders, 0);
+        this.map.populateMap(amountOfGuards, amountOfIntruders, 0, 0);
     }
 
     // do the update magic...
@@ -91,10 +87,6 @@ public class GameController {
 
     public SimulationGUI getSimulationGUI() {
         return simulationGUI;
-    }
-
-    public void setSimulationGUI(SimulationGUI simulationGUI) {
-        this.simulationGUI = simulationGUI;
     }
 
 }
