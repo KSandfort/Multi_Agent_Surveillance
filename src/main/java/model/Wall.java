@@ -43,6 +43,17 @@ public class Wall extends Area {
                     (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getY() * sf) + offset));
         }
+        // Add diagonal lines
+        components.add(new Line(
+                (cornerPoints[0].getX() * sf) + offset,
+                (cornerPoints[0].getY() * sf) + offset,
+                (cornerPoints[2].getX() * sf) + offset,
+                (cornerPoints[2].getY() * sf) + offset));
+        components.add(new Line(
+                (cornerPoints[1].getX() * sf) + offset,
+                (cornerPoints[1].getY() * sf) + offset,
+                (cornerPoints[3].getX() * sf) + offset,
+                (cornerPoints[3].getY() * sf) + offset));
         return components;
     }
 

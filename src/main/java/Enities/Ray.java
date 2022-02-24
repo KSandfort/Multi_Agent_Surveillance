@@ -2,6 +2,7 @@ package Enities;
 
 import gui.SimulationGUI;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import model.Vector2D;
 
@@ -31,6 +32,7 @@ public class Ray {
                 (origin.getY() * sf) + offset,
                 (getPoint().getX() * sf) + offset,
                 (getPoint().getY() * sf) + offset);
+        line.setStroke(Color.rgb(0,0,0,0.2));
         return line;
     }
 

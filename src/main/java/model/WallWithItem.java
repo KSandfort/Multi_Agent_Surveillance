@@ -102,7 +102,7 @@ public abstract class WallWithItem extends Wall{
             components.add(lWallComp.get(i));
             components.add(rWallComp.get(i));
         }
-        for (int i = 0; i<lWallComp.size();i++){
+        for (int i = 0; i<4;i++){
             components.add(itemComp.get(i));
         }
         return components;

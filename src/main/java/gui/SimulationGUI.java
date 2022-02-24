@@ -44,9 +44,11 @@ public class SimulationGUI extends Application {
         startTitleScreenGUI(primaryStage);
     }
 
-    // Launches the start screen GUI
+    /**
+     * Launches the start screen GUI
+     * @param primaryStage
+     */
     public void startTitleScreenGUI(Stage primaryStage) {
-
         startLayout = new StartLayout(primaryStage);
         startLayout.setSimulationInstance(this);
         mainScene = new Scene(startLayout, 1300, 1000);
@@ -55,7 +57,12 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
-    // Launches the actual game GUI (with guard and intruder amount from the start screen)
+    /**
+     * Launches the actual game GUI (with guard and intruder amount from the start screen)
+     * @param primaryStage
+     * @param guardAmount
+     * @param intruderAmount
+     */
     public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
         currentStep = 0;
         simulationDelay = 1;
@@ -69,8 +76,6 @@ public class SimulationGUI extends Application {
         this.setController(new GameController(this));
         this.controller.drawFixedItems(mainLayout);
 
-
-
         // Timeline Animation
         this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
@@ -80,9 +85,22 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Updates the simulation.
+     */
     public void update() {
         controller.update();
         updateGUI1step();
+    }
+
+    /**
+     * Updates the GUI one simulation step.
+     */
+    public void updateGUI1step() {
+        this.controller.update();
+        mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
+        this.controller.drawMovingItems(mainLayout);
+        currentStep++;
     }
 
     /**
@@ -104,16 +122,6 @@ public class SimulationGUI extends Application {
      */
     public void pauseSimulation() {
         this.timeline.pause();
-    }
-
-    /**
-     * Updates the GUI one simulation step.
-     */
-    public void updateGUI1step() {
-        this.controller.update();
-        mainLayout.getStepCountLabel().setText("Current Step: " + currentStep);
-        this.controller.drawMovingItems(mainLayout);
-        currentStep++;
     }
 
     public Scene getMainScene() {
