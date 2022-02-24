@@ -21,7 +21,7 @@ public class Teleport extends Area{
     public Teleport(double xFrom, double yFrom, double xTo, double yTo, double targetX, double targetY, double directionX, double directionY) {
         super(xFrom, yFrom, xTo, yTo);
         this.target = new Vector2D(targetX, targetY);
-        this.direction = new Vector2D(directionX, directionY);
+        this.direction = Vector2D.normalize(new Vector2D(directionX, directionY));
     }
 
     public Teleport(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4, Vector2D target, Vector2D direction) {

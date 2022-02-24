@@ -28,7 +28,7 @@ public class SimulationGUI extends Application {
     final int WIDTH = 1200;
     final int HEIGHT = 800;
     public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
-    public static final double SCALING_FACTOR = 10;
+    public static double SCALING_FACTOR = 10;
 
     public void setController(GameController controller){
         this.controller = controller;
