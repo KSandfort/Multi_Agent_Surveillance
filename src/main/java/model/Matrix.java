@@ -18,50 +18,59 @@ public class Matrix {
         columns = values[0].length;
     }
 
-    public void add(double value)
+    public Matrix add(double value)
     {
+        Matrix output = new Matrix(rows,columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                values[i][j] += value;
+                output.values[i][j] = values[i][j] + value;
             }
         }
+        return output;
     }
 
-    public void add(Matrix m)
+    public Matrix add(Matrix m)
+    {
+        if(rows != m.rows || columns != m.columns)
+        {
+            throw new IllegalArgumentException("Shape of matrices does not match ");
+        }
+        Matrix output = new Matrix(rows,columns);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                output.values[i][j] = values[i][j] + m.values[i][j];
+            }
+        }
+        return output;
+    }
+
+    public Matrix subtract(double value)
+    {
+        Matrix output = new Matrix(rows,columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                output.values[i][j] = values[i][j] - value;
+            }
+        }
+        return output;
+    }
+
+    public Matrix subtract(Matrix m)
     {
         if(rows != m.rows || columns != m.columns)
         {
             throw new IllegalArgumentException("Shape of matrices does not match ");
         }
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                values[i][j] += m.values[i][j];
-            }
-        }
-    }
-
-    public void subtract(double value)
-    {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                values[i][j] -= value;
-            }
-        }
-    }
-
-    public void subtract(Matrix m)
-    {
-        if(rows != m.rows || columns != m.columns)
-        {
-            throw new IllegalArgumentException("Shape of matrices does not match ");
-        }
+        Matrix output = new Matrix(rows,columns);
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                values[i][j] -= m.values[i][j];
+                output.values[i][j] = values[i][j] - m.values[i][j];
             }
         }
+        return output;
     }
 
     //matrix multiplication
@@ -72,47 +81,63 @@ public class Matrix {
             throw new IllegalArgumentException("Shapes of matrices are incorrect");
         }
 
-        Matrix result = new Matrix(rows,m.columns);
+        Matrix output = new Matrix(rows,m.columns);
 
-        for(int i=0;i<result.rows;i++)
+        for(int i=0;i<output.rows;i++)
         {
-            for(int j=0;j<result.columns;j++)
+            for(int j=0;j<output.columns;j++)
             {
                 double sum=0;
                 for(int k=0;k<columns;k++)
                 {
                     sum+=values[i][k]*m.values[k][j];
                 }
-                result.values[i][j]=sum;
+                output.values[i][j]=sum;
             }
         }
-        return result;
+        return output;
     }
 
 
     //element wise multiplication
-    public void eMultiply(Matrix m)
+    public Matrix eMultiply(Matrix m)
     {
         if(rows != m.rows || columns != m.columns)
         {
             throw new IllegalArgumentException("Shape of matrices does not match ");
         }
 
+        Matrix output = new Matrix(rows,columns);
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                values[i][j] *= m.values[i][j];
+                output.values[i][j] = values[i][j] * m.values[i][j];
             }
         }
+        return output;
     }
 
     //multiply by scalar
-    public void sMultiply(double a)
+    public Matrix sMultiply(double a)
     {
+        Matrix output = new Matrix(rows,columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                values[i][j] *= a;
+                output.values[i][j] = values[i][j] * a;
             }
         }
+        return output;
+    }
+
+    public Matrix transpose()
+    {
+        Matrix output = new Matrix(columns, rows);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                output.values[j][i] = values[i][j];
+            }
+        }
+        return output;
     }
 
     public Matrix sigmoid()
