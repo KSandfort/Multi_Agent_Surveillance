@@ -4,9 +4,15 @@ import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Class that represents a map state of the simulation
+ */
 public class GameMap {
 
+    // Variables
     private GameController gameController;
     private int sizeX; //height
     private int sizeY; //width
@@ -14,12 +20,13 @@ public class GameMap {
     private ArrayList<MapItem> movingItems = new ArrayList<>();
     private ArrayList<MapItem> solidBodies = new ArrayList<>();
     private ArrayList<MapItem> transparentItems = new ArrayList<>();
+    private SpawnArea spawnAreaGuards;
+    private SpawnArea spawnAreaIntruders;
 
-/* private double scaling;
-     private double timeStep;
-     private int gameMode;
-     int[] texture; */
-
+    /**
+     * Constructor
+     * @param controller
+     */
     public GameMap(GameController controller) {
         this.gameController = controller;
     }
@@ -29,6 +36,13 @@ public class GameMap {
         this.sizeY = sizeY;
     }
 
+    /**
+     * Constructor
+     * @param sizeX
+     * @param sizeY
+     * @param staticItems
+     * @param movingItems
+     */
     public GameMap(int sizeX, int sizeY, ArrayList<MapItem> staticItems, ArrayList<MapItem> movingItems) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -42,13 +56,13 @@ public class GameMap {
         sizeX = 120;
         sizeY = 80;
         createBorderWalls();
-        addToMap(new SpawnArea(2, 2, 20, 10));
+        setSpawnAreaGuards(new SpawnArea(true, 2, 2, 20, 10));
+        setSpawnAreaIntruders(new SpawnArea(false, 2, 65, 20, 75));
         addToMap(new Wall(50, 60, 55, 63));
         addToMap(new Wall(70, 70, 75, 80));
         addToMap(new Wall(60, 10, 75, 50));
         // movingItems.add(new Intruder(20,20));
         // addGuards(1);
-
         addToMap(new WallWithWindow(40, 20, 10, 40, true));
         //addToMap(new ShadedArea(40, 20, 10, 40));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
@@ -60,7 +74,7 @@ public class GameMap {
     }
 
     // Temporary map population method, can be changed once spawn areas are properly implemented
-    public void populateMap(int guards, int intruders) {
+    public void populateMap(int guards, int intruders, int agentType) {
         addGuards(guards);
         addIntruders(intruders);
     }
@@ -86,9 +100,17 @@ public class GameMap {
 
     public void addGuards(int numGuards){
         for (int i = 0; i < numGuards; i++){
-            Guard remoteGuard = new Guard(55, 30);
-            addToMap(remoteGuard);
-            remoteGuard.setRemote();
+            Guard guard;
+            if (spawnAreaGuards == null) {
+                guard = new Guard(55, 30);
+            }
+            else {
+                int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.x1, (int) spawnAreaGuards.x2 + 1);
+                int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.y1, (int) spawnAreaGuards.y2 + 1);
+                guard = new Guard(randomX, randomY);
+            }
+            addToMap(guard);
+            // remoteGuard.setRemote();
         }
     }
 
@@ -96,7 +118,7 @@ public class GameMap {
         for (int i = 0; i < numIntruders; i++){
             Intruder remoteIntruder = new Intruder(55, 30);
             addToMap(remoteIntruder);
-            remoteIntruder.setRemote();
+            // remoteIntruder.setRemote();
         }
     }
 
@@ -188,5 +210,23 @@ public class GameMap {
 
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
+    }
+
+    public SpawnArea getSpawnAreaGuards() {
+        return spawnAreaGuards;
+    }
+
+    public void setSpawnAreaGuards(SpawnArea spawnAreaGuards) {
+        this.spawnAreaGuards = spawnAreaGuards;
+        addToMap(spawnAreaGuards);
+    }
+
+    public SpawnArea getSpawnAreaIntruders() {
+        return spawnAreaIntruders;
+    }
+
+    public void setSpawnAreaIntruders(SpawnArea spawnAreaIntruders) {
+        this.spawnAreaIntruders = spawnAreaIntruders;
+        addToMap(spawnAreaIntruders);
     }
 }

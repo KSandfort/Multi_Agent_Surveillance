@@ -8,7 +8,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 /**
@@ -28,11 +27,7 @@ public class MainLayout extends BorderPane {
     Label speedLabel;
     boolean isPlaying;
     public static int yOffset = 50;
-
     Stage primaryStage;
-
-    public Circle circle;
-    public int circleX = 20;
 
     /**
      * Constructor
@@ -50,7 +45,7 @@ public class MainLayout extends BorderPane {
     public void initComponents() {
         // Canvas - Center
         canvas = new Pane();
-        canvas.setStyle("-fx-background-color: gray;");
+        canvas.setStyle("-fx-background-color: rgb(200, 220, 200);");
         canvas.setPrefSize(1200, 800);
 
         this.setCenter(canvas);

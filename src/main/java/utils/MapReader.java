@@ -1,10 +1,8 @@
 package utils;
 
 import gui.SimulationGUI;
-import model.GameMap;
-import model.ShadedArea;
-import model.Teleport;
-import model.Wall;
+import model.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -59,6 +57,22 @@ public class MapReader {
                     }
                     case "numIntruders": {
                         gameMap.addIntruders(Integer.parseInt(words[2]));
+                        break;
+                    }
+                    case "spawnAreaGuards": {
+                        double x1 = Double.parseDouble(words[2]);
+                        double y1 = Double.parseDouble(words[3]);
+                        double x2 = Double.parseDouble(words[4]);
+                        double y2 = Double.parseDouble(words[5]);
+                        gameMap.setSpawnAreaGuards(new SpawnArea(true, x1, y1, x2, y2));
+                        break;
+                    }
+                    case "spawnAreaIntruders": {
+                        double x1 = Double.parseDouble(words[2]);
+                        double y1 = Double.parseDouble(words[3]);
+                        double x2 = Double.parseDouble(words[4]);
+                        double y2 = Double.parseDouble(words[5]);
+                        gameMap.setSpawnAreaIntruders(new SpawnArea(false, x1, y1, x2, y2));
                         break;
                     }
                     case "wall": {
