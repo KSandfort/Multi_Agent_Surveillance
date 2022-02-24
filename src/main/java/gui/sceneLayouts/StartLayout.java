@@ -5,54 +5,33 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 /**
- * This class represents the main layout, that contains a visual
- * representation of the map.
+ * This class represents the start layout.
  */
 public class StartLayout extends BorderPane {
 
     // Variables
     SimulationGUI simulationGUI;
-    Pane canvas;
     Label projectLabel;
-    Button startConfigButton;
-    boolean isPlaying;
-    public static int yOffset = 50;
-
+    Button startButton;
     TextField guardAmount;
     TextField intruderAmount;
-
-    Button startButton;
-
-    int amountOfGuards = 1;
-    int amountOfIntruders = 1;
-
-    public Circle circle;
-    public int circleX = 20;
-
     Stage primaryStage;
-
+    GridPane mainGrid;
+    int gameMode; // 0 = exploration, 1 = guards vs intruders
     ObservableList<String> mapsList =
             FXCollections.observableArrayList(
                     "Test map"
             );
-
     ComboBox map;
 
     /**
@@ -60,9 +39,7 @@ public class StartLayout extends BorderPane {
      */
     public StartLayout(Stage primaryStage) {
         this.setStyle("-fx-font: 12px 'Verdana';");
-        isPlaying = false;
         initComponents();
-
         this.primaryStage = primaryStage;
     }
 
@@ -70,79 +47,101 @@ public class StartLayout extends BorderPane {
      * Creates all components on the main layout.
      */
     public void initComponents() {
-        // Canvas - Center
-        canvas = new Pane();
-        canvas.setStyle("-fx-background-color: gray;");
-        canvas.setPrefSize(1200, 800);
 
-        this.setCenter(canvas);
+        // Main Controls - Center
+
+        mainGrid = new GridPane();
+
+        // --- Game Mode Row ---
+        gameMode = 0; // Default Game Mode
+        Label gameModeLabel = new Label("Gamemode");
+        gameModeLabel.setStyle("-fx-font: 12px 'Verdana';");
+        HBox gameModeButtonBox = new HBox();
+        Button gameModeButton1 = new Button("Explore");
+        Button gameModeButton2 = new Button("G. vs I.");
+        gameModeButton1.setStyle("-fx-font: 12px 'Verdana';");
+        gameModeButton2.setStyle("-fx-font: 12px 'Verdana';");
+        gameModeButton1.setDisable(true);
+        gameModeButton1.setOnAction(e -> {
+            gameMode = 0;
+            gameModeButton1.setDisable(true);
+            gameModeButton2.setDisable(false);
+            intruderAmount.setDisable(true);
+        });
+        gameModeButton2.setOnAction(e -> {
+            gameMode = 1;
+            gameModeButton1.setDisable(false);
+            gameModeButton2.setDisable(true);
+            intruderAmount.setDisable(false);
+        });
+        gameModeButtonBox.setSpacing(10);
+        gameModeButtonBox.getChildren().addAll(gameModeButton1, gameModeButton2);
+        mainGrid.add(gameModeLabel, 0, 0);
+        mainGrid.add(gameModeButtonBox, 1, 0);
+
+        // --- Guards Row ---
+        Label guardLabel = new Label("Guard amount");
+        guardLabel.setStyle("-fx-font: 12px 'Verdana';");
+        guardAmount = new TextField("3");
+        guardAmount.textProperty().addListener(new NumericInputEnforcer(guardAmount));
+        mainGrid.add(guardLabel, 0, 1);
+        mainGrid.add(guardAmount, 1, 1);
+
+        // --- Intruders Row ---
+        Label intruderLabel = new Label("Intruder amount");
+        intruderAmount = new TextField("3");
+        intruderAmount.setDisable(true);
+        intruderAmount.textProperty().addListener(new NumericInputEnforcer(intruderAmount));
+        mainGrid.add(intruderLabel, 0, 2);
+        mainGrid.add(intruderAmount, 1, 2);
+
+        // --- Map Row ---
+        Label mapLabel = new Label("Map");
+        mapLabel.setStyle("-fx-font: 12px 'Verdana';");
+        map = new ComboBox(mapsList);
+        map.getSelectionModel().selectFirst();
+        mainGrid.add(mapLabel, 0, 3);
+        mainGrid.add(map, 1, 3);
+
+        // Add mainGrid
+        //mainGrid.add(dialogVbox, 0, 0);
+        mainGrid.setPadding(new Insets(10, 10, 10, 10));
+        mainGrid.setHgap(10);
+        mainGrid.setVgap(10);
+        this.setCenter(mainGrid);
 
         // Info - Top
         HBox infoBox = new HBox();
         infoBox.setSpacing(20);
         infoBox.setAlignment(Pos.CENTER);
         infoBox.setPrefHeight(50);
-
         projectLabel = new Label("Project 2-2: Group 3");
+        projectLabel.setStyle("-fx-font: 24px 'Verdana';");
         infoBox.getChildren().setAll(projectLabel);
-
         this.setTop(infoBox);
 
         // Controls - Bottom
-        HBox controlsContainer = new HBox();
-        controlsContainer.setSpacing(20);
-        controlsContainer.setAlignment(Pos.CENTER);
-        controlsContainer.setPrefHeight(yOffset);
-        startConfigButton = new Button("Start");
+        HBox controlsBox = new HBox();
+        controlsBox.setAlignment(Pos.CENTER);
+        controlsBox.setPadding(new Insets(10, 10, 10, 10));
+        startButton = new Button("Start");
+        startButton.setPrefHeight(90);
+        startButton.setPrefWidth(120);
+        startButton.setOnAction(e -> {
+            // Determine number of guards/intruders
+            int amountGuards = Integer.parseInt(guardAmount.getText());
+            int amountIntruders;
+            if (gameMode == 0) {
+                amountIntruders = 0;
+            }
+            else {
+                amountIntruders = Integer.parseInt(intruderAmount.getText());
+            }
 
-        startConfigButton.setPrefHeight(90);
-        startConfigButton.setPrefWidth(120);
-
-        // Small submenu to configure guards/intruders/other agents
-        startConfigButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    final Stage dialog = new Stage();
-                    dialog.initModality(Modality.APPLICATION_MODAL);
-                    dialog.setTitle("Configure map");
-                    dialog.setResizable(false);
-                    dialog.initOwner(primaryStage);
-                    VBox dialogVbox = new VBox(20);
-
-                    dialogVbox.setPadding(new Insets(10, 50, 50, 50));
-                    dialogVbox.setSpacing(5);
-
-                    map = new ComboBox(mapsList);
-                    map.getSelectionModel().selectFirst();
-
-                    Label guardLabel = new Label("Guard amount");
-                    Label intruderLabel = new Label("Intruder amount");
-                    guardAmount = new TextField("10");
-                    intruderAmount = new TextField("10");
-
-                    guardAmount.textProperty().addListener(new NumericInputEnforcer(guardAmount));
-                    intruderAmount.textProperty().addListener(new NumericInputEnforcer(intruderAmount));
-
-                    startButton = new Button("Start");
-                    startButton.setOnAction(e -> {
-                        simulationGUI.startSimulationGUI(primaryStage, Integer.parseInt(guardAmount.getText()), Integer.parseInt(intruderAmount.getText()));
-                        dialog.close();
-                    });
-
-                    dialogVbox.getChildren().addAll(guardLabel, guardAmount, intruderLabel, intruderAmount, new Label("Map"), map, startButton);
-                    Scene dialogScene = new Scene(dialogVbox, 300, 200);
-                    dialog.setScene(dialogScene);
-                    dialog.show();
-                }
-            });
-            // simulationGUI.startSimulationGUI(primaryStage);
-
-        controlsContainer.getChildren().addAll(startConfigButton);
-        this.setCenter(controlsContainer);
-    }
-
-    public Pane getCanvas() {
-        return this.canvas;
+            simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders);
+        });
+        controlsBox.getChildren().add(startButton);
+        this.setBottom(controlsBox);
     }
 
     public Label getStepCountLabel() {
@@ -154,13 +153,28 @@ public class StartLayout extends BorderPane {
     }
 }
 
+/**
+ * Class for a numeric input that is used for the text fields in the start screen.
+ */
 class NumericInputEnforcer implements ChangeListener<String> {
+
+    // Variables
     TextField myTextField;
 
+    /**
+     * Constructor
+     * @param textField
+     */
     NumericInputEnforcer(TextField textField) {
         myTextField = textField;
     }
 
+    /**
+     * ChangeListener method
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         if (!newValue.matches("\\d{0,4}?")) {
             myTextField.setText(oldValue);
