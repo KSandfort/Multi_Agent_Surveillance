@@ -12,19 +12,21 @@ import java.util.Random;
  * Abstract class of an entity on the map.
  */
 public abstract class Entity extends MapItem {
+    public static double baseSpeedGuard = 0.1;
+    public static double sprintSpeedGuard = 0.2;
+    public static double baseSpeedIntruder = 0.1;
+    public static double sprintSpeedIntruder = 0.2;
+
     double fovAngle = 30;
     double fovDepth = 20;
     protected Vector2D direction;
     boolean isIntruder;
-    double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
-    double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
     boolean isSprinting = true;
     ArrayList<Ray> fov;
     double turnSpeed;//rotation in degrees/sec
     public double radius = 1;//width of the entity
     int ID;
     HitBox hitBox;
-    protected double velocity;
     protected AbstractAgent agent;
     protected Vector2D prevPos;
 
@@ -32,7 +34,6 @@ public abstract class Entity extends MapItem {
         setMap(currentMap);
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
-        velocity = 0;
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));
         Vector2D c2 = Vector2D.add(getPosition(), new Vector2D(radius,-radius));
         Vector2D c3 = Vector2D.add(getPosition(), new Vector2D(-radius,radius));
@@ -102,14 +103,6 @@ public abstract class Entity extends MapItem {
         this.direction = direction;
     }
 
-    public double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(double velocity) {
-        this.velocity = velocity;
-    }
-
     public double getFovAngle() {
         return fovAngle;
     }
@@ -127,7 +120,6 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setVelocity(0.1);
         this.setFovAngle(30);
         this.setFovDepth(20);
     }

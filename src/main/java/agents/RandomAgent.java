@@ -26,7 +26,14 @@ public class RandomAgent extends AbstractAgent {
         Entity e = entityInstance;
         prevPos = e.getPosition();
         e.setPrevPos(prevPos);
-        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), e.getVelocity())));
+        double velocity = 0;
+        if (e.isIntruder()) {
+            velocity = Entity.baseSpeedIntruder;
+        }
+        else {
+            velocity = Entity.baseSpeedGuard;
+        }
+        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
         e.getDirection().pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
         e.getDirection().normalize();
     }

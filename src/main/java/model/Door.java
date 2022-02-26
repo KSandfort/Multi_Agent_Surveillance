@@ -15,12 +15,12 @@ import java.util.ArrayList;
 public class Door extends Wall{
     public Door(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setAreaSpeed(getAreaSpeed()*0.7);
+        setAreaSpeedFactor(0.7);
     }
 
     public Door(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setAreaSpeed(getAreaSpeed()*0.7);
+        setAreaSpeedFactor(0.7);
     }
 
     @Override
@@ -45,7 +45,6 @@ public class Door extends Wall{
     @Override
     public void onAgentCollision(Entity entity)
     {
-        entity.setVelocity(getAreaSpeed());
         entity.setFovAngle(getAreaFovAngle());
         entity.setFovDepth(getAreaFovDepth());
         //TODO add hearing
