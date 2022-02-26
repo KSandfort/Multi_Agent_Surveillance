@@ -23,6 +23,7 @@ public class MainLayout extends BorderPane {
     Button playPauseButton;
     Button stepButton;
     Button returnToStartButton;
+    Button explorationButton;
     Slider simSpeedSlider;
     Label speedLabel;
     boolean isPlaying;
@@ -93,7 +94,18 @@ public class MainLayout extends BorderPane {
             System.out.println("Todo...");
         });
 
-        controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider, returnToStartButton);
+        explorationButton = new Button("See Exploration");
+        explorationButton.setOnAction(e -> {
+            System.out.println("LOL");
+        });
+
+        controlsContainer.getChildren().addAll(
+                playPauseButton,
+                stepButton,
+                speedLabel,
+                simSpeedSlider,
+                returnToStartButton,
+                explorationButton);
         this.setBottom(controlsContainer);
     }
 

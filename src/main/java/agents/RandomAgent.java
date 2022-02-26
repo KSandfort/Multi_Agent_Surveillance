@@ -1,7 +1,6 @@
 package agents;
 
 import Enities.Entity;
-import model.Area;
 import model.MapItem;
 import model.Vector2D;
 import java.util.ArrayList;

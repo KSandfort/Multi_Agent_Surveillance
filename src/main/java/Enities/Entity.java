@@ -16,6 +16,7 @@ public abstract class Entity extends MapItem {
     public static double sprintSpeedGuard = 0.2;
     public static double baseSpeedIntruder = 0.1;
     public static double sprintSpeedIntruder = 0.2;
+    public EntityKnowledge entityKnowledge = new EntityKnowledge();
 
     double fovAngle = 30;
     double fovDepth = 20;
