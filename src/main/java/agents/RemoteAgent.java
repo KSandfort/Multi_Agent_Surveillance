@@ -32,6 +32,14 @@ public class RemoteAgent extends AbstractAgent {
             if(key.getCode()== KeyCode.S) {
                 moving = false;
             }
+            if(key.getCode()== KeyCode.A) {
+                entityInstance.getDirection().pivot(-5);
+                entityInstance.getDirection().normalize();
+            }
+            if(key.getCode()== KeyCode.D) {
+                entityInstance.getDirection().pivot(5);
+                entityInstance.getDirection().normalize();
+            }
         });
     }
 
@@ -50,7 +58,6 @@ public class RemoteAgent extends AbstractAgent {
         if (moving) {
             e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
         }
-        e.getDirection().pivot(0);
         e.getDirection().normalize();
     }
 
