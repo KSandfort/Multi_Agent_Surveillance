@@ -57,11 +57,11 @@ public class MapReader {
                         break;
                     }
                     case "numGuards": {
-                        gameMap.addGuards(Integer.parseInt(words[2]));
+                        gameMap.addGuards(Integer.parseInt(words[2]), 1);
                         break;
                     }
                     case "numIntruders": {
-                        gameMap.addIntruders(Integer.parseInt(words[2]));
+                        gameMap.addIntruders(Integer.parseInt(words[2]), 0);
                         break;
                     }
                     case "spawnAreaGuards": {

@@ -74,8 +74,8 @@ public class GameMap {
      * @param agentTypeIntruder agent type of the intruders
      */
     public void populateMap(int guards, int intruders, int agentTypeGuard, int agentTypeIntruder) {
-        addGuards(guards);
-        addIntruders(intruders);
+        addGuards(guards, agentTypeGuard);
+        addIntruders(intruders, agentTypeIntruder);
     }
 
     /**
@@ -109,19 +109,19 @@ public class GameMap {
      * Add guards in the intruder spawn-area.
      * @param numGuards number of guards to spawn
      */
-    public void addGuards(int numGuards){
+    public void addGuards(int numGuards, int type){
         for (int i = 0; i < numGuards; i++){
             Guard guard;
             if (spawnAreaGuards == null) {
-                guard = new Guard(55, 30);
+                guard = new Guard(55, 30, this);
             }
             else {
                 int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.x1, (int) spawnAreaGuards.x2 + 1);
                 int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.y1, (int) spawnAreaGuards.y2 + 1);
-                guard = new Guard(randomX, randomY);
+                guard = new Guard(randomX, randomY, this);
             }
+            guard.setAgent(type);
             addToMap(guard);
-            // remoteGuard.setRemote();
         }
     }
 
@@ -129,19 +129,19 @@ public class GameMap {
      * Add intruders in the intruder spawn-area.
      * @param numIntruders number of intruders to spawn
      */
-    public void addIntruders(int numIntruders){
+    public void addIntruders(int numIntruders, int type){
         for (int i = 0; i < numIntruders; i++){
             Intruder intruder;
             if (spawnAreaGuards == null) {
-                intruder = new Intruder(55, 30);
+                intruder = new Intruder(55, 30, this);
             }
             else {
                 int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.x1, (int) spawnAreaIntruders.x2 + 1);
                 int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.y1, (int) spawnAreaIntruders.y2 + 1);
-                intruder = new Intruder(randomX, randomY);
+                intruder = new Intruder(randomX, randomY, this);
             }
+            intruder.setAgent(type);
             addToMap(intruder);
-            // remoteIntruder.setRemote();
         }
     }
 

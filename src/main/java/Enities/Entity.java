@@ -1,22 +1,20 @@
 package Enities;
 
-import com.sun.javafx.scene.text.TextLayout;
-import javafx.scene.Node;
+import agents.AbstractAgent;
+import agents.RandomAgent;
+import agents.RemoteAgent;
 import model.*;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
 
 /**
  * Abstract class of an entity on the map.
  */
 public abstract class Entity extends MapItem {
-    double explorationFactor = 0.2;
     double fovAngle = 30;
     double fovDepth = 20;
-    //Vector2D fovDirection;
-    Vector2D direction;
+    protected Vector2D direction;
     boolean isIntruder;
     double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
     double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
@@ -26,10 +24,12 @@ public abstract class Entity extends MapItem {
     public double radius = 1;//width of the entity
     int ID;
     HitBox hitBox;
-    Vector2D prevPos;
     protected double velocity;
+    protected AbstractAgent agent;
+    protected Vector2D prevPos;
 
-    public Entity(double x, double y) {
+    public Entity(double x, double y, GameMap currentMap) {
+        setMap(currentMap);
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
         velocity = 0;
@@ -45,32 +45,38 @@ public abstract class Entity extends MapItem {
     }
 
     /**
-     * Gives the Entity a new position, based on the direction the Entity is looking at and the
-     * current velocity.
+     * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
-
-        prevPos = getPosition();
-
-        boolean inSpecialArea = false;
-
-        this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
-        direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
-        direction.normalize();
-        hitBox.transform(this);
-        for(MapItem item : items) {
-            if (((Area) item).isAgentInsideArea(this)){
-                Area areaItem = (Area) item;
-                areaItem.onAgentCollision(this);
-                inSpecialArea = true;
-            }
-        }
-        if(!inSpecialArea){
-            this.resetEntityParam();
+        if (this.agent != null) {
+            agent.changeMovement(items);
         }
     }
 
-    public Vector2D getPrevPos() { return prevPos; }
+    /**
+     * Sets the agent of a guard.
+     * 0 = random agent
+     * 1 = remote agent
+     * @param type
+     */
+    public void setAgent(int type) {
+        switch (type) {
+            case 0: {
+                agent = new RandomAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
+            case 1: {
+                agent = new RemoteAgent();
+                agent.setEntityInstance(this);
+                agent.addControls();
+                break;
+            }
+            default: {
+                System.out.println("No agent defined!!!");
+            }
+        }
+    }
 
     public double getRadius() { return radius; }
 
@@ -170,5 +176,21 @@ public abstract class Entity extends MapItem {
     @Override
     public boolean isTransparentObject() {
         return false;
+    }
+
+    public HitBox getHitBox() {
+        return hitBox;
+    }
+
+    public void setHitBox(HitBox hitBox) {
+        this.hitBox = hitBox;
+    }
+
+    public Vector2D getPrevPos() {
+        return prevPos;
+    }
+
+    public void setPrevPos(Vector2D pos) {
+        prevPos = pos;
     }
 }

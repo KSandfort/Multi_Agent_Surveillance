@@ -1,13 +1,13 @@
 package Enities;
 
-import agents.AbstractAgent;
-import agents.GuardRemote;
+import agents.RemoteAgent;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import model.GameMap;
 import model.HitBox;
 import model.MapItem;
 import model.Vector2D;
@@ -20,15 +20,14 @@ import java.util.ArrayList;
 public class Guard extends Entity {
 
     // Variables
-    AbstractAgent agent;
     static int guardCount = 0;
     /**
      * Constructor
      * @param x
      * @param y
      */
-    public Guard(double x, double y){
-        super(x, y);
+    public Guard(double x, double y, GameMap currentMap){
+        super(x, y, currentMap);
         guardCount++;
         this.ID = guardCount;
     }
@@ -63,7 +62,7 @@ public class Guard extends Entity {
      * Needs to be called if a Guard should be controlled via user input.
      */
     public void setRemote() {
-        this.agent = new GuardRemote();
+        this.agent = new RemoteAgent();
         this.agent.setEntityInstance(this); // Agent needs to be able to access the Entity (this class).
         agent.addControls();
     }

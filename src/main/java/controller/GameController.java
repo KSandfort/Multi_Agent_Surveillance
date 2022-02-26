@@ -28,7 +28,7 @@ public class GameController {
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
-        this.map.populateMap(amountOfGuards, amountOfIntruders, 0, 0);
+        this.map.populateMap(amountOfGuards, amountOfIntruders, 1, 0);
     }
 
     // do the update magic...

@@ -43,11 +43,11 @@ public class Door extends Wall{
     }
 
     @Override
-    public void onAgentCollision(Entity agent)
+    public void onAgentCollision(Entity entity)
     {
-        agent.setVelocity(getAreaSpeed());
-        agent.setFovAngle(getAreaFovAngle());
-        agent.setFovDepth(getAreaFovDepth());
+        entity.setVelocity(getAreaSpeed());
+        entity.setFovAngle(getAreaFovAngle());
+        entity.setFovDepth(getAreaFovDepth());
         //TODO add hearing
     }
 }
