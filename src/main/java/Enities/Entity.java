@@ -51,6 +51,20 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
+        // Check collision detection
+        boolean inSpecialArea = false;
+        for(MapItem item : items) {
+            if (((Area) item).isAgentInsideArea(this)){
+                Area areaItem = (Area) item;
+                areaItem.onAgentCollision(this);
+                inSpecialArea = true;
+            }
+        }
+        if(!inSpecialArea){
+            resetEntityParam();
+        }
+        // Update HitBox
+        this.getHitBox().transform(this);
     }
 
     /**

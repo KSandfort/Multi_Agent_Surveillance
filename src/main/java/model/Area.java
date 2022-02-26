@@ -11,7 +11,7 @@ public abstract class Area extends MapItem{
     protected Vector2D[] cornerPoints = new Vector2D[4];
     private double areaFovDepth = 20;
     private double areaFovAngle = 30;
-    private double areaSpeed = 0.1;
+    private double areaSpeed = 0;
     private double hearingFactor = 1;
 
     public Area(double xFrom, double yFrom, double xTo, double yTo) {

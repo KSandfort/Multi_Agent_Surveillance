@@ -41,21 +41,9 @@ public class RemoteAgent extends AbstractAgent {
         Entity e = entityInstance;
         prevPos = e.getPosition();
         e.setPrevPos(prevPos);
-        boolean inSpecialArea = false;
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), e.getVelocity())));
-        e.getDirection().pivot(0); // Need to add direction
+        e.getDirection().pivot(0);
         e.getDirection().normalize();
-        e.getHitBox().transform(e);
-        for(MapItem item : items) {
-            if (((Area) item).isAgentInsideArea(e)){
-                Area areaItem = (Area) item;
-                areaItem.onAgentCollision(e);
-                inSpecialArea = true;
-            }
-        }
-        if(!inSpecialArea){
-            e.resetEntityParam();
-        }
     }
 
 }
