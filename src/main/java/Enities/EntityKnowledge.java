@@ -17,11 +17,35 @@ public class EntityKnowledge {
         // Fill with 0s;
         for (int i = 0; i < mapRepresentation.length; i++) {
             for (int j = 0; j < mapRepresentation[i].length; j++) {
-                mapRepresentation[i][j] = 0;
+                mapRepresentation[i][j] = i + j;
             }
         }
 
         relativePosX = (mapRepresentation.length / 2) + 1;
         relativePosY = (mapRepresentation[0].length / 2) + 1;
+    }
+
+    public int[][] getMapRepresentation() {
+        return mapRepresentation;
+    }
+
+    public void setMapRepresentation(int[][] mapRepresentation) {
+        this.mapRepresentation = mapRepresentation;
+    }
+
+    public int getRelativePosX() {
+        return relativePosX;
+    }
+
+    public void setRelativePosX(int relativePosX) {
+        this.relativePosX = relativePosX;
+    }
+
+    public int getRelativePosY() {
+        return relativePosY;
+    }
+
+    public void setRelativePosY(int relativePosY) {
+        this.relativePosY = relativePosY;
     }
 }
