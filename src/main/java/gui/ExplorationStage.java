@@ -30,39 +30,47 @@ public class ExplorationStage extends Stage {
         this.mainLayout = mainLayout;
         trackedEntity = (Entity) mainLayout.getSimulationGUI().getController().getMap().getMovingItems().get(0);
         entityKnowledge = trackedEntity.getEntityKnowledge();
-
+        entityKnowledge.setExplorationStage(this);
         root = new BorderPane();
-        Button test = new Button("Test");
-        root.setTop(test);
-
         grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
-        grid.setVgap(2);
-        grid.setHgap(2);
+        grid.setVgap(1);
+        grid.setHgap(1);
         for (int i = 0; i < entityKnowledge.getMapRepresentation().length; i++) {
             for (int j = 0; j < entityKnowledge.getMapRepresentation()[0].length; j++) {
                 Pane pane = new Pane();
                 pane.setPrefSize(cellSize, cellSize);
-                pane.setStyle("-fx-background-color:#38ee00;");
+                pane.setStyle("-fx-background-color:#777777;");
                 grid.add(pane, i, j);
             }
         }
-
-        test.setOnAction(e -> {
-            Pane pane = new Pane();
-            pane.setPrefSize(cellSize, cellSize);
-            pane.setStyle("-fx-background-color:#222222;");
-            grid.add(pane, 10, 10);
-        });
         root.setCenter(grid);
-        this.setScene(new Scene(root, 1250, 850));
+        this.setScene(new Scene(root, 1000, 700));
         this.show();
     }
 
-    public void setCell(int x, int y, int code) {
+    public void drawCell(int code, int x, int y) {
         Pane pane = new Pane();
         pane.setPrefSize(cellSize, cellSize);
-        pane.setStyle("-fx-background-color:#222222;");
+        switch (code) {
+            case 0: { // not discovered
+                pane.setStyle("-fx-background-color:#777777;");
+                break;
+            }
+            case 1: { // empty
+                pane.setStyle("-fx-background-color:#7777ff;");
+                break;
+            }
+            case 2: { // self
+                pane.setStyle("-fx-background-color:#00ff00;");
+                break;
+            }
+            default: { // error
+                pane.setStyle("-fx-background-color:#ffaa22;");
+                break;
+            }
+        }
         grid.add(pane, x, y);
     }
+
 }

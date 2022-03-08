@@ -50,6 +50,7 @@ public abstract class Entity extends MapItem {
      * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
+        Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
         if (this.agent != null) {
             agent.changeMovement(items);
         }
@@ -67,6 +68,11 @@ public abstract class Entity extends MapItem {
         }
         // Update HitBox
         this.getHitBox().transform(this);
+
+        // Update agent knowledge
+        entityKnowledge.setCell(1, previousPos); // Remove current position marker
+        // Add new position marker
+        entityKnowledge.setCell(2, getPosition());
     }
 
     /**
