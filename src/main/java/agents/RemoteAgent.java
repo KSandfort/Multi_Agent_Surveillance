@@ -17,6 +17,9 @@ public class RemoteAgent extends AbstractAgent {
     Vector2D prevPos;
     boolean moving = false;
 
+    /**
+     * Constructor
+     */
     public RemoteAgent() {
     }
 

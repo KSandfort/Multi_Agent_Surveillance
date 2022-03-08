@@ -2,7 +2,6 @@ package agents;
 
 import Enities.Entity;
 import model.MapItem;
-
 import java.util.ArrayList;
 
 /**

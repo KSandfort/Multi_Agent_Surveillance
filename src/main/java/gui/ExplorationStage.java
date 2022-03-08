@@ -5,11 +5,9 @@ import Enities.EntityKnowledge;
 import gui.sceneLayouts.MainLayout;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -25,6 +23,10 @@ public class ExplorationStage extends Stage {
     EntityKnowledge entityKnowledge;
     int cellSize = 3; // in px
 
+    /**
+     * Constructor
+     * @param mainLayout
+     */
     public ExplorationStage(MainLayout mainLayout) {
         this.setTitle("Exploration Coverage");
         this.mainLayout = mainLayout;
@@ -38,10 +40,7 @@ public class ExplorationStage extends Stage {
         grid.setHgap(1);
         for (int i = 0; i < entityKnowledge.getMapRepresentation().length; i++) {
             for (int j = 0; j < entityKnowledge.getMapRepresentation()[0].length; j++) {
-                Pane pane = new Pane();
-                pane.setPrefSize(cellSize, cellSize);
-                pane.setStyle("-fx-background-color:#777777;");
-                grid.add(pane, i, j);
+                drawCell(entityKnowledge.getMapRepresentation()[i][j], i, j);
             }
         }
         root.setCenter(grid);
@@ -49,6 +48,12 @@ public class ExplorationStage extends Stage {
         this.show();
     }
 
+    /**
+     * Draws a certain cell.
+     * @param code
+     * @param x
+     * @param y
+     */
     public void drawCell(int code, int x, int y) {
         Pane pane = new Pane();
         pane.setPrefSize(cellSize, cellSize);

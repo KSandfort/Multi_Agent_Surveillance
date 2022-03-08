@@ -15,7 +15,11 @@ public class EntityKnowledge {
     int relativePosX;
     int relativePosY;
     ExplorationStage explorationStage;
+    Vector2D positionOffset; // So that the agent doesn't know its absolute position.
 
+    /**
+     * Constructor
+     */
     public EntityKnowledge() {
         relativePosX = 0;
         relativePosY = 0;
@@ -23,10 +27,9 @@ public class EntityKnowledge {
         // Fill with 0s;
         for (int i = 0; i < mapRepresentation.length; i++) {
             for (int j = 0; j < mapRepresentation[i].length; j++) {
-                mapRepresentation[i][j] = i + j;
+                mapRepresentation[i][j] = 0;
             }
         }
-
         relativePosX = (mapRepresentation.length / 2) + 1;
         relativePosY = (mapRepresentation[0].length / 2) + 1;
     }
@@ -70,14 +73,36 @@ public class EntityKnowledge {
         }
     }
 
+    /**
+     * Translates a continuous x-coordinate into a discrete cell x-position for the knowledge array.
+     * @param x
+     * @return
+     */
     public int translateX(int x) {
-        return x + 120;
+        return x + 120 - (int) positionOffset.getX();
     }
 
+    /**
+     * Translates a continuous y-coordinate into a discrete cell y-position for the knowledge array.
+     * @param y
+     * @return
+     */
     public int translateY(int y) {
-        return y + 80;
+        return y + 80 - (int) positionOffset.getY();
     }
 
+    /**
+     * Setter
+     * @param pos
+     */
+    public void setPositionOffset(Vector2D pos) {
+        this.positionOffset = pos;
+    }
+
+    /**
+     * Sets the ExplorationStage to access cell-painting
+     * @param explorationStage
+     */
     public void setExplorationStage(ExplorationStage explorationStage) {
         this.explorationStage = explorationStage;
     }

@@ -12,12 +12,13 @@ import java.util.Random;
  * Abstract class of an entity on the map.
  */
 public abstract class Entity extends MapItem {
+
+    // Variables
     public static double baseSpeedGuard = 0.1;
     public static double sprintSpeedGuard = 0.2;
     public static double baseSpeedIntruder = 0.1;
     public static double sprintSpeedIntruder = 0.2;
     EntityKnowledge entityKnowledge = new EntityKnowledge();
-
     double fovAngle = 30;
     double fovDepth = 20;
     protected Vector2D direction;
@@ -31,6 +32,12 @@ public abstract class Entity extends MapItem {
     protected AbstractAgent agent;
     protected Vector2D prevPos;
 
+    /**
+     * Constructor
+     * @param x
+     * @param y
+     * @param currentMap
+     */
     public Entity(double x, double y, GameMap currentMap) {
         setMap(currentMap);
         this.setPosition(new Vector2D(x,y));
@@ -40,8 +47,13 @@ public abstract class Entity extends MapItem {
         Vector2D c3 = Vector2D.add(getPosition(), new Vector2D(-radius,radius));
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
+        entityKnowledge.setPositionOffset(getPosition());
     }
 
+    /**
+     * Setter
+     * @param map
+     */
     public void setMap(GameMap map){
         this.map = map;
     }
@@ -131,16 +143,6 @@ public abstract class Entity extends MapItem {
         this.setFovDepth(20);
     }
 
-    public Entity(SpawnArea spawnArea) {
-        Random rand = new Random();
-        //TODO: Place entity in spawn area. Since it is no perfect rectangle, we need to choose a different
-        // algorithm.
-        /*
-        double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
-        double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
-         */
-    }
-
     public abstract boolean isIntruder();
 
     /**
@@ -172,8 +174,24 @@ public abstract class Entity extends MapItem {
             // Set the length of the ray accordingly.
             ray.setDirection(Vector2D.resize(ray.getDirection(), minDistance));
             rays.add(ray);
+            addVisionKnowledge(ray); // Adds everything it sees to the knowledge
         }
         return rays;
+    }
+
+    /**
+     * Adds knowledge to entityKnowledge based on what the ray observes
+     * @param ray ray that observes
+     */
+    public void addVisionKnowledge(Ray ray) {
+        //TODO: Implement actual vision!
+        double rayLength = Vector2D.length(ray.getDirection());
+        int rayLengthInt = (int) Math.floor(rayLength);
+        int detailLevel = 2;
+        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
+            Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
+            entityKnowledge.setCell(1, currentTarget);
+        }
     }
 
     @Override
