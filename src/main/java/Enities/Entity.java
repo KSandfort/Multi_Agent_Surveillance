@@ -68,9 +68,6 @@ public abstract class Entity extends MapItem {
         if(!inSpecialArea){
             this.resetEntityParam();
         }
-
-        fov=FOV();
-        System.out.println(fov.get(0).getDetectedItems(this)); //todo
     }
 
     public Vector2D getPrevPos() { return prevPos; }
@@ -162,6 +159,10 @@ public abstract class Entity extends MapItem {
             rays.add(ray);
         }
         return rays;
+    }
+
+    public boolean checkWinningCondition(){
+        return false;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package controller;
 
+import Enities.Entity;
+import Enities.Guard;
+import Enities.Intruder;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
@@ -17,8 +20,8 @@ public class GameController {
     // Variables
     GameMap map;
     SimulationGUI simulationGUI;
-    boolean hasWonGame = false; // todo change this to 0,1,2 ???
-    double coverageThreshold;
+    int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
+    double coverageThreshold = 80;
 
     // TEMPORARY - for testing purpose of the title screen
     static public int amountOfGuards;
@@ -39,10 +42,9 @@ public class GameController {
         for(MapItem item : items) {
             item.update(map.getStaticItems());
         }
-        updateWinningCondition();
+        updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
     }
 
-    // TODO
     /**
      * for gameMode 0 the winning condition will be determined based on the exploration
      * factor, how much of the map the agents have explored
@@ -54,12 +56,24 @@ public class GameController {
 
         if(gameMode == 0) {
             if (computeCoverage() >= coverageThreshold){
-                hasWonGame = true;
+                hasWonGame = 1;
             }
         } else{
-            // TODO get winning condition from entities
+            ArrayList<MapItem> entities = map.getMovingItems();
+            for (MapItem entity : entities){
+                Entity currentEntity = (Entity) entity;
+                if (currentEntity instanceof Guard){
+                    if(currentEntity.checkWinningCondition()){
+                        hasWonGame = 2; return;
+                    }
+                } if (currentEntity instanceof Intruder){
+                    if(! currentEntity.checkWinningCondition()){
+                        hasWonGame = 0; return;
+                    }
+                }
+            }
+            hasWonGame = 1;
         }
-
     }
 
 

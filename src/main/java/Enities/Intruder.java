@@ -8,7 +8,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-
+import model.MapItem;
+import model.TargetArea;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,6 @@ public class Intruder extends Entity{
     boolean isAlive = true;
     AbstractAgent agent;
     static int intruderCount = 0;
-    boolean isInTargetArea = false; //TODO
 
     public Intruder(double x, double y) {
         super(x, y);
@@ -71,6 +71,27 @@ public class Intruder extends Entity{
         return null;
     }
 
+    /**
+     * @return true if the intruder is alive and in the target area
+     */
+    public boolean checkWinningCondition(){
+        return isAlive() && isInTargetArea();
+    }
+
+    /**
+     * @return true if the intruder is inside any of the specified target areas, false otherwise
+     */
+    public boolean isInTargetArea(){
+        ArrayList<MapItem> areas = map.getStaticItems();
+        for (MapItem target : areas){
+            if (target instanceof TargetArea){
+                if(((TargetArea) target).isInsideArea(getPosition())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public void setRemote() {
         this.agent = new GuardRemote();

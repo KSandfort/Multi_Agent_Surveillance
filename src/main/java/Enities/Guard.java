@@ -10,6 +10,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import model.HitBox;
 import model.MapItem;
+import model.TargetArea;
 import model.Vector2D;
 
 import java.util.ArrayList;
@@ -38,20 +39,32 @@ public class Guard extends Entity {
         return false;
     }
 
-    public ArrayList<Intruder> detected(){ //TODO
+    public ArrayList<Intruder> detected(){
         ArrayList<Intruder> detected = new ArrayList<>();
         ArrayList<Ray> rays = FOV();
         for (Ray ray : rays){
-            ArrayList<MapItem> items = this.map.getMovingItems();
-            for (MapItem item : items){
-                Entity intruder = (Entity) item;
-                if (intruder.isIntruder){
-                    HitBox intruderHitBox = intruder.hitBox;
-//                    for (int i = 0; i < intruderHitBox.getCornerPoints().length; i++)
+            for (MapItem item : ray.getDetectedItems(this)){
+                if (item instanceof Intruder){
+                   detected.add((Intruder) item);
                 }
             }
         }
-        return null;
+        return detected;
+    }
+
+    /**
+     * @return false if any intruder is still alive, true otherwise
+     */
+    public boolean checkWinningCondition(){
+        ArrayList<MapItem> entities = map.getMovingItems();
+        for (MapItem entity : entities){
+            if (entity instanceof Intruder){
+                if(((Intruder) entity).isAlive){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void chase(Vector2D position){

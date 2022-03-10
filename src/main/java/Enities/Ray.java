@@ -60,9 +60,8 @@ public class Ray {
      * @param entity
      * @return closest item that is detected by the ray, null if there is no item
      */
-    public MapItem getDetectedItems(Entity entity){
-        double minDistance = entity.fovDepth;
-        MapItem closestItem = null;
+    public ArrayList<MapItem> getDetectedItems(Entity entity){
+        ArrayList<MapItem> closestItem = new ArrayList<>();
 
         ArrayList<MapItem> allItems = new ArrayList<>();
         allItems.addAll(entity.getMap().getStaticItems());
@@ -73,9 +72,8 @@ public class Ray {
             // Find the closest object
             for (int j = 0; j < item.getCornerPoints().length; j++){
                 double currentDistance = Vector2D.distance(this.getOrigin(), this.getPoint(), item.getCornerPoints()[j], item.getCornerPoints()[(j + 1) % 4]);
-                if (currentDistance < minDistance && currentDistance > 0 && item != entity) {
-                    minDistance = currentDistance;
-                    closestItem = item;
+                if (currentDistance <= entity.fovDepth && currentDistance > 0 && item != entity) {
+                    closestItem.add(item);
                 }
             }
         }
