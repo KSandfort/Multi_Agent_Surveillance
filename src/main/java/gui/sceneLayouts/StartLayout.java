@@ -149,6 +149,8 @@ public class StartLayout extends BorderPane {
     public void setSimulationInstance(SimulationGUI simulationGUI) {
         this.simulationGUI = simulationGUI;
     }
+
+    public int getGameMode(){return gameMode; }
 }
 
 /**

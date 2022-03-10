@@ -37,7 +37,7 @@ public class Guard extends Entity {
         return false;
     }
 
-    public ArrayList<Intruder> detected(){
+    public ArrayList<Intruder> detected(){ //TODO
         ArrayList<Intruder> detected = new ArrayList<>();
         ArrayList<Ray> rays = FOV();
         for (Ray ray : rays){

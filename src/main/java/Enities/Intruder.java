@@ -10,6 +10,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import model.GameMap;
 
+
 import java.util.ArrayList;
 
 public class Intruder extends Entity{
@@ -17,6 +18,7 @@ public class Intruder extends Entity{
     boolean isAlive = true;
     AbstractAgent agent;
     static int intruderCount = 0;
+    boolean isInTargetArea = false; //TODO
 
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
@@ -76,6 +78,8 @@ public class Intruder extends Entity{
         this.agent.setEntityInstance(this); // Agent needs to be able to access the Entity (this class).
         agent.addControls();
     }
+
+
 
 }
 
