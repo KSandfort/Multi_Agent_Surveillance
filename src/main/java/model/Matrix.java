@@ -166,5 +166,26 @@ public class Matrix {
 
         return output;
     }
+
+    public static Matrix fromArray(double[] arr)
+    {
+        Matrix output = new Matrix(arr.length,1);
+        for(int i =0;i<output.rows;i++)
+            output.values[i][0]=arr[i];
+        return output;
+
+    }
+
+    public double[] toArray()
+    {
+        double[] output = new double[rows*columns];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                output[index++] = values[i][j];
+            }
+        }
+        return output;
+    }
 }
 
