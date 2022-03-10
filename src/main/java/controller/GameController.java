@@ -17,6 +17,8 @@ public class GameController {
     // Variables
     GameMap map;
     SimulationGUI simulationGUI;
+    boolean hasWonGame = false; // todo change this to 0,1,2 ???
+    double coverageThreshold;
 
     // TEMPORARY - for testing purpose of the title screen
     static public int amountOfGuards;
@@ -37,6 +39,33 @@ public class GameController {
         for(MapItem item : items) {
             item.update(map.getStaticItems());
         }
+        updateWinningCondition();
+    }
+
+    // TODO
+    /**
+     * for gameMode 0 the winning condition will be determined based on the exploration
+     * factor, how much of the map the agents have explored
+     * in gameMode 1, the intruders win, if all of them reach the target area
+     * the guards win, if they manage to capture the intruders before they win
+     */
+    public void updateWinningCondition(){
+        int gameMode = simulationGUI.getGameMode(); // 0 = exploration, 1 = guards vs intruders
+
+        if(gameMode == 0) {
+            if (computeCoverage() >= coverageThreshold){
+                hasWonGame = true;
+            }
+        } else{
+            // TODO get winning condition from entities
+        }
+
+    }
+
+
+    public double computeCoverage(){
+        //TODO compute total coverage of the agent
+        return 0;
     }
 
     /**

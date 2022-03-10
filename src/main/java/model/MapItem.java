@@ -27,6 +27,10 @@ public abstract class MapItem {
 
     public GameMap getMap() { return map; }
 
+    public Vector2D [] getCornerPoints(){
+        return new Vector2D[]{position};
+    }
+
     public abstract boolean isSolidBody();
 
     public abstract boolean isDynamicObject();

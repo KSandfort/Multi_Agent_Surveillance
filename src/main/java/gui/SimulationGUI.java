@@ -144,4 +144,8 @@ public class SimulationGUI extends Application {
         this.currentStep = currentStep;
     }
 
+    public int getGameMode(){
+        return startLayout.getGameMode();
+    }
+
 }

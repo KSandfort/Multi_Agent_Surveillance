@@ -68,6 +68,9 @@ public abstract class Entity extends MapItem {
         if(!inSpecialArea){
             this.resetEntityParam();
         }
+
+        fov=FOV();
+        System.out.println(fov.get(0).getDetectedItems(this)); //todo
     }
 
     public Vector2D getPrevPos() { return prevPos; }
@@ -106,7 +109,7 @@ public abstract class Entity extends MapItem {
         this.fovDepth = fovDepth;
     }
 
-    public void resetEntityParam(){
+    public void resetEntityParam(){ //TODO change this
         this.setVelocity(0.1);
         this.setFovAngle(30);
         this.setFovDepth(20);
@@ -123,6 +126,10 @@ public abstract class Entity extends MapItem {
     }
 
     public abstract boolean isIntruder();
+
+    public Vector2D [] getCornerPoints(){
+        return hitBox.getCornerPoints();
+    }
 
     /**
      * Creates a field of view for an entity.

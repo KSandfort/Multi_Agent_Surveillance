@@ -4,7 +4,11 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import model.Vector2D;
+import model.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Ray {
     Vector2D origin;
@@ -51,4 +55,31 @@ public class Ray {
     public void setDirection(Vector2D direction) {
         this.direction = direction;
     }
+
+    /**
+     * @param entity
+     * @return closest item that is detected by the ray, null if there is no item
+     */
+    public MapItem getDetectedItems(Entity entity){
+        double minDistance = entity.fovDepth;
+        MapItem closestItem = null;
+
+        ArrayList<MapItem> allItems = new ArrayList<>();
+        allItems.addAll(entity.getMap().getStaticItems());
+        allItems.addAll(entity.getMap().getMovingItems());
+
+        // Scan all static items on the map
+        for (MapItem item : allItems){
+            // Find the closest object
+            for (int j = 0; j < item.getCornerPoints().length; j++){
+                double currentDistance = Vector2D.distance(this.getOrigin(), this.getPoint(), item.getCornerPoints()[j], item.getCornerPoints()[(j + 1) % 4]);
+                if (currentDistance < minDistance && currentDistance > 0 && item != entity) {
+                    minDistance = currentDistance;
+                    closestItem = item;
+                }
+            }
+        }
+        return closestItem;
+    }
+
 }
