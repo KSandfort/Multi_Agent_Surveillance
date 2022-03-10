@@ -145,6 +145,10 @@ public abstract class Entity extends MapItem {
 
     public abstract boolean isIntruder();
 
+    public Vector2D [] getCornerPoints(){
+        return hitBox.getCornerPoints();
+    }
+
     /**
      * Creates a field of view for an entity.
      * @return
@@ -174,7 +178,6 @@ public abstract class Entity extends MapItem {
             // Set the length of the ray accordingly.
             ray.setDirection(Vector2D.resize(ray.getDirection(), minDistance));
             rays.add(ray);
-            addVisionKnowledge(ray); // Adds everything it sees to the knowledge
         }
         return rays;
     }
@@ -192,6 +195,10 @@ public abstract class Entity extends MapItem {
             Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
             entityKnowledge.setCell(1, currentTarget);
         }
+    }
+
+    public boolean checkWinningCondition(){
+        return false;
     }
 
     @Override

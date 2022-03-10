@@ -72,6 +72,27 @@ public class Intruder extends Entity{
         return null;
     }
 
+    /**
+     * @return true if the intruder is alive and in the target area
+     */
+    public boolean checkWinningCondition(){
+        return isAlive() && isInTargetArea();
+    }
+
+    /**
+     * @return true if the intruder is inside any of the specified target areas, false otherwise
+     */
+    public boolean isInTargetArea(){
+        ArrayList<MapItem> areas = map.getStaticItems();
+        for (MapItem target : areas){
+            if (target instanceof TargetArea){
+                if(((TargetArea) target).isInsideArea(getPosition())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public void setRemote() {
         this.agent = new RemoteAgent();
