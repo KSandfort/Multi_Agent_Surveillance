@@ -1,63 +1,73 @@
 package Enities;
 
-import com.sun.javafx.scene.text.TextLayout;
-import javafx.scene.Node;
+import agents.AbstractAgent;
+import agents.RandomAgent;
+import agents.RemoteAgent;
 import model.*;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
 
 /**
  * Abstract class of an entity on the map.
  */
 public abstract class Entity extends MapItem {
-    double explorationFactor = 0.2;
+
+    // Variables
+    public static double baseSpeedGuard = 0.1;
+    public static double sprintSpeedGuard = 0.2;
+    public static double baseSpeedIntruder = 0.1;
+    public static double sprintSpeedIntruder = 0.2;
+    EntityKnowledge entityKnowledge = new EntityKnowledge();
     double fovAngle = 30;
     double fovDepth = 20;
-    //Vector2D fovDirection;
-    Vector2D direction;
+    protected Vector2D direction;
     boolean isIntruder;
-    double sprintMovementFactor;//number by which the movement speed needs to be increased when sprinting
-    double sprintRotationFactor;//number by which the rotation speed needs to be decreased when sprinting
     boolean isSprinting = true;
     ArrayList<Ray> fov;
     double turnSpeed;//rotation in degrees/sec
     public double radius = 1;//width of the entity
     int ID;
     HitBox hitBox;
-    Vector2D prevPos;
-    protected double velocity;
+    protected AbstractAgent agent;
+    protected Vector2D prevPos;
 
-    public Entity(double x, double y) {
+    /**
+     * Constructor
+     * @param x
+     * @param y
+     * @param currentMap
+     */
+    public Entity(double x, double y, GameMap currentMap) {
+        setMap(currentMap);
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
-        velocity = 0;
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));
         Vector2D c2 = Vector2D.add(getPosition(), new Vector2D(radius,-radius));
         Vector2D c3 = Vector2D.add(getPosition(), new Vector2D(-radius,radius));
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
+        entityKnowledge.setPositionOffset(getPosition());
     }
 
+    /**
+     * Setter
+     * @param map
+     */
     public void setMap(GameMap map){
         this.map = map;
     }
 
     /**
-     * Gives the Entity a new position, based on the direction the Entity is looking at and the
-     * current velocity.
+     * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
-
-        prevPos = getPosition();
-
+        Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
+        if (this.agent != null) {
+            agent.changeMovement(items);
+        }
+        // Check collision detection
         boolean inSpecialArea = false;
-
-        this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
-        direction.pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
-        direction.normalize();
-        hitBox.transform(this);
         for(MapItem item : items) {
             if (((Area) item).isAgentInsideArea(this)){
                 Area areaItem = (Area) item;
@@ -66,11 +76,41 @@ public abstract class Entity extends MapItem {
             }
         }
         if(!inSpecialArea){
-            this.resetEntityParam();
+            resetEntityParam();
         }
+        // Update HitBox
+        this.getHitBox().transform(this);
+
+        // Update agent knowledge
+        entityKnowledge.setCell(1, previousPos); // Remove current position marker
+        // Add new position marker
+        entityKnowledge.setCell(2, getPosition());
     }
 
-    public Vector2D getPrevPos() { return prevPos; }
+    /**
+     * Sets the agent of a guard.
+     * 0 = random agent
+     * 1 = remote agent
+     * @param type
+     */
+    public void setAgent(int type) {
+        switch (type) {
+            case 0: {
+                agent = new RandomAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
+            case 1: {
+                agent = new RemoteAgent();
+                agent.setEntityInstance(this);
+                agent.addControls();
+                break;
+            }
+            default: {
+                System.out.println("No agent defined!!!");
+            }
+        }
+    }
 
     public double getRadius() { return radius; }
 
@@ -80,14 +120,6 @@ public abstract class Entity extends MapItem {
 
     public void setDirection(Vector2D direction) {
         this.direction = direction;
-    }
-
-    public double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(double velocity) {
-        this.velocity = velocity;
     }
 
     public double getFovAngle() {
@@ -107,19 +139,8 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setVelocity(0.1);
         this.setFovAngle(30);
         this.setFovDepth(20);
-    }
-
-    public Entity(SpawnArea spawnArea) {
-        Random rand = new Random();
-        //TODO: Place entity in spawn area. Since it is no perfect rectangle, we need to choose a different
-        // algorithm.
-        /*
-        double x = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
-        double y = rand.nextDouble()*spawnArea.getWidth() + spawnArea.getPosition().getX();
-         */
     }
 
     public abstract boolean isIntruder();
@@ -153,8 +174,24 @@ public abstract class Entity extends MapItem {
             // Set the length of the ray accordingly.
             ray.setDirection(Vector2D.resize(ray.getDirection(), minDistance));
             rays.add(ray);
+            addVisionKnowledge(ray); // Adds everything it sees to the knowledge
         }
         return rays;
+    }
+
+    /**
+     * Adds knowledge to entityKnowledge based on what the ray observes
+     * @param ray ray that observes
+     */
+    public void addVisionKnowledge(Ray ray) {
+        //TODO: Implement actual vision!
+        double rayLength = Vector2D.length(ray.getDirection());
+        int rayLengthInt = (int) Math.floor(rayLength);
+        int detailLevel = 2;
+        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
+            Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
+            entityKnowledge.setCell(1, currentTarget);
+        }
     }
 
     @Override
@@ -170,5 +207,29 @@ public abstract class Entity extends MapItem {
     @Override
     public boolean isTransparentObject() {
         return false;
+    }
+
+    public HitBox getHitBox() {
+        return hitBox;
+    }
+
+    public void setHitBox(HitBox hitBox) {
+        this.hitBox = hitBox;
+    }
+
+    public Vector2D getPrevPos() {
+        return prevPos;
+    }
+
+    public void setPrevPos(Vector2D pos) {
+        prevPos = pos;
+    }
+
+    public EntityKnowledge getEntityKnowledge() {
+        return entityKnowledge;
+    }
+
+    public void setEntityKnowledge(EntityKnowledge entityKnowledge) {
+        this.entityKnowledge = entityKnowledge;
     }
 }

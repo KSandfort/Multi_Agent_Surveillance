@@ -5,7 +5,6 @@ import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
 import model.GameMap;
 import model.MapItem;
-
 import java.util.ArrayList;
 
 /**
@@ -22,16 +21,22 @@ public class GameController {
     static public int amountOfGuards;
     static public int amountOfIntruders;
 
+    /**
+     * Constructor
+     * @param gui
+     */
     public GameController(SimulationGUI gui) {
         this.simulationGUI = gui;
         GameMap map = new GameMap(this);
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
-        this.map.populateMap(amountOfGuards, amountOfIntruders, 0, 0);
+        this.map.populateMap(amountOfGuards, amountOfIntruders, 1, 0);
     }
 
-    // do the update magic...
+    /**
+     * Does the update magic.
+     */
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
         for(MapItem item : items) {
@@ -58,7 +63,10 @@ public class GameController {
         layout.getCanvas().getChildren().addAll(nodes);
     }
 
-
+    /**
+     * Draws all the moving items of the map.
+     * @param layout
+     */
     public void drawMovingItems(MainLayout layout){
         ArrayList<Node> nodes = new ArrayList<>();
         ArrayList<MapItem> items = map.getMovingItems();
@@ -77,13 +85,9 @@ public class GameController {
         this.map = map;
     }
 
-
     public GameMap getMap(){
         return this.map;
     }
-    /**
-     * Executes the loop to run the simulation
-     */
 
     public SimulationGUI getSimulationGUI() {
         return simulationGUI;

@@ -74,18 +74,18 @@ public abstract class WallWithItem extends Wall{
     }
 
     @Override
-    public void onAgentCollision(Entity agent) {
-        if (item.isAgentInsideArea(agent))
+    public void onAgentCollision(Entity entity) {
+        if (item.isAgentInsideArea(entity))
         {
-            if(leftWall.isAgentInsideArea(agent)){
-                leftWall.onAgentCollision(agent);
-            }else if (rightWall.isAgentInsideArea(agent)){
-                rightWall.onAgentCollision(agent);
+            if(leftWall.isAgentInsideArea(entity)){
+                leftWall.onAgentCollision(entity);
+            }else if (rightWall.isAgentInsideArea(entity)){
+                rightWall.onAgentCollision(entity);
             }else{
-                item.onAgentCollision(agent);
+                item.onAgentCollision(entity);
             }
         }else{
-            super.onAgentCollision(agent);
+            super.onAgentCollision(entity);
         }
     }
 

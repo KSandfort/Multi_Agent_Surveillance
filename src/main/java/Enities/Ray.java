@@ -6,20 +6,40 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import model.Vector2D;
 
+/**
+ * This class represents a ray in the simulation that builds the vision
+ * in a FOV of an entity.
+ */
 public class Ray {
+
+    // Variables
     Vector2D origin;
     Vector2D direction;
 
+    /**
+     * Constructor
+     * @param origin
+     * @param direction
+     */
     public Ray(Vector2D origin, Vector2D direction){
         this.origin = origin;
         this.direction = direction;
     }
 
+    /**
+     * Returns the point the ray is pointing at.
+     * @return
+     */
     public Vector2D getPoint(){
         return Vector2D.add(origin, direction);
     }
 
-
+    /**
+     * Determinant calculation.
+     * @param a
+     * @param b
+     * @return
+     */
     public static double det(Double[] a, Double [] b){
         return a[0]*b[1] - a[1] * b[0];
     }

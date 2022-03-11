@@ -1,5 +1,6 @@
 package gui.sceneLayouts;
 
+import gui.ExplorationStage;
 import gui.SimulationGUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -23,6 +24,7 @@ public class MainLayout extends BorderPane {
     Button playPauseButton;
     Button stepButton;
     Button returnToStartButton;
+    Button explorationButton;
     Slider simSpeedSlider;
     Label speedLabel;
     boolean isPlaying;
@@ -93,7 +95,18 @@ public class MainLayout extends BorderPane {
             System.out.println("Todo...");
         });
 
-        controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider, returnToStartButton);
+        explorationButton = new Button("See Exploration");
+        explorationButton.setOnAction(e -> {
+            ExplorationStage explorationStage = new ExplorationStage(this);
+        });
+
+        controlsContainer.getChildren().addAll(
+                playPauseButton,
+                stepButton,
+                speedLabel,
+                simSpeedSlider,
+                returnToStartButton,
+                explorationButton);
         this.setBottom(controlsContainer);
     }
 
@@ -105,7 +118,11 @@ public class MainLayout extends BorderPane {
         return stepCountLabel;
     }
 
-    public void setSimulationInstance(SimulationGUI simulationGUI) {
+    public SimulationGUI getSimulationGUI() {
+        return this.simulationGUI;
+    }
+
+    public void setSimulationGUI(SimulationGUI simulationGUI) {
         this.simulationGUI = simulationGUI;
     }
 }

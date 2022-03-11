@@ -1,13 +1,14 @@
 package Enities;
 
 import agents.AbstractAgent;
-import agents.GuardRemote;
+import agents.RemoteAgent;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import model.GameMap;
 
 import java.util.ArrayList;
 
@@ -17,8 +18,8 @@ public class Intruder extends Entity{
     AbstractAgent agent;
     static int intruderCount = 0;
 
-    public Intruder(double x, double y) {
-        super(x, y);
+    public Intruder(double x, double y, GameMap currentMap) {
+        super(x, y, currentMap);
         intruderCount++;
         this.ID = intruderCount;
     }
@@ -71,7 +72,7 @@ public class Intruder extends Entity{
 
 
     public void setRemote() {
-        this.agent = new GuardRemote();
+        this.agent = new RemoteAgent();
         this.agent.setEntityInstance(this); // Agent needs to be able to access the Entity (this class).
         agent.addControls();
     }

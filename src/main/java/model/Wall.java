@@ -113,19 +113,19 @@ public class Wall extends Area {
     }
 
     @Override
-    public void onAgentCollision(Entity agent)
+    public void onAgentCollision(Entity entity)
     {
-        Vector2D pos = agent.getPosition();
-        Vector2D dir = getAgentCollisionDirection(agent);
+        Vector2D pos = entity.getPosition();
+        Vector2D dir = getAgentCollisionDirection(entity);
         if (dir == null) return;
         if(dir.getX() == 0 && dir.getY() == 0)
         {
-            agent.setPosition(agent.getPrevPos());
+            entity.setPosition(entity.getPrevPos());
         }else {
             double length = Vector2D.length(dir);
-            double diff = agent.getRadius() - length;
+            double diff = entity.getRadius() - length;
             Vector2D push = Vector2D.scalar(dir, diff / length);
-            agent.setPosition(Vector2D.add(pos, push));
+            entity.setPosition(Vector2D.add(pos, push));
         }
     }
 

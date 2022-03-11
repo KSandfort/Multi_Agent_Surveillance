@@ -11,7 +11,7 @@ public abstract class Area extends MapItem{
     protected Vector2D[] cornerPoints = new Vector2D[4];
     private double areaFovDepth = 20;
     private double areaFovAngle = 30;
-    private double areaSpeed = 0.1;
+    private double areaSpeedFactor = 1;
     private double hearingFactor = 1;
 
     public Area(double xFrom, double yFrom, double xTo, double yTo) {
@@ -79,7 +79,6 @@ public abstract class Area extends MapItem{
 
     public void onAgentCollision(Entity agent)
     {
-        agent.setVelocity(getAreaSpeed());
         agent.setFovAngle(getAreaFovAngle());
         agent.setFovDepth(getAreaFovDepth());
         //TODO add hearing
@@ -116,12 +115,12 @@ public abstract class Area extends MapItem{
         this.areaFovAngle = areaFovAngle;
     }
 
-    public double getAreaSpeed() {
-        return areaSpeed;
+    public double getAreaSpeedFactor() {
+        return areaSpeedFactor;
     }
 
-    public void setAreaSpeed(double areaSpeed) {
-        this.areaSpeed = areaSpeed;
+    public void setAreaSpeedFactor(double areaSpeed) {
+        this.areaSpeedFactor = areaSpeedFactor;
     }
 
     public double getHearingFactor() {
