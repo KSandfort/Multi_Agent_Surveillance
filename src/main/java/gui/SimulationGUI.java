@@ -69,7 +69,7 @@ public class SimulationGUI extends Application {
         currentStep = 0;
         simulationDelay = 1;
         mainLayout = new MainLayout(primaryStage);
-        mainLayout.setSimulationInstance(this);
+        mainLayout.setSimulationGUI(this);
         mainScene = new Scene(mainLayout, 1300, 1000);
 
         GameController.amountOfGuards = guardAmount;
@@ -146,6 +146,9 @@ public class SimulationGUI extends Application {
         this.currentStep = currentStep;
     }
 
+    public GameController getController() {
+        return controller;
+    }
     public int getGameMode(){
         return startLayout.getGameMode();
     }
