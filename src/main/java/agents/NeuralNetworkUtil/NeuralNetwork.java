@@ -20,9 +20,9 @@ public class NeuralNetwork {
     Random random;
     public NeuralNetwork(int in, int out)
     {
-        inputNum = in;
+        inputNum = in + 1;//including bias node
         outputNum = out;
-        maxNeurons = in + out;
+        maxNeurons = in;
         nodes = new ArrayList<NNNode>();
         connections = new ArrayList<NNConnection>();
         random = new Random();
@@ -31,10 +31,30 @@ public class NeuralNetwork {
     public double[] evaluate(double[] input)
     {
         double[] output = new double[outputNum];
+        double[] neuronValues = new double[maxNeurons + outputNum];
+        if(input.length + 1 != inputNum)
+        {
+            System.out.println("Incorrect number of inputs ");
+            return null;
+        }
+
+        neuronValues[0] = 1;//bias node
+        System.arraycopy(input,0,neuronValues,1,input.length);
+
+        for (int i = 0; i < maxNeurons; i++) {
+            for (int k = 0; k < connections.size(); k++) {
+                NNConnection c = connections.get(k);
+                if(c.getIn() != i)
+                {
+                    continue;
+                }
+                neuronValues[c.getOut()] += neuronValues[c.getIn()] * c.getWeight();
+            }
+        }
+
+        System.arraycopy(neuronValues,maxNeurons,output,0,outputNum);
         
-        
-        
-        return null;
+        return output;
     }
 
     public static NeuralNetwork crossOver(NeuralNetwork first, NeuralNetwork second)
@@ -238,9 +258,9 @@ public class NeuralNetwork {
     public int randomNeuron(boolean canBeInput)
     {
         //default value of boolean is false so we dont need to initialize the values of the array, since we want them to be false
-        boolean[] possibleNeurons = new boolean[maxNeurons];
+        boolean[] possibleNeurons = new boolean[maxNeurons + outputNum];
 
-        //either include the input neurons in the selectable neurons or the oputput neurons to make it possible to select two neurons without selecting two output or input neurons
+        //either include the input neurons in the selectable neurons or the output neurons to make it possible to select two neurons without selecting two output or input neurons
         if(canBeInput)
         {
             for (int i = 0; i < inputNum; i++) {
@@ -248,22 +268,22 @@ public class NeuralNetwork {
             }
         }else
         {
-            for (int i = 0; i < outputNum; i++) {
-                possibleNeurons[inputNum + i] = true;
+            for (int i = maxNeurons; i < maxNeurons + outputNum; i++) {
+                possibleNeurons[i] = true;
             }
         }
 
-        for (int i = inputNum + outputNum; i < maxNeurons; i++) {//add hidden neurons
+        for (int i = inputNum; i < maxNeurons; i++) {//add hidden neurons
             possibleNeurons[i] = true;
         }
 
 
         for (NNConnection c : connections) {
-            if(canBeInput && (c.getIn() < inputNum || c.getIn() >= inputNum + outputNum) )
+            if(canBeInput || (c.getIn() >= inputNum && c.getIn() < maxNeurons) )
             {
                 possibleNeurons[c.getIn()] = true;
             }
-            if(!canBeInput || c.getOut() >= inputNum)
+            if(!canBeInput || (c.getIn() >= inputNum && c.getIn() < maxNeurons))
             {
                 possibleNeurons[c.getOut()] = true;
             }
