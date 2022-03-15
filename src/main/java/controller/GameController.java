@@ -6,21 +6,27 @@ import Enities.Intruder;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
+import lombok.Getter;
+import lombok.Setter;
 import model.GameMap;
 import model.MapItem;
+import utils.MapReader;
+
 import java.util.ArrayList;
 
 /**
  * This class acts as the heart of the game. It controls all the parts
  * and is the point where GUI and back end come together.
  */
+@Getter
+@Setter
 public class GameController {
 
     // Variables
-    GameMap map;
-    SimulationGUI simulationGUI;
-    int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
-    double coverageThreshold = 80;
+    private GameMap map;
+    private SimulationGUI simulationGUI;
+    private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
+    private double coverageThreshold = 80;
 
     // TEMPORARY - for testing purpose of the title screen
     static public int amountOfGuards;
@@ -30,13 +36,25 @@ public class GameController {
      * Constructor
      * @param gui
      */
-    public GameController(SimulationGUI gui) {
+    public GameController(SimulationGUI gui, int mapCode) {
         this.simulationGUI = gui;
         GameMap map = new GameMap(this);
         this.map = map;
-        //TEMPORARY -- for testing purposes
-        this.map.initTestGameMap();
-        this.map.populateMap(amountOfGuards, amountOfIntruders, 1, 0);
+        switch (mapCode) { // 0 = test map, 1 = read from file
+            case 0: {
+                this.map.initTestGameMap();
+                this.map.populateMap(amountOfGuards, amountOfIntruders, 1, 0);
+                break;
+            }
+            case 1: {
+                this.map = MapReader.readMapFromFile("src/main/resources/examinermap_phase1.txt", this);
+                break;
+            }
+            default: {
+                System.out.println("ERROR! No map generated!");
+                break;
+            }
+        }
     }
 
     /**
@@ -122,18 +140,6 @@ public class GameController {
             }
         }
         layout.getCanvas().getChildren().addAll(nodes);
-    }
-
-    public void setMap(GameMap map){
-        this.map = map;
-    }
-
-    public GameMap getMap(){
-        return this.map;
-    }
-
-    public SimulationGUI getSimulationGUI() {
-        return simulationGUI;
     }
 
 }

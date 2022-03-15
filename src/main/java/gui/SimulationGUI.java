@@ -63,7 +63,7 @@ public class SimulationGUI extends Application {
      * @param guardAmount
      * @param intruderAmount
      */
-    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
+    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount, int mapCode) {
         currentStep = 0;
         simulationDelay = 0;
         mainLayout = new MainLayout(primaryStage);
@@ -73,7 +73,7 @@ public class SimulationGUI extends Application {
         GameController.amountOfGuards = guardAmount;
         GameController.amountOfIntruders = intruderAmount;
 
-        this.setController(new GameController(this));
+        this.setController(new GameController(this, mapCode));
         this.controller.drawFixedItems(mainLayout);
 
         // Timeline Animation

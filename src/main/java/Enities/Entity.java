@@ -18,7 +18,7 @@ public abstract class Entity extends MapItem {
     public static double sprintSpeedGuard = 0.4;
     public static double baseSpeedIntruder = 0.2;
     public static double sprintSpeedIntruder = 0.4;
-    EntityKnowledge entityKnowledge = new EntityKnowledge();
+    EntityKnowledge entityKnowledge;
     double fovAngle = 30;
     double fovDepth = 20;
     protected Vector2D direction;
@@ -40,6 +40,7 @@ public abstract class Entity extends MapItem {
      */
     public Entity(double x, double y, GameMap currentMap) {
         setMap(currentMap);
+        entityKnowledge = new EntityKnowledge(currentMap);
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));

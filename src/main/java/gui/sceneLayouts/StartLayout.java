@@ -30,9 +30,10 @@ public class StartLayout extends BorderPane {
     int gameMode; // 0 = exploration, 1 = guards vs intruders
     ObservableList<String> mapsList =
             FXCollections.observableArrayList(
-                    "Test map"
+                    "Test map",
+                    "Read from file"
             );
-    ComboBox map;
+    ComboBox mapListBox;
 
     /**
      * Constructor
@@ -98,10 +99,10 @@ public class StartLayout extends BorderPane {
         // --- Map Row ---
         Label mapLabel = new Label("Map");
         mapLabel.setStyle("-fx-font: 12px 'Verdana';");
-        map = new ComboBox(mapsList);
-        map.getSelectionModel().selectFirst();
+        mapListBox = new ComboBox(mapsList);
+        mapListBox.getSelectionModel().selectFirst();
         mainGrid.add(mapLabel, 0, 3);
-        mainGrid.add(map, 1, 3);
+        mainGrid.add(mapListBox, 1, 3);
 
         // Add mainGrid
         mainGrid.setPadding(new Insets(10, 10, 10, 10));
@@ -136,7 +137,18 @@ public class StartLayout extends BorderPane {
             else {
                 amountIntruders = Integer.parseInt(intruderAmount.getText());
             }
-            simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders);
+            // Determine selected map
+            int mapCode;
+            if (mapListBox.getValue().equals("Test map")) {
+                mapCode = 0;
+            }
+            if (mapListBox.getValue().equals("Read from file")) {
+                mapCode = 1;
+            }
+            else {
+                mapCode = 0;
+            }
+            simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });
         controlsBox.getChildren().add(startButton);
         this.setBottom(controlsBox);

@@ -3,13 +3,16 @@ package model;
 import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;
+import lombok.Getter;
+import lombok.Setter;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Class that represents a map state of the simulation
  */
+@Getter
+@Setter
 public class GameMap {
 
     // Variables
@@ -29,11 +32,6 @@ public class GameMap {
      */
     public GameMap(GameController controller) {
         this.gameController = controller;
-    }
-
-    public GameMap(int sizeX, int sizeY) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
     }
 
     /**
@@ -179,73 +177,9 @@ public class GameMap {
         addToMap(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
     }
 
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public void setSizeX(int sizeX) {
-        this.sizeX = sizeX;
-    }
-
-    public int getSizeY() {
-        return sizeY;
-    }
-
-    public void setSizeY(int sizeY) {
-        this.sizeY = sizeY;
-    }
-
-    public ArrayList<MapItem> getStaticItems() {
-        return staticItems;
-    }
-
-    public void setStaticItems(ArrayList<MapItem> staticItems) {
-        this.staticItems = staticItems;
-    }
-
-    public ArrayList<MapItem> getMovingItems() {
-        return movingItems;
-    }
-
-    public void setMovingItems(ArrayList<MapItem> movingItems) {
-        this.movingItems = movingItems;
-    }
-
-    public ArrayList<MapItem> getSolidBodies() {
-        return solidBodies;
-    }
-
-    public void setSolidBodies(ArrayList<MapItem> solidBodies) {
-        this.solidBodies = solidBodies;
-    }
-
-    public ArrayList<MapItem> getTransparentItems() {
-        return transparentItems;
-    }
-
-    public void setTransparentItems(ArrayList<MapItem> transparentItems) {
-        this.transparentItems = transparentItems;
-    }
-
-    public GameController getGameController() {
-        return gameController;
-    }
-
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
-
-    public SpawnArea getSpawnAreaGuards() {
-        return spawnAreaGuards;
-    }
-
     public void setSpawnAreaGuards(SpawnArea spawnAreaGuards) {
         this.spawnAreaGuards = spawnAreaGuards;
         addToMap(spawnAreaGuards);
-    }
-
-    public SpawnArea getSpawnAreaIntruders() {
-        return spawnAreaIntruders;
     }
 
     public void setSpawnAreaIntruders(SpawnArea spawnAreaIntruders) {
