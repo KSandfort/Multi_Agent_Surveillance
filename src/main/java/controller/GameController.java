@@ -1,5 +1,8 @@
 package controller;
 
+import Enities.Entity;
+import Enities.Guard;
+import Enities.Intruder;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
@@ -16,6 +19,8 @@ public class GameController {
     // Variables
     GameMap map;
     SimulationGUI simulationGUI;
+    int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
+    double coverageThreshold = 80;
 
     // TEMPORARY - for testing purpose of the title screen
     static public int amountOfGuards;
@@ -42,6 +47,44 @@ public class GameController {
         for(MapItem item : items) {
             item.update(map.getStaticItems());
         }
+        updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
+    }
+
+    /**
+     * for gameMode 0 the winning condition will be determined based on the exploration
+     * factor, how much of the map the agents have explored
+     * in gameMode 1, the intruders win, if all of them reach the target area
+     * the guards win, if they manage to capture the intruders before they win
+     */
+    public void updateWinningCondition(){
+        int gameMode = simulationGUI.getGameMode(); // 0 = exploration, 1 = guards vs intruders
+
+        if(gameMode == 0) {
+            if (computeCoverage() >= coverageThreshold){
+                hasWonGame = 1;
+            }
+        } else{
+            ArrayList<MapItem> entities = map.getMovingItems();
+            for (MapItem entity : entities){
+                Entity currentEntity = (Entity) entity;
+                if (currentEntity instanceof Guard){
+                    if(currentEntity.checkWinningCondition()){
+                        hasWonGame = 2; return;
+                    }
+                } if (currentEntity instanceof Intruder){
+                    if(! currentEntity.checkWinningCondition()){
+                        hasWonGame = 0; return;
+                    }
+                }
+            }
+            hasWonGame = 1;
+        }
+    }
+
+
+    public double computeCoverage(){
+        //TODO compute total coverage of the agent
+        return 0;
     }
 
     /**

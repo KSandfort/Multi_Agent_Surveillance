@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.Arrays;
+
 /**
  * Parent class of all GUI elements.
  * Central unit to control the graphics.
@@ -147,4 +149,8 @@ public class SimulationGUI extends Application {
     public GameController getController() {
         return controller;
     }
+    public int getGameMode(){
+        return startLayout.getGameMode();
+    }
+
 }
