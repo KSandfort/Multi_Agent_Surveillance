@@ -1,5 +1,6 @@
 package model;
 
+import Enities.Bug;
 import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;
@@ -76,6 +77,18 @@ public class GameMap {
     public void populateMap(int guards, int intruders, int agentTypeGuard, int agentTypeIntruder) {
         addGuards(guards);
         addIntruders(intruders);
+    }
+
+    /**
+     * Populates the map with bug exploration agents.
+     * @param count the amount of bugs
+     */
+    public void populateMapWithBugs(int count) {
+        for(double i = 0; i < count; i++) {
+            double alpha = 2*Math.PI * (i/count);
+            Bug bug = new Bug(55, 30, alpha);
+            addToMap(bug);
+        }
     }
 
     /**
