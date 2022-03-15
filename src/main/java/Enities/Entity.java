@@ -14,10 +14,10 @@ import java.util.Random;
 public abstract class Entity extends MapItem {
 
     // Variables
-    public static double baseSpeedGuard = 0.1;
-    public static double sprintSpeedGuard = 0.2;
-    public static double baseSpeedIntruder = 0.1;
-    public static double sprintSpeedIntruder = 0.2;
+    public static double baseSpeedGuard = 0.2;
+    public static double sprintSpeedGuard = 0.4;
+    public static double baseSpeedIntruder = 0.2;
+    public static double sprintSpeedIntruder = 0.4;
     EntityKnowledge entityKnowledge = new EntityKnowledge();
     double fovAngle = 30;
     double fovDepth = 20;
@@ -178,6 +178,7 @@ public abstract class Entity extends MapItem {
             // Set the length of the ray accordingly.
             ray.setDirection(Vector2D.resize(ray.getDirection(), minDistance));
             rays.add(ray);
+            addVisionKnowledge(ray);
         }
         return rays;
     }
@@ -190,10 +191,14 @@ public abstract class Entity extends MapItem {
         //TODO: Implement actual vision!
         double rayLength = Vector2D.length(ray.getDirection());
         int rayLengthInt = (int) Math.floor(rayLength);
-        int detailLevel = 2;
-        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
+        int detailLevel = 2; // Increase to 2 or more, in case there are too many empty spots in the vision
+        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel - detailLevel; i++) {
             Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
             entityKnowledge.setCell(1, currentTarget);
+        }
+        double epsilon = 0.01; // Since the distance correction has some round-off errors, add a small buffer
+        if (rayLength + epsilon < fovDepth) { // Display walls in vision
+            entityKnowledge.setCell(3, ray.getPoint());
         }
     }
 

@@ -70,6 +70,10 @@ public class ExplorationStage extends Stage {
                 pane.setStyle("-fx-background-color:#00ff00;");
                 break;
             }
+            case 3: { // wall
+                pane.setStyle("-fx-background-color:#222222;");
+                break;
+            }
             default: { // error
                 pane.setStyle("-fx-background-color:#ffaa22;");
                 break;
