@@ -57,7 +57,7 @@ public class GameController {
      * the guards win, if they manage to capture the intruders before they win
      */
     public void updateWinningCondition(){
-        int gameMode = simulationGUI.getGameMode(); // 0 = exploration, 1 = guards vs intruders
+        int gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
 
         if(gameMode == 0) {
             if (computeCoverage() >= coverageThreshold){
