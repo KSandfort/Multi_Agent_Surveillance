@@ -96,12 +96,12 @@ public abstract class Entity extends MapItem {
      */
     public void setAgent(int type) {
         switch (type) {
-            case 0: {
+            case 0: { // Random Agent
                 agent = new RandomAgent();
                 agent.setEntityInstance(this);
                 break;
             }
-            case 1: {
+            case 1: { // Remote Agent
                 agent = new RemoteAgent();
                 agent.setEntityInstance(this);
                 agent.addControls();

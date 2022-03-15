@@ -50,7 +50,7 @@ public class SimulationGUI extends Application {
      */
     public void startTitleScreenGUI(Stage primaryStage) {
         startLayout = new StartLayout(primaryStage);
-        startLayout.setSimulationInstance(this);
+        startLayout.setSimulationGUI(this);
         mainScene = new Scene(startLayout, 1300, 1000);
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);

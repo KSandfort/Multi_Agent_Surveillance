@@ -68,12 +68,10 @@ public class GameMap {
      * Populates the map with guards and intruders.
      * @param guards number of guards
      * @param intruders number of intruders
-     * @param agentTypeGuard agent type of the guards
-     * @param agentTypeIntruder agent type of the intruders
      */
-    public void populateMap(int guards, int intruders, int agentTypeGuard, int agentTypeIntruder) {
-        addGuards(guards, agentTypeGuard);
-        addIntruders(intruders, agentTypeIntruder);
+    public void populateMap(int guards, int intruders) {
+        addGuards(guards);
+        addIntruders(intruders);
     }
 
     /**
@@ -107,7 +105,7 @@ public class GameMap {
      * Add guards in the intruder spawn-area.
      * @param numGuards number of guards to spawn
      */
-    public void addGuards(int numGuards, int type){
+    public void addGuards(int numGuards){
         for (int i = 0; i < numGuards; i++){
             Guard guard;
             if (spawnAreaGuards == null) {
@@ -118,7 +116,7 @@ public class GameMap {
                 int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.y1, (int) spawnAreaGuards.y2 + 1);
                 guard = new Guard(randomX, randomY, this);
             }
-            guard.setAgent(type);
+            guard.setAgent(GameController.guardAgentType);
             addToMap(guard);
         }
     }
@@ -127,7 +125,7 @@ public class GameMap {
      * Add intruders in the intruder spawn-area.
      * @param numIntruders number of intruders to spawn
      */
-    public void addIntruders(int numIntruders, int type){
+    public void addIntruders(int numIntruders){
         for (int i = 0; i < numIntruders; i++){
             Intruder intruder;
             if (spawnAreaGuards == null) {
@@ -138,7 +136,7 @@ public class GameMap {
                 int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.y1, (int) spawnAreaIntruders.y2 + 1);
                 intruder = new Intruder(randomX, randomY, this);
             }
-            intruder.setAgent(type);
+            intruder.setAgent(GameController.intruderAgentType);
             addToMap(intruder);
         }
     }

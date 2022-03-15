@@ -28,9 +28,12 @@ public class GameController {
     private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
     private double coverageThreshold = 80;
 
-    // TEMPORARY - for testing purpose of the title screen
-    static public int amountOfGuards;
-    static public int amountOfIntruders;
+    // Static
+    public static int amountOfGuards;
+    public static int amountOfIntruders;
+    public static int guardAgentType = 0;
+    public static int intruderAgentType = 0;
+    // 0 = random, 1 = remote, ...
 
     /**
      * Constructor
@@ -43,7 +46,7 @@ public class GameController {
         switch (mapCode) { // 0 = test map, 1 = read from file
             case 0: {
                 this.map.initTestGameMap();
-                this.map.populateMap(amountOfGuards, amountOfIntruders, 1, 0);
+                this.map.populateMap(amountOfGuards, amountOfIntruders);
                 break;
             }
             case 1: {

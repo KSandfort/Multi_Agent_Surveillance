@@ -3,10 +3,8 @@ package utils;
 import controller.GameController;
 import gui.SimulationGUI;
 import model.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -130,7 +128,7 @@ public class MapReader {
             System.out.println("Cannot find map file!");
             e.printStackTrace();
         }
-        gameMap.populateMap(numGuards, numIntruders, 1, 0);
+        gameMap.populateMap(numGuards, numIntruders);
         gameMap.createBorderWalls();
         return gameMap;
     }
