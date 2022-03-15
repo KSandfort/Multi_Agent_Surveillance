@@ -109,7 +109,7 @@ public class GameMap {
         for (int i = 0; i < numGuards; i++){
             Guard guard;
             if (spawnAreaGuards == null) {
-                guard = new Guard(55, 30, this);
+                guard = new Guard(10, 10, this);
             }
             else {
                 int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.x1, (int) spawnAreaGuards.x2 + 1);

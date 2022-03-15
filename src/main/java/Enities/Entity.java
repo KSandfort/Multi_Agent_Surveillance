@@ -3,34 +3,39 @@ package Enities;
 import agents.AbstractAgent;
 import agents.RandomAgent;
 import agents.RemoteAgent;
+import lombok.Getter;
+import lombok.Setter;
 import model.*;
-
 import java.util.ArrayList;
-import java.util.Random;
+
 
 /**
  * Abstract class of an entity on the map.
  */
+@Getter
+@Setter
 public abstract class Entity extends MapItem {
 
     // Variables
+    private EntityKnowledge entityKnowledge;
+    private double fovAngle = 30;
+    private double fovDepth = 20;
+    protected Vector2D direction;
+    private boolean isIntruder;
+    private boolean isSprinting = true;
+    private ArrayList<Ray> fov;
+    private double turnSpeed; //rotation in degrees/sec
+    private double radius = 1; //width of the entity
+    private int ID;
+    HitBox hitBox;
+    protected AbstractAgent agent;
+    protected Vector2D prevPos;
+
+    // Static
     public static double baseSpeedGuard = 0.2;
     public static double sprintSpeedGuard = 0.4;
     public static double baseSpeedIntruder = 0.2;
     public static double sprintSpeedIntruder = 0.4;
-    EntityKnowledge entityKnowledge;
-    double fovAngle = 30;
-    double fovDepth = 20;
-    protected Vector2D direction;
-    boolean isIntruder;
-    boolean isSprinting = true;
-    ArrayList<Ray> fov;
-    double turnSpeed;//rotation in degrees/sec
-    public double radius = 1;//width of the entity
-    int ID;
-    HitBox hitBox;
-    protected AbstractAgent agent;
-    protected Vector2D prevPos;
 
     /**
      * Constructor
@@ -108,35 +113,9 @@ public abstract class Entity extends MapItem {
                 break;
             }
             default: {
-                System.out.println("No agent defined!!!");
+                System.out.println("No agent defined!");
             }
         }
-    }
-
-    public double getRadius() { return radius; }
-
-    public Vector2D getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Vector2D direction) {
-        this.direction = direction;
-    }
-
-    public double getFovAngle() {
-        return fovAngle;
-    }
-
-    public void setFovAngle(double fovAngle) {
-        this.fovAngle = fovAngle;
-    }
-
-    public double getFovDepth() {
-        return fovDepth;
-    }
-
-    public void setFovDepth(double fovDepth) {
-        this.fovDepth = fovDepth;
     }
 
     public void resetEntityParam(){
@@ -220,29 +199,5 @@ public abstract class Entity extends MapItem {
     @Override
     public boolean isTransparentObject() {
         return false;
-    }
-
-    public HitBox getHitBox() {
-        return hitBox;
-    }
-
-    public void setHitBox(HitBox hitBox) {
-        this.hitBox = hitBox;
-    }
-
-    public Vector2D getPrevPos() {
-        return prevPos;
-    }
-
-    public void setPrevPos(Vector2D pos) {
-        prevPos = pos;
-    }
-
-    public EntityKnowledge getEntityKnowledge() {
-        return entityKnowledge;
-    }
-
-    public void setEntityKnowledge(EntityKnowledge entityKnowledge) {
-        this.entityKnowledge = entityKnowledge;
     }
 }

@@ -92,7 +92,7 @@ public class Ray {
             // Find the closest object
             for (int j = 0; j < item.getCornerPoints().length; j++){
                 double currentDistance = Vector2D.distance(this.getOrigin(), this.getPoint(), item.getCornerPoints()[j], item.getCornerPoints()[(j + 1) % 4]);
-                if (currentDistance <= entity.fovDepth && currentDistance > 0 && item != entity) {
+                if (currentDistance <= entity.getFovDepth() && currentDistance > 0 && item != entity) {
                     closestItem.add(item);
                 }
             }
