@@ -3,6 +3,8 @@ package model;
 import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;
+import controller.MapGenerator;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -56,14 +58,8 @@ public class GameMap {
     public void initTestGameMap() {
         sizeX = 120;
         sizeY = 80;
-        createBorderWalls();
-        setSpawnAreaGuards(new SpawnArea(true, 2, 2, 20, 10));
-        setSpawnAreaIntruders(new SpawnArea(false, 2, 65, 20, 75));
-        addToMap(new Wall(50, 60, 55, 63));
-        addToMap(new Wall(70, 70, 75, 80));
-        addToMap(new Wall(60, 10, 75, 50));
-        addToMap(new WallWithWindow(40, 20, 10, 40, true));
-        addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
+        MapGenerator mapGenerator = new MapGenerator(this);
+        mapGenerator.generateMap();
     }
 
     /**

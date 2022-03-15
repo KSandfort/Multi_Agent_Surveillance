@@ -4,7 +4,6 @@ import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
 import model.GameMap;
-import model.MapGenerator;
 import model.MapItem;
 
 import java.util.ArrayList;
@@ -29,11 +28,6 @@ public class GameController {
         this.map = map;
         //TEMPORARY -- for testing purposes
         this.map.initTestGameMap();
-        this.map.populateMap(amountOfGuards, amountOfIntruders, 0, 0);
-
-        // Map Generator
-        MapGenerator mapGenerator = new MapGenerator(map);
-        mapGenerator.generateMap();
     }
 
     // do the update magic...
