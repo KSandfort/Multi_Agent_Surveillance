@@ -1,15 +1,16 @@
 package Enities;
 
-import agents.AbstractAgent;
-import agents.GuardRemote;
+import agents.RemoteAgent;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import model.GameMap;
 import model.HitBox;
 import model.MapItem;
+import model.TargetArea;
 import model.Vector2D;
 
 import java.util.ArrayList;
@@ -20,17 +21,17 @@ import java.util.ArrayList;
 public class Guard extends Entity {
 
     // Variables
-    AbstractAgent agent;
     static int guardCount = 0;
+
     /**
      * Constructor
      * @param x
      * @param y
      */
-    public Guard(double x, double y){
-        super(x, y);
+    public Guard(double x, double y, GameMap currentMap){
+        super(x, y, currentMap);
         guardCount++;
-        this.ID = guardCount;
+        this.setID(guardCount);;
     }
 
     @Override
@@ -42,16 +43,28 @@ public class Guard extends Entity {
         ArrayList<Intruder> detected = new ArrayList<>();
         ArrayList<Ray> rays = FOV();
         for (Ray ray : rays){
-            ArrayList<MapItem> items = this.map.getMovingItems();
-            for (MapItem item : items){
-                Entity intruder = (Entity) item;
-                if (intruder.isIntruder){
-                    HitBox intruderHitBox = intruder.hitBox;
-//                    for (int i = 0; i < intruderHitBox.getCornerPoints().length; i++)
+            for (MapItem item : ray.getDetectedItems(this)){
+                if (item instanceof Intruder){
+                   detected.add((Intruder) item);
                 }
             }
         }
-        return null;
+        return detected;
+    }
+
+    /**
+     * @return false if any intruder is still alive, true otherwise
+     */
+    public boolean checkWinningCondition(){
+        ArrayList<MapItem> entities = map.getMovingItems();
+        for (MapItem entity : entities){
+            if (entity instanceof Intruder){
+                if(((Intruder) entity).isAlive){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void chase(Vector2D position){
@@ -63,7 +76,7 @@ public class Guard extends Entity {
      * Needs to be called if a Guard should be controlled via user input.
      */
     public void setRemote() {
-        this.agent = new GuardRemote();
+        this.agent = new RemoteAgent();
         this.agent.setEntityInstance(this); // Agent needs to be able to access the Entity (this class).
         agent.addControls();
     }
@@ -85,7 +98,7 @@ public class Guard extends Entity {
                 (getPosition().getY() * sf) + offset );
         line.setStroke(Color.web("#C8E1E7", 1));
         line.setStrokeWidth(5);
-        Text text= new Text("Guard " + ID);
+        Text text= new Text("Guard " + this.getID());
         text.setX((getPosition().getX() * sf) + offset -20);
         text.setY((getPosition().getY() * sf) + offset -12);
         components.add(text);

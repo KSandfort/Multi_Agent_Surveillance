@@ -1,17 +1,20 @@
 package model;
 
+import Enities.Bug;
 import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;
 import controller.MapGenerator;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Class that represents a map state of the simulation
  */
+@Getter
+@Setter
 public class GameMap {
 
     // Variables
@@ -31,11 +34,6 @@ public class GameMap {
      */
     public GameMap(GameController controller) {
         this.gameController = controller;
-    }
-
-    public GameMap(int sizeX, int sizeY) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
     }
 
     /**
@@ -66,12 +64,22 @@ public class GameMap {
      * Populates the map with guards and intruders.
      * @param guards number of guards
      * @param intruders number of intruders
-     * @param agentTypeGuard agent type of the guards
-     * @param agentTypeIntruder agent type of the intruders
      */
-    public void populateMap(int guards, int intruders, int agentTypeGuard, int agentTypeIntruder) {
+    public void populateMap(int guards, int intruders) {
         addGuards(guards);
         addIntruders(intruders);
+    }
+
+    /**
+     * Populates the map with bug exploration agents.
+     * @param count the amount of bugs
+     */
+    public void populateMapWithBugs(int count) {
+        for(double i = 0; i < count; i++) {
+            double alpha = 2*Math.PI * (i/count);
+            Bug bug = new Bug(55, 30, this, alpha);
+            addToMap(bug);
+        }
     }
 
     /**
@@ -109,15 +117,15 @@ public class GameMap {
         for (int i = 0; i < numGuards; i++){
             Guard guard;
             if (spawnAreaGuards == null) {
-                guard = new Guard(55, 30);
+                guard = new Guard(10, 10, this);
             }
             else {
                 int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.x1, (int) spawnAreaGuards.x2 + 1);
                 int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaGuards.y1, (int) spawnAreaGuards.y2 + 1);
-                guard = new Guard(randomX, randomY);
+                guard = new Guard(randomX, randomY, this);
             }
+            guard.setAgent(GameController.guardAgentType);
             addToMap(guard);
-            // remoteGuard.setRemote();
         }
     }
 
@@ -129,15 +137,15 @@ public class GameMap {
         for (int i = 0; i < numIntruders; i++){
             Intruder intruder;
             if (spawnAreaGuards == null) {
-                intruder = new Intruder(55, 30);
+                intruder = new Intruder(55, 30, this);
             }
             else {
                 int randomX = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.x1, (int) spawnAreaIntruders.x2 + 1);
                 int randomY = ThreadLocalRandom.current().nextInt((int) spawnAreaIntruders.y1, (int) spawnAreaIntruders.y2 + 1);
-                intruder = new Intruder(randomX, randomY);
+                intruder = new Intruder(randomX, randomY, this);
             }
+            intruder.setAgent(GameController.intruderAgentType);
             addToMap(intruder);
-            // remoteIntruder.setRemote();
         }
     }
 
@@ -175,73 +183,9 @@ public class GameMap {
         addToMap(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
     }
 
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public void setSizeX(int sizeX) {
-        this.sizeX = sizeX;
-    }
-
-    public int getSizeY() {
-        return sizeY;
-    }
-
-    public void setSizeY(int sizeY) {
-        this.sizeY = sizeY;
-    }
-
-    public ArrayList<MapItem> getStaticItems() {
-        return staticItems;
-    }
-
-    public void setStaticItems(ArrayList<MapItem> staticItems) {
-        this.staticItems = staticItems;
-    }
-
-    public ArrayList<MapItem> getMovingItems() {
-        return movingItems;
-    }
-
-    public void setMovingItems(ArrayList<MapItem> movingItems) {
-        this.movingItems = movingItems;
-    }
-
-    public ArrayList<MapItem> getSolidBodies() {
-        return solidBodies;
-    }
-
-    public void setSolidBodies(ArrayList<MapItem> solidBodies) {
-        this.solidBodies = solidBodies;
-    }
-
-    public ArrayList<MapItem> getTransparentItems() {
-        return transparentItems;
-    }
-
-    public void setTransparentItems(ArrayList<MapItem> transparentItems) {
-        this.transparentItems = transparentItems;
-    }
-
-    public GameController getGameController() {
-        return gameController;
-    }
-
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
-
-    public SpawnArea getSpawnAreaGuards() {
-        return spawnAreaGuards;
-    }
-
     public void setSpawnAreaGuards(SpawnArea spawnAreaGuards) {
         this.spawnAreaGuards = spawnAreaGuards;
         addToMap(spawnAreaGuards);
-    }
-
-    public SpawnArea getSpawnAreaIntruders() {
-        return spawnAreaIntruders;
     }
 
     public void setSpawnAreaIntruders(SpawnArea spawnAreaIntruders) {

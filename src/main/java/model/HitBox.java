@@ -5,10 +5,9 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-
 import java.util.ArrayList;
 
-public class HitBox extends Area{
+public class HitBox extends Area {
 
 
     public HitBox(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
@@ -34,8 +33,8 @@ public class HitBox extends Area{
         return components;
     }
 
-    public void transform(Entity entity){
-        double radius = entity.radius;
+    public void transform(Entity entity) {
+        double radius = entity.getRadius();
         Vector2D c2 = Vector2D.add(entity.getPosition(), new Vector2D(-radius,-radius));
         Vector2D c1 = Vector2D.add(entity.getPosition(), new Vector2D(radius,-radius));
         Vector2D c3 = Vector2D.add(entity.getPosition(), new Vector2D(-radius,radius));

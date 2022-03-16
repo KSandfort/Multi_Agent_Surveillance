@@ -1,13 +1,17 @@
 package Enities;
 
 import agents.AbstractAgent;
-import agents.GuardRemote;
+import agents.RemoteAgent;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import model.GameMap;
+import model.MapItem;
+import model.TargetArea;
+
 
 import java.util.ArrayList;
 
@@ -17,10 +21,10 @@ public class Intruder extends Entity{
     AbstractAgent agent;
     static int intruderCount = 0;
 
-    public Intruder(double x, double y) {
-        super(x, y);
+    public Intruder(double x, double y, GameMap currentMap) {
+        super(x, y, currentMap);
         intruderCount++;
-        this.ID = intruderCount;
+        this.setID(intruderCount);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class Intruder extends Entity{
             circle.setCenterX((getPosition().getX() * sf) + offset);
             circle.setCenterY((getPosition().getY() * sf) + offset);
             circle.setRadius(1 * sf);
-            Text text= new Text("Intruder " + ID);
+            Text text= new Text("Intruder " + this.getID());
             text.setX((getPosition().getX() * sf) + offset - 25);
             text.setY((getPosition().getY() * sf) + offset -12);
             Line line= new Line();
@@ -69,12 +73,35 @@ public class Intruder extends Entity{
         return null;
     }
 
+    /**
+     * @return true if the intruder is alive and in the target area
+     */
+    public boolean checkWinningCondition(){
+        return isAlive() && isInTargetArea();
+    }
+
+    /**
+     * @return true if the intruder is inside any of the specified target areas, false otherwise
+     */
+    public boolean isInTargetArea(){
+        ArrayList<MapItem> areas = map.getStaticItems();
+        for (MapItem target : areas){
+            if (target instanceof TargetArea){
+                if(((TargetArea) target).isInsideArea(getPosition())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public void setRemote() {
-        this.agent = new GuardRemote();
+        this.agent = new RemoteAgent();
         this.agent.setEntityInstance(this); // Agent needs to be able to access the Entity (this class).
         agent.addControls();
     }
+
+
 
 }
 

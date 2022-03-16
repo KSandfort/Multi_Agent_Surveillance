@@ -1,6 +1,8 @@
 package agents;
 
 import Enities.Entity;
+import model.MapItem;
+import java.util.ArrayList;
 
 /**
  * This is the abstract class of any agent.
@@ -14,4 +16,6 @@ public abstract class AbstractAgent {
     }
 
     public abstract void addControls();
+
+    public abstract void changeMovement(ArrayList<MapItem> items);
 }

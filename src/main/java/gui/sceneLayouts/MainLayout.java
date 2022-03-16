@@ -1,5 +1,6 @@
 package gui.sceneLayouts;
 
+import gui.ExplorationStage;
 import gui.SimulationGUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,25 +10,30 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class represents the main layout, that contains a visual
  * representation of the map.
  */
+@Getter
+@Setter
 public class MainLayout extends BorderPane {
 
     // Variables
-    SimulationGUI simulationGUI;
-    Pane canvas;
-    Label stepCountLabel;
-    Button playPauseButton;
-    Button stepButton;
-    Button returnToStartButton;
-    Slider simSpeedSlider;
-    Label speedLabel;
-    boolean isPlaying;
+    private SimulationGUI simulationGUI;
+    private Pane canvas;
+    private Label stepCountLabel;
+    private Button playPauseButton;
+    private Button stepButton;
+    private Button returnToStartButton;
+    private Button explorationButton;
+    private Slider simSpeedSlider;
+    private Label speedLabel;
+    private boolean isPlaying;
+    private Stage primaryStage;
     public static int yOffset = 50;
-    Stage primaryStage;
 
     /**
      * Constructor
@@ -93,19 +99,18 @@ public class MainLayout extends BorderPane {
             System.out.println("Todo...");
         });
 
-        controlsContainer.getChildren().addAll(playPauseButton, stepButton, speedLabel, simSpeedSlider, returnToStartButton);
+        explorationButton = new Button("See Exploration");
+        explorationButton.setOnAction(e -> {
+            ExplorationStage explorationStage = new ExplorationStage(this);
+        });
+
+        controlsContainer.getChildren().addAll(
+                playPauseButton,
+                stepButton,
+                speedLabel,
+                simSpeedSlider,
+                returnToStartButton,
+                explorationButton);
         this.setBottom(controlsContainer);
-    }
-
-    public Pane getCanvas() {
-        return this.canvas;
-    }
-
-    public Label getStepCountLabel() {
-        return stepCountLabel;
-    }
-
-    public void setSimulationInstance(SimulationGUI simulationGUI) {
-        this.simulationGUI = simulationGUI;
     }
 }

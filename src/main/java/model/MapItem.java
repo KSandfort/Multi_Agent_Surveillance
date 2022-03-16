@@ -1,31 +1,31 @@
 package model;
 
 import javafx.scene.Node;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 
+/**
+ * Abstract class for any item on the map.
+ */
+@Getter
+@Setter
 public abstract class MapItem {
+
+    // Variables
     Vector2D position;
     protected GameMap map;
-
-    public Vector2D getPosition(){
-        return position;
-    };
-    public void setPosition(Vector2D position){
-        this.position = position;
-    };
 
     public void update(ArrayList<MapItem> items) {
 
     };
 
-    public void setMap(GameMap map){
-        this.map = map;
-    }
-
     public abstract ArrayList<Node> getComponents();
 
-    public GameMap getMap() { return map; }
+    public Vector2D [] getCornerPoints(){
+        return new Vector2D[]{position};
+    }
 
     public abstract boolean isSolidBody();
 
