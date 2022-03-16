@@ -152,7 +152,7 @@ public class Vector2D {
 
     public void pivot(double angle){
         x = getX()*Math.cos(Math.toRadians(angle)) - getY()*Math.sin(Math.toRadians(angle));
-        y =  getX()*Math.sin(Math.toRadians(angle)) + getY()*Math.cos(Math.toRadians(angle));
+        y = getX()*Math.sin(Math.toRadians(angle)) + getY()*Math.cos(Math.toRadians(angle));
     }
 
     /**
