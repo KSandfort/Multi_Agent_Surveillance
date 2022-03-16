@@ -1,19 +1,13 @@
 package Enities;
 
 import agents.AbstractAgent;
-import agents.GuardRemote;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import model.Area;
-import model.HitBox;
-import model.MapItem;
-import model.Vector2D;
-
-import java.util.concurrent.ThreadLocalRandom;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -82,8 +76,8 @@ public class Bug extends Entity {
      * @param x
      * @param y
      */
-    public Bug(double x, double y, double goal_direction) {
-        super(x, y);
+    public Bug(double x, double y, GameMap map, double goal_direction) {
+        super(x, y, map);
 
         this.ID = Bug.bugCount;
         Bug.bugCount++;
@@ -154,7 +148,7 @@ public class Bug extends Entity {
         averageDistance /= vision.size();
         double distanceToWall = averageDistance;
 
-        wallCloseness = (1 - distanceToWall/fovDepth);
+        wallCloseness = (1 - distanceToWall/getFovDepth());
 
         crawlingAlongWall = (wallCloseness > wallClosenessConditionPercentage);
         if (crawlingAlongWall)
@@ -178,7 +172,7 @@ public class Bug extends Entity {
 
         boolean inSpecialArea = false;
 
-        this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, velocity)));
+        this.setPosition(Vector2D.add(getPosition(), Vector2D.scalar(direction, baseSpeedGuard))); // TODO: Change speed
         direction.normalize();
         hitBox.transform(this);
 

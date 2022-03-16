@@ -82,7 +82,7 @@ public class GameMap {
     public void populateMapWithBugs(int count) {
         for(double i = 0; i < count; i++) {
             double alpha = 2*Math.PI * (i/count);
-            Bug bug = new Bug(55, 30, alpha);
+            Bug bug = new Bug(55, 30, this, alpha);
             addToMap(bug);
         }
     }
