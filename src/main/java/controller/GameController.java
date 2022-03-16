@@ -13,6 +13,7 @@ import model.MapItem;
 import utils.MapReader;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * This class acts as the heart of the game. It controls all the parts
@@ -52,6 +53,12 @@ public class GameController {
             case 1: {
                 this.map = MapReader.readMapFromFile("src/main/resources/examinermap_phase1.txt", this);
                 break;
+            }
+            case 2: {
+                map.setSizeX(120);
+                map.setSizeY(80);
+                MapGenerator mapGenerator = new MapGenerator(map);
+                mapGenerator.generateMap();
             }
             default: {
                 System.out.println("ERROR! No map generated!");

@@ -44,15 +44,16 @@ public final class MapGenerator {
         for (int i = 0; i < random.nextInt(3) + 1; i++)
             createSentryTower(5, 10);
 
-        generateEntities(3, 2);
+        map.populateMap(GameController.amountOfGuards, GameController.amountOfIntruders);
+        // generateEntities(3, 2);
     }
 
     private void generateEntities(int guards, int intruders) {
         for (int i = 0; i <= guards; i++) {
-            map.addToMap(new Guard(guardsSpawnPoint[0], guardsSpawnPoint[1]));
+            map.addToMap(new Guard(guardsSpawnPoint[0], guardsSpawnPoint[1], this.map));
         }
         for (int i = 0; i <= intruders; i++) {
-            map.addToMap(new Intruder(intrudersSpawnPoint[0], intrudersSpawnPoint[1]));
+            map.addToMap(new Intruder(intrudersSpawnPoint[0], intrudersSpawnPoint[1], this.map));
         }
     }
 
@@ -65,7 +66,12 @@ public final class MapGenerator {
     private void createSpawnArea(int min, int max, boolean forGuards) {
         var area = getRandomArea(min, max);
         var spawnArea = new SpawnArea(forGuards, area[0], area[1], area[2], area[3]);
-        map.addToMap(spawnArea);
+        if (forGuards) {
+            map.setSpawnAreaGuards(spawnArea);
+        }
+        else {
+            map.setSpawnAreaIntruders(spawnArea);
+        }
         int[] centerPoint = {(area[0] + area[2]) / 2, (area[1] + area[3]) / 2};
         if (forGuards) {
             guardsSpawnPoint = centerPoint;

@@ -37,7 +37,8 @@ public class StartLayout extends BorderPane {
     private ObservableList<String> mapsList =
             FXCollections.observableArrayList(
                     "Test map",
-                    "Read from file"
+                    "Read from file",
+                    "Random generation"
             );
     private ComboBox mapListBox;
 
@@ -177,15 +178,15 @@ public class StartLayout extends BorderPane {
                 GameController.intruderAgentType = 1;
             }
             // Determine selected map
-            int mapCode;
+            int mapCode = 0;
             if (mapListBox.getValue().equals("Test map")) {
                 mapCode = 0;
             }
             if (mapListBox.getValue().equals("Read from file")) {
                 mapCode = 1;
             }
-            else {
-                mapCode = 0;
+            if (mapListBox.getValue().equals("Random generation")) {
+                mapCode = 2;
             }
             simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });
