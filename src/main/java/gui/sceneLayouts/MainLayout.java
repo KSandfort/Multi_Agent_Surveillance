@@ -10,26 +10,30 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class represents the main layout, that contains a visual
  * representation of the map.
  */
+@Getter
+@Setter
 public class MainLayout extends BorderPane {
 
     // Variables
-    SimulationGUI simulationGUI;
-    Pane canvas;
-    Label stepCountLabel;
-    Button playPauseButton;
-    Button stepButton;
-    Button returnToStartButton;
-    Button explorationButton;
-    Slider simSpeedSlider;
-    Label speedLabel;
-    boolean isPlaying;
+    private SimulationGUI simulationGUI;
+    private Pane canvas;
+    private Label stepCountLabel;
+    private Button playPauseButton;
+    private Button stepButton;
+    private Button returnToStartButton;
+    private Button explorationButton;
+    private Slider simSpeedSlider;
+    private Label speedLabel;
+    private boolean isPlaying;
+    private Stage primaryStage;
     public static int yOffset = 50;
-    Stage primaryStage;
 
     /**
      * Constructor
@@ -108,21 +112,5 @@ public class MainLayout extends BorderPane {
                 returnToStartButton,
                 explorationButton);
         this.setBottom(controlsContainer);
-    }
-
-    public Pane getCanvas() {
-        return this.canvas;
-    }
-
-    public Label getStepCountLabel() {
-        return stepCountLabel;
-    }
-
-    public SimulationGUI getSimulationGUI() {
-        return this.simulationGUI;
-    }
-
-    public void setSimulationGUI(SimulationGUI simulationGUI) {
-        this.simulationGUI = simulationGUI;
     }
 }

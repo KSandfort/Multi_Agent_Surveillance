@@ -15,6 +15,12 @@ public class RandomAgent extends AbstractAgent {
     Vector2D prevPos;
     double explorationFactor = 0.2;
 
+    /**
+     * Constructor
+     */
+    public RandomAgent() {
+    }
+
     @Override
     public void addControls() {
         // Does nothing because no controls are involved.
@@ -32,8 +38,8 @@ public class RandomAgent extends AbstractAgent {
         else {
             velocity = Entity.baseSpeedGuard;
         }
-        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
         e.getDirection().pivot((new Random().nextDouble()*180 - 90)*explorationFactor);
         e.getDirection().normalize();
+        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
     }
 }

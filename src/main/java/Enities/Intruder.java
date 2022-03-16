@@ -24,7 +24,7 @@ public class Intruder extends Entity{
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
         intruderCount++;
-        this.ID = intruderCount;
+        this.setID(intruderCount);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class Intruder extends Entity{
             circle.setCenterX((getPosition().getX() * sf) + offset);
             circle.setCenterY((getPosition().getY() * sf) + offset);
             circle.setRadius(1 * sf);
-            Text text= new Text("Intruder " + ID);
+            Text text= new Text("Intruder " + this.getID());
             text.setX((getPosition().getX() * sf) + offset - 25);
             text.setY((getPosition().getY() * sf) + offset -12);
             Line line= new Line();

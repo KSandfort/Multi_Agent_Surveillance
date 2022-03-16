@@ -22,6 +22,7 @@ public class Guard extends Entity {
 
     // Variables
     static int guardCount = 0;
+
     /**
      * Constructor
      * @param x
@@ -30,7 +31,7 @@ public class Guard extends Entity {
     public Guard(double x, double y, GameMap currentMap){
         super(x, y, currentMap);
         guardCount++;
-        this.ID = guardCount;
+        this.setID(guardCount);;
     }
 
     @Override
@@ -97,7 +98,7 @@ public class Guard extends Entity {
                 (getPosition().getY() * sf) + offset );
         line.setStroke(Color.web("#C8E1E7", 1));
         line.setStrokeWidth(5);
-        Text text= new Text("Guard " + ID);
+        Text text= new Text("Guard " + this.getID());
         text.setX((getPosition().getX() * sf) + offset -20);
         text.setY((getPosition().getY() * sf) + offset -12);
         components.add(text);

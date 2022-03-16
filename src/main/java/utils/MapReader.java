@@ -1,11 +1,10 @@
 package utils;
 
+import controller.GameController;
 import gui.SimulationGUI;
 import model.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -14,16 +13,18 @@ import java.util.Scanner;
 public class MapReader {
 
     // Variables
-    public static final boolean MAP_READER_DEBUG = true;
+    public static final boolean MAP_READER_DEBUG = false;
 
     /**
      * Returns a new map based on the properties given by a .txt file
      * @param path path to input file
      * @return new map instance
      */
-    public static GameMap readMapFromFile(String path) {
+    public static GameMap readMapFromFile(String path, GameController controller) {
         if (MAP_READER_DEBUG) System.out.println("--- Map Reader Debug: ---");
-        GameMap gameMap = new GameMap(120, 80, new ArrayList<>(), new ArrayList<>());
+        GameMap gameMap = new GameMap(controller);
+        int numGuards = 0;
+        int numIntruders = 0;
 
         try {
             File mapFile = new File(path);
@@ -57,11 +58,11 @@ public class MapReader {
                         break;
                     }
                     case "numGuards": {
-                        gameMap.addGuards(Integer.parseInt(words[2]), 1);
+                        numGuards = Integer.parseInt(words[2]);
                         break;
                     }
                     case "numIntruders": {
-                        gameMap.addIntruders(Integer.parseInt(words[2]), 0);
+                        numIntruders = Integer.parseInt(words[2]);
                         break;
                     }
                     case "spawnAreaGuards": {
@@ -127,11 +128,8 @@ public class MapReader {
             System.out.println("Cannot find map file!");
             e.printStackTrace();
         }
+        gameMap.populateMap(numGuards, numIntruders);
         gameMap.createBorderWalls();
         return gameMap;
-    }
-
-    public static void main(String[] args) {
-        readMapFromFile("src/main/resources/testmap.txt");
     }
 }
