@@ -10,6 +10,10 @@ import java.util.ArrayList;
 
 public class TargetArea extends Area{
 
+    public TargetArea(double xFrom, double yFrom, double xTo, double yTo) {
+        super(xFrom, yFrom, xTo, yTo);
+    }
+
     public TargetArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
     }

@@ -52,7 +52,7 @@ public class MainLayout extends BorderPane {
         // Canvas - Center
         canvas = new Pane();
         canvas.setStyle("-fx-background-color: rgb(200, 220, 200);");
-        canvas.setPrefSize(1200, 800);
+        canvas.setPrefSize(1200, 600);
 
         this.setCenter(canvas);
 
