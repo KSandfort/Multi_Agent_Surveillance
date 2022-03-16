@@ -31,6 +31,7 @@ public class SimulationGUI extends Application {
     private final int FPS = 10;
     private final int WIDTH = 1200;
     private final int HEIGHT = 800;
+
     public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
     public static double SCALING_FACTOR = 10;
 
