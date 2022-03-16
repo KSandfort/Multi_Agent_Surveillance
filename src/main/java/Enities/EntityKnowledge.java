@@ -1,6 +1,9 @@
 package Enities;
 
 import gui.ExplorationStage;
+import lombok.Getter;
+import lombok.Setter;
+import model.GameMap;
 import model.Vector2D;
 
 /**
@@ -8,22 +11,30 @@ import model.Vector2D;
  * It moves to a discrete space of 1x1 units. The vision of an agent constantly updates
  * the mapRepresentation.
  */
+@Getter
+@Setter
 public class EntityKnowledge {
 
     // Variables
-    int[][] mapRepresentation; // 0 = not discovered, 1 = empty, 2 = self, 3 = wall
-    int relativePosX;
-    int relativePosY;
-    ExplorationStage explorationStage;
-    Vector2D positionOffset; // So that the agent doesn't know its absolute position.
+    private int[][] mapRepresentation; // 0 = not discovered, 1 = empty, 2 = self, 3 = wall
+    private int relativePosX;
+    private int relativePosY;
+    private ExplorationStage explorationStage;
+    private Vector2D positionOffset; // So that the agent doesn't know its absolute position.
+    private GameMap map;
+    private int width;
+    private int height;
 
     /**
      * Constructor
      */
-    public EntityKnowledge() {
+    public EntityKnowledge(GameMap gameMap) {
         relativePosX = 0;
         relativePosY = 0;
-        mapRepresentation = new int[241][161]; //TODO: Make values dynamic
+        this.map = gameMap;
+        width = gameMap.getSizeX();
+        height = gameMap.getSizeY();
+        mapRepresentation = new int[width * 2 + 1][height * 2 + 1];
         // Fill with 0s;
         for (int i = 0; i < mapRepresentation.length; i++) {
             for (int j = 0; j < mapRepresentation[i].length; j++) {
@@ -34,34 +45,10 @@ public class EntityKnowledge {
         relativePosY = (mapRepresentation[0].length / 2) + 1;
     }
 
-    public int[][] getMapRepresentation() {
-        return mapRepresentation;
-    }
-
-    public void setMapRepresentation(int[][] mapRepresentation) {
-        this.mapRepresentation = mapRepresentation;
-    }
-
-    public int getRelativePosX() {
-        return relativePosX;
-    }
-
-    public void setRelativePosX(int relativePosX) {
-        this.relativePosX = relativePosX;
-    }
-
-    public int getRelativePosY() {
-        return relativePosY;
-    }
-
-    public void setRelativePosY(int relativePosY) {
-        this.relativePosY = relativePosY;
-    }
-
     /**
      * Sets an entry in the mapRepresentation.
-     * @param value
-     * @param position
+     * @param value numeric value corresponding to the type of cell
+     * @param position Vector2D of the target position
      */
     public void setCell(int value, Vector2D position) {
         int targetX = translateX((int) Math.floor(position.getX()));
@@ -79,7 +66,7 @@ public class EntityKnowledge {
      * @return
      */
     public int translateX(int x) {
-        return x + 120 - (int) positionOffset.getX();
+        return x + width - (int) positionOffset.getX();
     }
 
     /**
@@ -88,22 +75,7 @@ public class EntityKnowledge {
      * @return
      */
     public int translateY(int y) {
-        return y + 80 - (int) positionOffset.getY();
+        return y + height - (int) positionOffset.getY();
     }
 
-    /**
-     * Setter
-     * @param pos
-     */
-    public void setPositionOffset(Vector2D pos) {
-        this.positionOffset = pos;
-    }
-
-    /**
-     * Sets the ExplorationStage to access cell-painting
-     * @param explorationStage
-     */
-    public void setExplorationStage(ExplorationStage explorationStage) {
-        this.explorationStage = explorationStage;
-    }
 }

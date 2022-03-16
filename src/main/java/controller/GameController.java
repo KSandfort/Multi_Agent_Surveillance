@@ -6,37 +6,58 @@ import Enities.Intruder;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import javafx.scene.Node;
+import lombok.Getter;
+import lombok.Setter;
 import model.GameMap;
 import model.MapItem;
+import utils.MapReader;
+
 import java.util.ArrayList;
 
 /**
  * This class acts as the heart of the game. It controls all the parts
  * and is the point where GUI and back end come together.
  */
+@Getter
+@Setter
 public class GameController {
 
     // Variables
-    GameMap map;
-    SimulationGUI simulationGUI;
-    int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
-    double coverageThreshold = 80;
+    private GameMap map;
+    private SimulationGUI simulationGUI;
+    private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
+    private double coverageThreshold = 80;
 
-    // TEMPORARY - for testing purpose of the title screen
-    static public int amountOfGuards;
-    static public int amountOfIntruders;
+    // Static
+    public static int amountOfGuards;
+    public static int amountOfIntruders;
+    public static int guardAgentType = 0;
+    public static int intruderAgentType = 0;
+    // 0 = random, 1 = remote, ...
 
     /**
      * Constructor
      * @param gui
      */
-    public GameController(SimulationGUI gui) {
+    public GameController(SimulationGUI gui, int mapCode) {
         this.simulationGUI = gui;
         GameMap map = new GameMap(this);
         this.map = map;
-        //TEMPORARY -- for testing purposes
-        this.map.initTestGameMap();
-        this.map.populateMap(amountOfGuards, amountOfIntruders, 1, 0);
+        switch (mapCode) { // 0 = test map, 1 = read from file
+            case 0: {
+                this.map.initTestGameMap();
+                this.map.populateMap(amountOfGuards, amountOfIntruders);
+                break;
+            }
+            case 1: {
+                this.map = MapReader.readMapFromFile("src/main/resources/examinermap_phase1.txt", this);
+                break;
+            }
+            default: {
+                System.out.println("ERROR! No map generated!");
+                break;
+            }
+        }
     }
 
     /**
@@ -57,7 +78,7 @@ public class GameController {
      * the guards win, if they manage to capture the intruders before they win
      */
     public void updateWinningCondition(){
-        int gameMode = simulationGUI.getGameMode(); // 0 = exploration, 1 = guards vs intruders
+        int gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
 
         if(gameMode == 0) {
             if (computeCoverage() >= coverageThreshold){
@@ -122,18 +143,6 @@ public class GameController {
             }
         }
         layout.getCanvas().getChildren().addAll(nodes);
-    }
-
-    public void setMap(GameMap map){
-        this.map = map;
-    }
-
-    public GameMap getMap(){
-        return this.map;
-    }
-
-    public SimulationGUI getSimulationGUI() {
-        return simulationGUI;
     }
 
 }

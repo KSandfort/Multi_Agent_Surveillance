@@ -1,5 +1,6 @@
 package gui.sceneLayouts;
 
+import controller.GameController;
 import gui.SimulationGUI;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,26 +14,46 @@ import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class represents the start layout.
  */
+@Getter
+@Setter
 public class StartLayout extends BorderPane {
 
     // Variables
-    SimulationGUI simulationGUI;
-    Label projectLabel;
-    Button startButton;
-    TextField guardAmount;
-    TextField intruderAmount;
-    Stage primaryStage;
-    GridPane mainGrid;
-    int gameMode; // 0 = exploration, 1 = guards vs intruders
-    ObservableList<String> mapsList =
+    private SimulationGUI simulationGUI;
+    private Label projectLabel;
+    private Button startButton;
+    private TextField guardAmount;
+    private TextField intruderAmount;
+    private Stage primaryStage;
+    private GridPane mainGrid;
+    private int gameMode; // 0 = exploration, 1 = guards vs intruders
+
+    private ObservableList<String> mapsList =
             FXCollections.observableArrayList(
-                    "Test map"
+                    "Test map",
+                    "Read from file"
             );
-    ComboBox map;
+    private ComboBox mapListBox;
+
+    private ObservableList<String> guardAgent =
+            FXCollections.observableArrayList(
+                    "Random Agent",
+                    "Remote Agent"
+            );
+    private ComboBox guardAgentBox;
+
+    private ObservableList<String> intruderAgent =
+            FXCollections.observableArrayList(
+                    "Random Agent",
+                    "Remote Agent"
+            );
+    private ComboBox intruderAgentBox;
 
     /**
      * Constructor
@@ -49,7 +70,6 @@ public class StartLayout extends BorderPane {
     public void initComponents() {
 
         // Main Controls - Center
-
         mainGrid = new GridPane();
 
         // --- Game Mode Row ---
@@ -84,24 +104,30 @@ public class StartLayout extends BorderPane {
         guardLabel.setStyle("-fx-font: 12px 'Verdana';");
         guardAmount = new TextField("3");
         guardAmount.textProperty().addListener(new NumericInputEnforcer(guardAmount));
+        guardAgentBox = new ComboBox(guardAgent);
+        guardAgentBox.getSelectionModel().selectFirst();
         mainGrid.add(guardLabel, 0, 1);
         mainGrid.add(guardAmount, 1, 1);
+        mainGrid.add(guardAgentBox, 2, 1);
 
         // --- Intruders Row ---
         Label intruderLabel = new Label("Intruder amount");
         intruderAmount = new TextField("3");
         intruderAmount.setDisable(true);
         intruderAmount.textProperty().addListener(new NumericInputEnforcer(intruderAmount));
+        intruderAgentBox = new ComboBox(intruderAgent);
+        intruderAgentBox.getSelectionModel().selectFirst();
         mainGrid.add(intruderLabel, 0, 2);
         mainGrid.add(intruderAmount, 1, 2);
+        mainGrid.add(intruderAgentBox, 2, 2);
 
         // --- Map Row ---
         Label mapLabel = new Label("Map");
         mapLabel.setStyle("-fx-font: 12px 'Verdana';");
-        map = new ComboBox(mapsList);
-        map.getSelectionModel().selectFirst();
+        mapListBox = new ComboBox(mapsList);
+        mapListBox.getSelectionModel().selectFirst();
         mainGrid.add(mapLabel, 0, 3);
-        mainGrid.add(map, 1, 3);
+        mainGrid.add(mapListBox, 1, 3);
 
         // Add mainGrid
         mainGrid.setPadding(new Insets(10, 10, 10, 10));
@@ -136,21 +162,36 @@ public class StartLayout extends BorderPane {
             else {
                 amountIntruders = Integer.parseInt(intruderAmount.getText());
             }
-            simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders);
+            // Determine agent type - Guard
+            if (guardAgentBox.getValue().equals("Random Agent")) {
+                GameController.guardAgentType = 0;
+            }
+            if (guardAgentBox.getValue().equals("Remote Agent")) {
+                GameController.guardAgentType = 1;
+            }
+            // Determine agent type - Intruder
+            if (intruderAgentBox.getValue().equals("Random Agent")) {
+                GameController.intruderAgentType = 0;
+            }
+            if (intruderAgentBox.getValue().equals("Remote Agent")) {
+                GameController.intruderAgentType = 1;
+            }
+            // Determine selected map
+            int mapCode;
+            if (mapListBox.getValue().equals("Test map")) {
+                mapCode = 0;
+            }
+            if (mapListBox.getValue().equals("Read from file")) {
+                mapCode = 1;
+            }
+            else {
+                mapCode = 0;
+            }
+            simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });
         controlsBox.getChildren().add(startButton);
         this.setBottom(controlsBox);
     }
-
-    public Label getStepCountLabel() {
-        return projectLabel;
-    }
-
-    public void setSimulationInstance(SimulationGUI simulationGUI) {
-        this.simulationGUI = simulationGUI;
-    }
-
-    public int getGameMode(){return gameMode; }
 }
 
 /**

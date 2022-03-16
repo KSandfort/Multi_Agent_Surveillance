@@ -9,32 +9,31 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.util.Arrays;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Parent class of all GUI elements.
  * Central unit to control the graphics.
  */
+@Getter
+@Setter
 public class SimulationGUI extends Application {
 
     // Variables
-    int currentStep;
-    StartLayout startLayout;
-    MainLayout mainLayout;
-    Scene mainScene;
-    int simulationDelay;
-    Timeline timeline;
-    GameController controller;
-    final int FPS = 60;
-    final int WIDTH = 1200;
-    final int HEIGHT = 800;
+    private int currentStep;
+    private StartLayout startLayout;
+    private MainLayout mainLayout;
+    private Scene mainScene;
+    private int simulationDelay;
+    private Timeline timeline;
+    private GameController controller;
+    private final int FPS = 10;
+    private final int WIDTH = 1200;
+    private final int HEIGHT = 800;
+
     public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
     public static double SCALING_FACTOR = 10;
-
-    public void setController(GameController controller){
-        this.controller = controller;
-    }
 
     public void launchGUI() {
         String[] args = new String[0];
@@ -52,7 +51,7 @@ public class SimulationGUI extends Application {
      */
     public void startTitleScreenGUI(Stage primaryStage) {
         startLayout = new StartLayout(primaryStage);
-        startLayout.setSimulationInstance(this);
+        startLayout.setSimulationGUI(this);
         mainScene = new Scene(startLayout, 1300, 1000);
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
@@ -65,9 +64,9 @@ public class SimulationGUI extends Application {
      * @param guardAmount
      * @param intruderAmount
      */
-    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount) {
+    public void startSimulationGUI(Stage primaryStage, int guardAmount, int intruderAmount, int mapCode) {
         currentStep = 0;
-        simulationDelay = 1;
+        simulationDelay = 0;
         mainLayout = new MainLayout(primaryStage);
         mainLayout.setSimulationGUI(this);
         mainScene = new Scene(mainLayout, 1300, 1000);
@@ -75,7 +74,7 @@ public class SimulationGUI extends Application {
         GameController.amountOfGuards = guardAmount;
         GameController.amountOfIntruders = intruderAmount;
 
-        this.setController(new GameController(this));
+        this.setController(new GameController(this, mapCode));
         this.controller.drawFixedItems(mainLayout);
 
         // Timeline Animation
@@ -124,33 +123,6 @@ public class SimulationGUI extends Application {
      */
     public void pauseSimulation() {
         this.timeline.pause();
-    }
-
-    public Scene getMainScene() {
-        return mainScene;
-    }
-
-    public MainLayout getMainLayout() {
-        return mainLayout;
-    }
-
-    public void setMainScene(Scene mainScene) {
-        this.mainScene = mainScene;
-    }
-
-    public int getCurrentStep() {
-        return currentStep;
-    }
-
-    public void setCurrentStep(int currentStep) {
-        this.currentStep = currentStep;
-    }
-
-    public GameController getController() {
-        return controller;
-    }
-    public int getGameMode(){
-        return startLayout.getGameMode();
     }
 
 }

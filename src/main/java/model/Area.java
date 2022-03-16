@@ -1,19 +1,30 @@
 package model;
 
 import Enities.Entity;
-
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Abstract class for any area placed on a map.
  */
+@Getter
+@Setter
 public abstract class Area extends MapItem{
 
+    // Variables
     protected Vector2D[] cornerPoints = new Vector2D[4];
     private double areaFovDepth = 20;
     private double areaFovAngle = 30;
     private double areaSpeedFactor = 1;
     private double hearingFactor = 1;
 
+    /**
+     * Constructor
+     * @param xFrom x-coordinate 1
+     * @param yFrom y-coordinate 1
+     * @param xTo x-coordinate 2
+     * @param yTo y-coordinate 2
+     */
     public Area(double xFrom, double yFrom, double xTo, double yTo) {
         cornerPoints[0] = new Vector2D(xFrom, yTo); // Bottom left
         cornerPoints[1] = new Vector2D(xFrom, yFrom); // Top Left
@@ -97,38 +108,6 @@ public abstract class Area extends MapItem{
     @Override
     public boolean isTransparentObject() {
         return true;
-    }
-
-    public double getAreaFovDepth() {
-        return areaFovDepth;
-    }
-
-    public void setAreaFovDepth(double areaFovDepth) {
-        this.areaFovDepth = areaFovDepth;
-    }
-
-    public double getAreaFovAngle() {
-        return areaFovAngle;
-    }
-
-    public void setAreaFovAngle(double areaFovAngle) {
-        this.areaFovAngle = areaFovAngle;
-    }
-
-    public double getAreaSpeedFactor() {
-        return areaSpeedFactor;
-    }
-
-    public void setAreaSpeedFactor(double areaSpeed) {
-        this.areaSpeedFactor = areaSpeedFactor;
-    }
-
-    public double getHearingFactor() {
-        return hearingFactor;
-    }
-
-    public void setHearingFactor(double hearingFactor) {
-        this.hearingFactor = hearingFactor;
     }
 
 }
