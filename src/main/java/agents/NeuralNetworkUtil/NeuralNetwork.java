@@ -8,11 +8,17 @@ public class NeuralNetwork {
     final static double c2 =1;
     final static double c3 =0.4;
 
+    //mutation probabilities
+    final static double disabledChance = 0.75;
+    final double wMutationSelectionP = 0.25;
     final double wMutationP = 0.8;
     final double wResetP = 0.9;
-    
+    final double addNodeP = 0.03;
+    final double addConnP = 0.05;
+
+
     List<NNNode> nodes;
-    int maxNeurons = 0;
+    public static int maxNeurons = 0;
     private List<NNConnection> connections;
     double fitness;
     int inputNum;
@@ -27,6 +33,35 @@ public class NeuralNetwork {
         connections = new ArrayList<NNConnection>();
         random = new Random();
     }
+
+    public NeuralNetwork copy()
+    {
+        NeuralNetwork copy = new NeuralNetwork(inputNum - 1, outputNum);
+
+        //TODO:implement copy
+
+        return copy;
+    }
+
+    public void mutate()
+    {
+
+        if(random.nextDouble() < addNodeP)
+        {
+            mutateWeights();
+        }
+
+        if(random.nextDouble() < addNodeP)
+        {
+            addNode();
+        }
+
+        if(random.nextDouble() < addConnP)
+        {
+            addConnection();
+        }
+    }
+
     //calculate neural network
     public double[] evaluate(double[] input)
     {
@@ -41,20 +76,24 @@ public class NeuralNetwork {
         neuronValues[0] = 1;//bias node
         System.arraycopy(input,0,neuronValues,1,input.length);
 
-        for (int i = 0; i < maxNeurons; i++) {
-            for (int k = 0; k < connections.size(); k++) {
-                NNConnection c = connections.get(k);
-                if(c.getIn() != i)
-                {
+        for (int i = inputNum; i < maxNeurons + outputNum; i++) {
+            for (NNConnection c : connections) {
+                if (c.getOut() != i) {
                     continue;
                 }
-                neuronValues[c.getOut()] += neuronValues[c.getIn()] * c.getWeight();
+                neuronValues[i] += neuronValues[c.getIn()] * c.getWeight();
             }
+            neuronValues[i] = sigmoid(neuronValues[i]);
         }
 
         System.arraycopy(neuronValues,maxNeurons,output,0,outputNum);
         
         return output;
+    }
+
+    public double sigmoid(double x)
+    {
+        return 1/(1 + Math.exp(-4.9*x));
     }
 
     public static NeuralNetwork crossOver(NeuralNetwork first, NeuralNetwork second)
@@ -72,7 +111,7 @@ public class NeuralNetwork {
             b = first;
         }
 
-        NeuralNetwork nn = new NeuralNetwork(a.getInputNum(),a.getOutputNum());
+        NeuralNetwork nn = new NeuralNetwork(a.getInputNum() - 1,a.getOutputNum());
         List<NNConnection> aConn = a.getConnections();
         List<NNConnection> bConn = b.getConnections();
         List<NNConnection> newConnections = new ArrayList<NNConnection>();
@@ -106,24 +145,37 @@ public class NeuralNetwork {
 
             if(aCount == bCount)
             {
+                NNConnection inherited;
+                boolean enabled = true;
+                if(!aC.isEnabled() || !bC.isEnabled())
+                {
+                    enabled = false;
+                }
                 System.out.println(aCount +"-"+ bCount);
                 if(random.nextBoolean())//if genes match randomly select one of the two genes
                 {
                     System.out.println("Selecting a");
-                    newConnections.add(aC.copy());
+                    inherited = aC.copy();
                 }else
                 {
                     System.out.println("Selecting b");
-
-                    newConnections.add(bC.copy());
+                    inherited = bC.copy();
                 }
+                if(!enabled && random.nextDouble() < disabledChance)
+                {
+                    inherited.setEnabled(false);
+                }
+                newConnections.add(inherited);
                 i++;
                 k++;
             }
             else if(aCount < bCount)
             {
-                
-                newConnections.add(aC.copy());//only copy excess/disjoint genes from fittest genome
+                NNConnection newConn = aC.copy();
+                if(!newConn.isEnabled() && random.nextDouble() < disabledChance)
+                    newConn.setEnabled(false);
+
+                newConnections.add(newConn);//only copy excess/disjoint genes from fittest genome
                 i++;
             }
             else
@@ -288,8 +340,7 @@ public class NeuralNetwork {
                 possibleNeurons[c.getOut()] = true;
             }
         }
-        
-        //select two random neuron
+
         int n;//randomly selected neuron
         do
         {
