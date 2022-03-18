@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * decreases the agents velocity to simulate the time it takes to go through the door
  * TODO makes a sound when entering
  */
-public class Door extends Wall{
+public class Door extends Wall {
     public Door(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaSpeedFactor(0.7);

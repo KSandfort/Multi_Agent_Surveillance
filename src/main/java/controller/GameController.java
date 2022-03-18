@@ -51,7 +51,7 @@ public class GameController {
                 break;
             }
             case 1: {
-                this.map = MapReader.readMapFromFile("src/main/resources/examinermap_phase1.txt", this);
+                this.map = MapReader.readMapFromFile("src/main/resources/PortalLaboratory.txt", this);
                 break;
             }
             case 2: {

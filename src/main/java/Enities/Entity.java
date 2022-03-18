@@ -1,6 +1,7 @@
 package Enities;
 
 import agents.AbstractAgent;
+import agents.ExplorerBugAgent;
 import agents.RandomAgent;
 import agents.RemoteAgent;
 import lombok.Getter;
@@ -111,6 +112,10 @@ public abstract class Entity extends MapItem {
                 agent.setEntityInstance(this);
                 agent.addControls();
                 break;
+            }
+            case 2: { // Bug Agent
+                agent = new ExplorerBugAgent();
+                agent.setEntityInstance(this);
             }
             default: {
                 System.out.println("No agent defined!");
