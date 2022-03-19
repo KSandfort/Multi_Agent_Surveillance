@@ -116,6 +116,7 @@ public abstract class Entity extends MapItem {
             case 2: { // Bug Agent
                 agent = new ExplorerBugAgent();
                 agent.setEntityInstance(this);
+                break;
             }
             default: {
                 System.out.println("No agent defined!");
