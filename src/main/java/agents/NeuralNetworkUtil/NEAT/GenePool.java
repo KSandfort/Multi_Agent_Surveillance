@@ -10,6 +10,7 @@ public class GenePool
 {
     final double distanceThreshold = 3.0;
     final double crossoverChance = 0.75;
+    final int maxStaleness = 15;
     final int poolSize = 100;//population size. eg how many genomes in a generation
     List<Species> speciesList;
     int generation;
@@ -24,37 +25,85 @@ public class GenePool
 
     public void newGeneration()
     {
-        cullSpecies(false);
-
-        //rank genomes globally
+        List<NeuralNetwork> children = new ArrayList<>();//new generation
+        cullSpecies(false);//remove bottom half of each species
 
         //remove stale species
+        removeStale();
 
         //calculate average fitness
+        double totalAvgFitness = calcTotalAvgFitness();
 
         //remove weak species
 
-        //breed based on shared fitness value
+        //breed proportional to fitness value
+        for(Species s : speciesList)
+        {
+            //children to be bred from this species
+            double amount = Math.floor(s.averageFitness / totalAvgFitness * poolSize) - 1;
+            for (int i = 0; i < amount; i++) {
+                NeuralNetwork nn = newChild(s);
+                children.add(nn);
+            }
+        }
+
 
         //cull all but top member of each species
         cullSpecies(true);
+
         //add remaining population using top of species
 
-        //add new genomes to species
-        int childrenCount = 0;
-        while(childrenCount + speciesList.size() < poolSize)
+        while(children.size() + speciesList.size() < poolSize)
         {
             //make new child
-            Species s;
-            //TODO: select species to use for new stuff
+            Random random = new Random();
+            Species s = speciesList.get(random.nextInt(speciesList.size()));
             NeuralNetwork nn = newChild(s);
-            nn.mutate();
+            children.add(nn);
+        }
 
-            //add nn to new species
-            childrenCount++;
+        //add new genomes to species
+        for(NeuralNetwork nn : children)
+        {
+            //TODO: add new children to species
         }
 
         generation++;
+    }
+
+    private void removeStale()
+    {
+        List<Species> survivingSpecies = new ArrayList<>();
+
+        for (int i = 0; i < speciesList.size(); i++) {
+            Species s = speciesList.get(i);
+
+            if(s.topFitness < s.getGenomes().get(0).getFitness())
+            {
+                s.topFitness = s.getGenomes().get(0).getFitness();
+                s.staleness = 0;
+            }
+            else
+            {
+                s.staleness++;
+            }
+
+            if(s.staleness < maxStaleness){
+                survivingSpecies.add(s);
+            }
+        }
+
+        speciesList = survivingSpecies;
+    }
+
+    private double calcTotalAvgFitness()
+    {
+        double output = 0;
+        for(Species s : speciesList)
+        {
+            output += s.getAverageFitness();
+        }
+        return output;
     }
 
     private void cullSpecies(boolean onlyBest)

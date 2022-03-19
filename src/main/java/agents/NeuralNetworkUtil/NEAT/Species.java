@@ -30,4 +30,16 @@ public class Species
     public List<NeuralNetwork> getGenomes() {
         return genomes;
     }
+
+    public double getAverageFitness()
+    {
+        double average = 0;
+        for(NeuralNetwork nn : genomes)
+        {
+            average += nn.getFitness();
+        }
+        average /= genomes.size();
+        averageFitness = average;
+        return averageFitness;
+    }
 }
