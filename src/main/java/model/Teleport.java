@@ -44,7 +44,8 @@ public class Teleport extends Area{
     public void onAgentCollision(Entity agent)
     {
         super.onAgentCollision(agent);
-        agent.setDirection(this.direction);
+        // new
+        agent.setDirection(direction.clone());
         agent.setPosition(target);
     }
 

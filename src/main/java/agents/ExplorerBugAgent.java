@@ -1,6 +1,7 @@
 package agents;
 
 import Enities.Entity;
+import Enities.Guard;
 import Enities.Ray;
 import model.MapItem;
 import model.Vector2D;
@@ -9,27 +10,31 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ExplorerBugAgent extends AbstractAgent {
-    // Coordinates of the bug's goal position
-    double goalX = 1000;
-    double goalY = 1000;
 
-    // Angle from the bug to the goal position
+    // Goal direction from bug's current position
     double goalDirection = 0;
-
-    // Initial angles for the bug's goal position (basically the main orientation used when the goal is offset)
-    double initialGoalDirection = 0;
 
     // Range [0,1] of how much of the FOV is obstructed by a wall, usually 0.30-0.50 when crawling around a wall
     double wallCloseness = 0;
 
     // Controls which direction the bug should turn when it encounters a wall.
-    // 1 = clockwise rotation, -1 = anticlockwise rotation
+    // -1 = rotate left, 1 = rotate right
     int wallRotationPreference = 1;
 
-    double originX = 0;
-    double originY = 0;
+    // wall crawl state
+    boolean crawlingAlongWall = false;
 
-    String state = "goal";
+    // Help this poor fella if it gets stuck somewhere;
+    double stuckTracker = 0.0;
+    int stuckTimer = 0;
+    boolean tryingToUnstuck = false;
+    double getGoalDirectionAfterUnstuck = 0;
+
+    int initializationStep = 0;
+
+    // all bugs share this
+    static int guardCount = 0;
+
 
     // ------------------------
     //      BUG PARAMETERS
@@ -38,27 +43,16 @@ public class ExplorerBugAgent extends AbstractAgent {
     // Weights of the direction pivot conditions
     // goalPivotWeight refers to how much the bug tries to navigate to the goal position
     // wallPivotWeight refers to how much the bug tries to get away from walls
-    double goalPivotWeight = 0.4;
-    double wallPivotWeight = 1.05;
+    double goalPivotWeight = 1.0;
+    double wallPivotWeight = 3.0;
 
     // If the bug's wallCloseness percentage goes above this threshold, it'll enter wall crawl mode.
-    double wallClosenessConditionPercentage = 0.4;
+    double wallClosenessConditionPercentage = 0.25;
 
-    // Controls how unlikely it is that the bug's wall rotation preference swaps when not crawling along a wall
-    // Bigger values = bug is less likely to swap its preference
-    int wallRotationSwapChance = 100;
-
-    boolean crawlingAlongWall = false;
-    boolean swappedPreference = false;
-
-    // Help this poor fella if it gets stuck somewhere;
-    double stuckTracker = 0.0;
-    int stuckTimer = 0;
-    boolean tryingToUnstuck = false;
 
     @Override
     public void addControls() {
-
+        // The bug has a free will of its own, no puppetmaster needed here
     }
 
     @Override
@@ -69,95 +63,116 @@ public class ExplorerBugAgent extends AbstractAgent {
         Vector2D prevPos = e.getPrevPos();
         Vector2D dir = e.getDirection();
 
-        if (!tryingToUnstuck)
-            goalDirection = Math.atan2(goalY - e.getPosition().getY(), goalX - e.getPosition().getX());
+        // Initialize bug orientations (using a hacky way to get the total number of bugs)
+        // Each bug should start with a unique orientation, higher chance of exploring the whole map faster
 
-        double goalOffset = 2;
+        // Set the class's guardCount variable to the highest bug's ID (since they're updated one after the other)
+        if (initializationStep == 0) {
+            guardCount = e.getID();
+            initializationStep = 1;
+            return;
 
-        if (Math.abs(pos.getX() - goalX) < 2) {
-            goalX += (goalOffset * Math.cos(initialGoalDirection));
-            // goalX = -1 * (goalX - originX) + originX;
-        }
-
-        if (Math.abs(pos.getY() - goalY) < 2) {
-            goalY += (goalOffset * Math.sin(initialGoalDirection));
-            // goalY = -1 * (goalY - originY) + originY;
-
+        // Set the initial goalDirection depending on what the bug count was
+        } else if (initializationStep == 1) {
+            goalDirection = (double)e.getID()/(double)guardCount * 2.0 * Math.PI;
+            initializationStep = 2;
         }
 
         ArrayList<Ray> vision = e.FOV();
 
-        // get the middle FOV ray to see what's right ahead of the entity
+        // Average distance from the closest wall
         double averageDistance = 0;
-        Vector2D longestRay = vision.get(0).getDirection();
+        // Average distance to the left of the bug, average distance to the right of the bug
+        double leftSideAverage = 0;
+        double rightSideAverage = 0;
 
+        double i = 0;
         for (Ray ray : vision) {
             Vector2D rayVector = ray.getDirection();
             averageDistance += Vector2D.length(rayVector);
-            if (Vector2D.length(rayVector) > Vector2D.length(longestRay))
-                longestRay = rayVector;
-        }
-        double preferredTheta = Math.atan2(longestRay.getY(),longestRay.getX());
-        averageDistance /= vision.size();
-        double distanceToWall = averageDistance;
 
+            // Not sure if this is needed...? It gives the corner-vision rays more weight than middle rays
+            double sideScaler = Math.abs((i/(vision.size()/2.0)) - 1);
+
+            if (i < vision.size()/2.0)
+                leftSideAverage += Vector2D.length(rayVector) * sideScaler;
+            else if (i > vision.size()/2.0)
+                rightSideAverage += Vector2D.length(rayVector) * sideScaler;
+
+            i += 1;
+        }
+
+        // Choose which direction the bug should crawl around a wall, depending on which side has the most freedom
+        // If the bug is trying to get out of a corner, keep current preference (prevent infinite of switching preference)
+        if (!tryingToUnstuck) {
+            if (leftSideAverage > rightSideAverage) {
+                wallRotationPreference = -1;
+            } else if (leftSideAverage < rightSideAverage) {
+                wallRotationPreference = 1;
+            }
+        }
+
+        // Calculate the total closeness to a wall
+        double distanceToWall = averageDistance / vision.size();
         wallCloseness = (1 - distanceToWall/e.getFovDepth());
 
+        // Square the wall closeness (the closer the bug is to the wall, the harder the bug steers away from it)
+        wallCloseness = Math.pow(wallCloseness, 2);
+
+        // Set the bug's state
         crawlingAlongWall = (wallCloseness > wallClosenessConditionPercentage);
-        if (crawlingAlongWall)
-            state = "wall";
-        else
-            state = "goal";
+
 
         double theta = Math.atan2(dir.getY(),dir.getX());
         double angleDifference = goalDirection - theta;
         angleDifference = (angleDifference + Math.PI) % (2*Math.PI) - Math.PI;
-        double pivotToGoal =  goalPivotWeight * (1-wallCloseness) * angleDifference;
 
+        double pivotToGoal =  goalPivotWeight * (1-wallCloseness) * angleDifference;
         double pivotFromWall = wallPivotWeight * wallCloseness * wallRotationPreference;
 
-        if (!tryingToUnstuck)
-            dir.pivot(pivotToGoal + pivotFromWall);
+        if (crawlingAlongWall)
+            dir.pivot(pivotFromWall);
         else
             dir.pivot(pivotToGoal);
 
+        // Everything to do with the bug getting stuck somewhere
+        // stuckTimer calculates how long the distance between the bug's current & previous position has been < 0.05.
+        // If the bug has been in the same region for a certain amount of time, the goal direction gets reset.
+        // However, to make sure the bug actually gets out of the corner, first the goal direction is flipped.
+        // Only after another short interval of time, the bug sets its new goal direction.
 
-
-        // randomly switch wall rotation preference when not already crawling along a wall
-        if (!crawlingAlongWall) {
-            Random rand = new Random();
-            int X = rand.nextInt(wallRotationSwapChance);
-            if (X == 1) {
-                wallRotationPreference *= -1;
-            }
-        }
-
-        prevPos = e.getPosition();
-
-        // Move
-        double velocity = 0.2;
-        e.getDirection().normalize();
-        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
-
-        pos = e.getPosition();
-
-        if (!tryingToUnstuck) {
+        if (!tryingToUnstuck && prevPos != null) {
             stuckTracker = Vector2D.distance(pos, prevPos);
             if (stuckTracker < 0.05) {
                 stuckTimer++;
 
-                if (stuckTimer > 300) {
+                if (stuckTimer > 150) {
+                    //goalDirection = theta + Math.PI;
+                    getGoalDirectionAfterUnstuck = newGoalDirection(goalDirection);
+                    goalDirection += Math.PI;
                     tryingToUnstuck = true;
                 }
             } else {
                 stuckTimer = 0;
             }
-        } else {
+        } else if (tryingToUnstuck) {
             stuckTimer--;
-            if (stuckTimer < 0) {
-                goalDirection = theta + Math.PI;
+            if (stuckTimer == 0) {
+                goalDirection = getGoalDirectionAfterUnstuck;
                 tryingToUnstuck = false;
             }
         }
+
+        // Move
+        double velocity = 0.2;
+        e.getDirection().normalize();
+        e.setPrevPos(e.getPosition());
+        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
+    }
+
+    // flips the agent's goal when stuck (rotate 180 degrees and randomly add +-90 degrees
+    private double newGoalDirection(double goalDir) {
+        Random random = new Random();
+        return goalDir + Math.PI + (Math.PI) * (random.nextDouble() - .5);
     }
 }
