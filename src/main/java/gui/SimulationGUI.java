@@ -52,7 +52,7 @@ public class SimulationGUI extends Application {
     public void startTitleScreenGUI(Stage primaryStage) {
         startLayout = new StartLayout(primaryStage);
         startLayout.setSimulationGUI(this);
-        mainScene = new Scene(startLayout, 1300, 1000);
+        mainScene = new Scene(startLayout, 700, 500);
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
@@ -69,7 +69,7 @@ public class SimulationGUI extends Application {
         simulationDelay = 0;
         mainLayout = new MainLayout(primaryStage);
         mainLayout.setSimulationGUI(this);
-        mainScene = new Scene(mainLayout, 1300, 1000);
+        mainScene = new Scene(mainLayout, 1800, 1000);
 
         GameController.amountOfGuards = guardAmount;
         GameController.amountOfIntruders = intruderAmount;

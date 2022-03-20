@@ -2,11 +2,13 @@ package gui.sceneLayouts;
 
 import gui.ExplorationStage;
 import gui.SimulationGUI;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +23,7 @@ public class MainLayout extends BorderPane {
 
     // Variables
     private SimulationGUI simulationGUI;
+    private Pane coverageCanvas;
     private Pane canvas;
     private Label stepCountLabel;
     private Button playPauseButton;
@@ -62,12 +65,25 @@ public class MainLayout extends BorderPane {
         infoBox.setAlignment(Pos.CENTER);
         infoBox.setPrefHeight(50);
         stepCountLabel = new Label("Current Step: 0");
+        infoBox.getChildren().setAll(stepCountLabel);
+        this.setTop(infoBox);
+
+        // Coverage - Right
+        VBox rightBox = new VBox();
+        rightBox.setPrefWidth(500);
+        rightBox.setSpacing(20);
+        rightBox.setPadding(new Insets(30));
         coverageBar = new ProgressBar(0.0);
         coverageBar.setPrefWidth(300);
         coverageText = new TextField("0 %");
+        coverageText.setPrefWidth(200);
         coverageText.setEditable(false);
-        infoBox.getChildren().setAll(stepCountLabel, new Label("Coverage: "), coverageBar, coverageText);
-        this.setTop(infoBox);
+        coverageCanvas = new Pane();
+        coverageCanvas.setStyle("-fx-background-color: rgb(200, 220, 200);");
+        coverageCanvas.setPrefWidth(400);
+        coverageCanvas.setPrefHeight(300);
+        rightBox.getChildren().addAll(new Label("Coverage:"), coverageBar, coverageText, coverageCanvas);
+        this.setRight(rightBox);
 
         // Controls - Bottom
         HBox controlsContainer = new HBox();
