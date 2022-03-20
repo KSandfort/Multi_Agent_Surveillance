@@ -30,9 +30,11 @@ public class GameController {
     private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
     private boolean[][] coverageMatrix; // 0 = not explored, 1 = explored
     private double coveragePercent; // Coverage value in percent (from 0 to 1)
+    private double previousCoveragePercent; // One time-step earlier
     private int coverageNumerator; // Amount of explored cells
     private int coverageDenominator; // Total amount of cells
-    private double coverageThreshold = 50;
+    private int noCoverageProgressSince; // Indicates for how many time-steps there hasn't been progress in the coverage
+    private int coverageThreshold; // Tolerance of not making progress in coverage until game stops.
 
     // Static
     public static int amountOfGuards;
@@ -99,6 +101,8 @@ public class GameController {
         }
         // Calculate percentage
         coveragePercent = (double) coverageNumerator / (double) coverageDenominator;
+        simulationGUI.getMainLayout().getCoverageBar().setProgress(coveragePercent);
+        simulationGUI.getMainLayout().getCoverageText().setText(Math.round(coveragePercent*10000) / 100 + " %");
     }
 
     /**
@@ -129,8 +133,14 @@ public class GameController {
     public void updateWinningCondition(){
         int gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
 
+        if (coveragePercent == previousCoveragePercent) {
+            noCoverageProgressSince++;
+        }
+        else {
+            noCoverageProgressSince = 0;
+        }
         if(gameMode == 0) {
-            if (coveragePercent >= coverageThreshold){
+            if (noCoverageProgressSince >= coverageThreshold){
                 hasWonGame = 1;
             }
         } else{

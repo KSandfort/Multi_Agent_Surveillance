@@ -3,9 +3,7 @@ package gui.sceneLayouts;
 import gui.ExplorationStage;
 import gui.SimulationGUI;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -31,6 +29,8 @@ public class MainLayout extends BorderPane {
     private Button explorationButton;
     private Slider simSpeedSlider;
     private Label speedLabel;
+    private ProgressBar coverageBar;
+    private TextField coverageText;
     private boolean isPlaying;
     private Stage primaryStage;
     public static int yOffset = 50;
@@ -62,7 +62,11 @@ public class MainLayout extends BorderPane {
         infoBox.setAlignment(Pos.CENTER);
         infoBox.setPrefHeight(50);
         stepCountLabel = new Label("Current Step: 0");
-        infoBox.getChildren().setAll(stepCountLabel);
+        coverageBar = new ProgressBar(0.0);
+        coverageBar.setPrefWidth(300);
+        coverageText = new TextField("0 %");
+        coverageText.setEditable(false);
+        infoBox.getChildren().setAll(stepCountLabel, new Label("Coverage: "), coverageBar, coverageText);
         this.setTop(infoBox);
 
         // Controls - Bottom
