@@ -24,11 +24,13 @@ public class EntityKnowledge {
     private GameMap map;
     private int width;
     private int height;
+    private boolean isGuard;
 
     /**
      * Constructor
      */
-    public EntityKnowledge(GameMap gameMap) {
+    public EntityKnowledge(GameMap gameMap, boolean isGuard) {
+        this.isGuard = isGuard;
         relativePosX = 0;
         relativePosY = 0;
         this.map = gameMap;
@@ -57,6 +59,14 @@ public class EntityKnowledge {
         // Update on screen
         if (this.explorationStage != null) {
             explorationStage.drawCell(value, targetX, targetY);
+        }
+        // Update map coverage of the game controller
+        if (isGuard && value != 0) {
+            int x = (int) Math.floor(position.getX());
+            int y = (int) Math.floor(position.getY());
+            // Detect boundaries:
+            if (x >= 0 && x < map.getSizeX() && y >= 0 && y < map.getSizeY())
+            map.getGameController().updateCoverage(x, y, true);
         }
     }
 
