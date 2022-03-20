@@ -136,6 +136,12 @@ public class MainLayout extends BorderPane {
         this.setBottom(controlsContainer);
     }
 
+    /**
+     * Adds a point to the coverage monitoring
+     * @param x x-pos
+     * @param y y-pos
+     * @param explored true if explored
+     */
     public void addCoveragePoint(int x, int y, boolean explored) {
         Rectangle rect = new Rectangle(2, 2, Color.BLUE);
         rect.relocate(x * 2, y * 2);
