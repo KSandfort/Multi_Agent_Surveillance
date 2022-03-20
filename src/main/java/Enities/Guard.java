@@ -1,5 +1,6 @@
 package Enities;
 
+import agents.ExplorerBugAgent;
 import agents.RemoteAgent;
 import gui.SimulationGUI;
 import javafx.scene.Node;
@@ -31,7 +32,7 @@ public class Guard extends Entity {
     public Guard(double x, double y, GameMap currentMap){
         super(x, y, currentMap);
         guardCount++;
-        this.setID(guardCount);;
+        this.setID(guardCount);
     }
 
     @Override
@@ -103,6 +104,7 @@ public class Guard extends Entity {
         text.setY((getPosition().getY() * sf) + offset -12);
         components.add(text);
         components.add(circle);
+
         ArrayList<Ray> rays = this.FOV();
         for (Ray ray : rays){
             components.add(ray.getComponent());
