@@ -23,6 +23,8 @@ public class GenePool
         maxFitness = 0;
     }
 
+
+
     public void newGeneration()
     {
         List<NeuralNetwork> children = new ArrayList<>();//new generation
@@ -35,6 +37,7 @@ public class GenePool
         double totalAvgFitness = calcTotalAvgFitness();
 
         //remove weak species
+        removeWeak();
 
         //breed proportional to fitness value
         for(Species s : speciesList)
@@ -47,12 +50,10 @@ public class GenePool
             }
         }
 
-
         //cull all but top member of each species
         cullSpecies(true);
 
         //add remaining population using top of species
-
         while(children.size() + speciesList.size() < poolSize)
         {
             //make new child
@@ -65,10 +66,41 @@ public class GenePool
         //add new genomes to species
         for(NeuralNetwork nn : children)
         {
-            //TODO: add new children to species
+            addToPool(nn);
         }
 
         generation++;
+    }
+
+    private void addToPool(NeuralNetwork nn)
+    {
+        for(Species s : speciesList)
+        {
+            if(NeuralNetwork.distance(nn,s.getGenomes().get(0)) < distanceThreshold)
+            {
+                s.getGenomes().add(nn);
+                return;
+            }
+        }
+
+        Species newSpecies = new Species();
+        newSpecies.getGenomes().add(nn);
+        speciesList.add(newSpecies);
+    }
+
+    private void removeWeak()
+    {
+        List<Species> survivingSpecies = new ArrayList<>();
+        double totalAvgFitness = calcTotalAvgFitness();
+        for(Species s : speciesList)
+        {
+            double amount = Math.floor(s.averageFitness / totalAvgFitness * poolSize);
+            if(amount >= 1)
+            {
+                survivingSpecies.add(s);
+            }
+        }
+        speciesList = survivingSpecies;
     }
 
     private void removeStale()
@@ -111,7 +143,10 @@ public class GenePool
         for(Species s : speciesList)
         {
             NeuralNetwork[] genomes = s.sort();//sort genomes in species based on fitness value
-            s.getGenomes().clear();
+            if(!onlyBest)
+            {
+                s.getGenomes().clear();
+            }
             double newSize = onlyBest ? 1 : Math.ceil(genomes.length/2.0);
             for (int i = 0; i < newSize; i++) {
                 s.getGenomes().add(genomes[i]);

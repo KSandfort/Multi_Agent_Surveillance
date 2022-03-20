@@ -23,8 +23,50 @@ public class Species
 
     public NeuralNetwork[] sort()
     {
-        //TODO:implement sorting algorithm
-        return null;
+        NeuralNetwork[] networks = genomes.toArray(new NeuralNetwork[0]);
+
+        quickSort(networks,0,networks.length-1);
+
+        return networks;
+    }
+
+    private NeuralNetwork[] quickSort(NeuralNetwork[] arr, int Left, int Right)
+    {
+
+        int l = Left;
+        int r = Right;
+        double middle = arr[(l + r)/2].getFitness();
+
+        do
+        {
+            while(arr[l].getFitness() < middle)
+            {
+                l++;
+            }
+            while(middle < arr[r].getFitness())
+            {
+                r--;
+            }
+            if(l <= r)
+            {
+                NeuralNetwork temp = arr[l];
+                arr[r] = arr[l];
+                arr[l] = temp;
+                l++;
+                r--;
+            }
+        }while(l < r);
+
+        if(l < Right)
+        {
+            arr = quickSort(arr,l,Right);
+        }
+        if(Left < r)
+        {
+            arr = quickSort(arr,Left,r);
+        }
+
+        return arr;
     }
 
     public List<NeuralNetwork> getGenomes() {
