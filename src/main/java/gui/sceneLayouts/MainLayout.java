@@ -9,6 +9,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -132,5 +134,11 @@ public class MainLayout extends BorderPane {
                 returnToStartButton,
                 explorationButton);
         this.setBottom(controlsContainer);
+    }
+
+    public void addCoveragePoint(int x, int y, boolean explored) {
+        Rectangle rect = new Rectangle(2, 2, Color.BLUE);
+        rect.relocate(x * 2, y * 2);
+        coverageCanvas.getChildren().add(rect);
     }
 }

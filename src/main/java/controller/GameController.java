@@ -34,7 +34,7 @@ public class GameController {
     private int coverageNumerator; // Amount of explored cells
     private int coverageDenominator; // Total amount of cells
     private int noCoverageProgressSince; // Indicates for how many time-steps there hasn't been progress in the coverage
-    private int coverageThreshold = 300; // Tolerance of not making progress in coverage until game stops.
+    private int coverageThreshold = 500; // Tolerance of not making progress in coverage until game stops.
 
     // Static
     public static int amountOfGuards;
@@ -99,11 +99,14 @@ public class GameController {
         if (!coverageMatrix[x][y]) {
             coverageMatrix[x][y] = explored;
             coverageNumerator++;
+            // Paint to coverage canvas
+            simulationGUI.getMainLayout().addCoveragePoint(x, y, explored);
         }
         // Calculate percentage
         coveragePercent = (double) coverageNumerator / (double) coverageDenominator;
         simulationGUI.getMainLayout().getCoverageBar().setProgress(coveragePercent);
         simulationGUI.getMainLayout().getCoverageText().setText(Math.round(coveragePercent*10000) / 100.0 + " %");
+
     }
 
     /**
