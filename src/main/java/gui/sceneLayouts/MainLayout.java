@@ -117,7 +117,7 @@ public class MainLayout extends BorderPane {
 
         returnToStartButton = new Button("Return to start");
         returnToStartButton.setOnAction(e -> {
-           // simulationGUI.startTitleScreenGUI(primaryStage);
+            // simulationGUI.startTitleScreenGUI(primaryStage);
             System.out.println("Todo...");
         });
 

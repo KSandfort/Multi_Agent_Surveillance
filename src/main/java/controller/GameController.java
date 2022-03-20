@@ -50,15 +50,15 @@ public class GameController {
     public GameController(SimulationGUI gui, int mapCode) {
         this.simulationGUI = gui;
         GameMap map = new GameMap(this);
-        this.map = map;
         switch (mapCode) { // 0 = test map, 1 = read from file
             case 0: {
-                this.map.initTestGameMap();
-                this.map.populateMap(amountOfGuards, amountOfIntruders);
+                map.initTestGameMap();
+                map.populateMap(amountOfGuards, amountOfIntruders);
                 break;
             }
             case 1: {
-                this.map = MapReader.readMapFromFile("src/main/resources/PortalLaboratory.txt", this);
+                String selectedMap = (String) gui.getStartLayout().getMapListBox().getValue();
+                map = MapReader.readMapFromFile("src/main/resources/maps/" + selectedMap, this);
                 break;
             }
             case 2: {
@@ -73,8 +73,12 @@ public class GameController {
                 break;
             }
         }
+
+
         coverageMatrix = new boolean[map.getSizeX()][map.getSizeY()];
         coverageDenominator = map.getSizeX() * map.getSizeY();
+
+        this.map = map;
     }
 
     /**

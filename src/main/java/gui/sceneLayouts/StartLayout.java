@@ -17,6 +17,11 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * This class represents the start layout.
  */
@@ -34,11 +39,17 @@ public class StartLayout extends BorderPane {
     private GridPane mainGrid;
     private int gameMode; // 0 = exploration, 1 = guards vs intruders
 
+    File f = new File("src/main/resources/maps/");
+    ArrayList<String> fileNames = new ArrayList<>(Arrays.asList(Objects.requireNonNull(f.list())));
+
+    private CheckBox testMap;
+    private CheckBox fileMap;
+    private CheckBox randMap;
+    private int mapCode;
+
     private ObservableList<String> mapsList =
             FXCollections.observableArrayList(
-                    "Test map",
-                    "Read from file",
-                    "Random generation"
+                    fileNames
             );
     private ComboBox mapListBox;
 
@@ -126,10 +137,44 @@ public class StartLayout extends BorderPane {
         // --- Map Row ---
         Label mapLabel = new Label("Map");
         mapLabel.setStyle("-fx-font: 12px 'Verdana';");
+
+        testMap = new CheckBox("Test map");
+        randMap = new CheckBox("Random map");
+        fileMap = new CheckBox("File map");
+
+
         mapListBox = new ComboBox(mapsList);
         mapListBox.getSelectionModel().selectFirst();
+        mapListBox.setDisable(true);
+
+        testMap.setOnAction(e -> {
+            mapCode = 0;
+            mapListBox.setDisable(true);
+            randMap.setSelected(false);
+            fileMap.setSelected(false);
+        });
+        randMap.setOnAction(e -> {
+            mapCode = 2;
+            mapListBox.setDisable(true);
+            testMap.setSelected(false);
+            fileMap.setSelected(false);
+        });
+        fileMap.setOnAction(e -> {
+            mapCode = 1;
+            mapListBox.setDisable(false);
+            testMap.setSelected(false);
+            randMap.setSelected(false);
+        });
+
+        HBox mapModeBox = new HBox();
+        mapModeBox.getChildren().add(testMap);
+        mapModeBox.getChildren().add(randMap);
+        mapModeBox.getChildren().add(fileMap);
+        mapModeBox.setSpacing(10);
+
         mainGrid.add(mapLabel, 0, 3);
-        mainGrid.add(mapListBox, 1, 3);
+        mainGrid.add(mapModeBox, 1, 3);
+        mainGrid.add(mapListBox, 2, 3);
 
         // Add mainGrid
         mainGrid.setPadding(new Insets(10, 10, 10, 10));
@@ -180,17 +225,6 @@ public class StartLayout extends BorderPane {
             }
             if (intruderAgentBox.getValue().equals("Remote Agent")) {
                 GameController.intruderAgentType = 1;
-            }
-            // Determine selected map
-            int mapCode = 0;
-            if (mapListBox.getValue().equals("Test map")) {
-                mapCode = 0;
-            }
-            if (mapListBox.getValue().equals("Read from file")) {
-                mapCode = 1;
-            }
-            if (mapListBox.getValue().equals("Random generation")) {
-                mapCode = 2;
             }
             simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });
