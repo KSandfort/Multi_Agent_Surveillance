@@ -46,7 +46,7 @@ public abstract class Entity extends MapItem {
      */
     public Entity(double x, double y, GameMap currentMap) {
         setMap(currentMap);
-        entityKnowledge = new EntityKnowledge(currentMap);
+        entityKnowledge = new EntityKnowledge(currentMap, !isIntruder);
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));

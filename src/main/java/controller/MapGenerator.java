@@ -45,16 +45,6 @@ public final class MapGenerator {
             createSentryTower(5, 10);
 
         map.populateMap(GameController.amountOfGuards, GameController.amountOfIntruders);
-        // generateEntities(3, 2);
-    }
-
-    private void generateEntities(int guards, int intruders) {
-        for (int i = 0; i <= guards; i++) {
-            map.addToMap(new Guard(guardsSpawnPoint[0], guardsSpawnPoint[1], this.map));
-        }
-        for (int i = 0; i <= intruders; i++) {
-            map.addToMap(new Intruder(intrudersSpawnPoint[0], intrudersSpawnPoint[1], this.map));
-        }
     }
 
     private void createShadedArea(int min, int max) {

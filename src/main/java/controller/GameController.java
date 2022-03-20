@@ -1,6 +1,7 @@
 package controller;
 
 import Enities.Entity;
+import Enities.EntityKnowledge;
 import Enities.Guard;
 import Enities.Intruder;
 import gui.SimulationGUI;
@@ -27,7 +28,11 @@ public class GameController {
     private GameMap map;
     private SimulationGUI simulationGUI;
     private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
-    private double coverageThreshold = 80;
+    private boolean[][] coverageMatrix; // 0 = not explored, 1 = explored
+    private double coveragePercent; // Coverage value in percent (from 0 to 1)
+    private int coverageNumerator; // Amount of explored cells
+    private int coverageDenominator; // Total amount of cells
+    private double coverageThreshold = 50;
 
     // Static
     public static int amountOfGuards;
@@ -62,9 +67,12 @@ public class GameController {
             }
             default: {
                 System.out.println("ERROR! No map generated!");
+                System.exit(1);
                 break;
             }
         }
+        coverageMatrix = new boolean[map.getSizeX()][map.getSizeY()];
+        coverageDenominator = map.getSizeX() * map.getSizeY();
     }
 
     /**
@@ -79,6 +87,40 @@ public class GameController {
     }
 
     /**
+     * Updates the total coverage depending on the knowledge gain of a guard.
+     * @param x x-pos
+     * @param y y-pos
+     * @param explored 1 if the cell is marked as explored
+     */
+    public void updateCoverage(int x, int y, boolean explored) {
+        if (!coverageMatrix[x][y]) {
+            coverageMatrix[x][y] = explored;
+            coverageNumerator++;
+        }
+        // Calculate percentage
+        coveragePercent = (double) coverageNumerator / (double) coverageDenominator;
+    }
+
+    /**
+     * For debug purposes:
+     * Prints the coverage to the terminal
+     */
+    private void printCoverage() {
+        System.out.println("--- Game Controller Guard Coverage: ---");
+        for (int i = 0; i < coverageMatrix[0].length; i++) {
+            System.out.print(i + ": ");
+            for (int j = 0; j < coverageMatrix.length; j++) {
+                char currChar = '-';
+                if (coverageMatrix[j][i]) {
+                    currChar = 'X';
+                }
+                System.out.print(currChar);
+            }
+            System.out.println();
+        }
+    }
+
+    /**
      * for gameMode 0 the winning condition will be determined based on the exploration
      * factor, how much of the map the agents have explored
      * in gameMode 1, the intruders win, if all of them reach the target area
@@ -88,7 +130,7 @@ public class GameController {
         int gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
 
         if(gameMode == 0) {
-            if (computeCoverage() >= coverageThreshold){
+            if (coveragePercent >= coverageThreshold){
                 hasWonGame = 1;
             }
         } else{
@@ -107,12 +149,10 @@ public class GameController {
             }
             hasWonGame = 1;
         }
-    }
-
-
-    public double computeCoverage(){
-        //TODO compute total coverage of the agent
-        return 0;
+        if (hasWonGame == 1) {
+            simulationGUI.pauseSimulation();
+            System.out.println("Game Over. Maximum coverage reached!");
+        }
     }
 
     /**
