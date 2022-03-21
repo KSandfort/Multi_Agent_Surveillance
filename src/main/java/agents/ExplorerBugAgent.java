@@ -146,7 +146,7 @@ public class ExplorerBugAgent extends AbstractAgent {
             if (stuckTracker < 0.05) {
                 stuckTimer++;
 
-                if (stuckTimer > 150) {
+                if (stuckTimer > 50) {
                     //goalDirection = theta + Math.PI;
                     getGoalDirectionAfterUnstuck = newGoalDirection(goalDirection);
                     goalDirection += Math.PI;

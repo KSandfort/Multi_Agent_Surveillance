@@ -13,6 +13,7 @@ import model.GameMap;
 import model.MapItem;
 import utils.MapReader;
 
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -42,6 +43,8 @@ public class GameController {
     public static int guardAgentType = 0;
     public static int intruderAgentType = 0;
     // 0 = random, 1 = remote, ...
+
+    private ArrayList<Double> explorationOverTime = new ArrayList<>();
 
     /**
      * Constructor
@@ -90,6 +93,9 @@ public class GameController {
             item.update(map.getStaticItems());
         }
         updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
+
+        explorationOverTime.add(coveragePercent);
+
         previousCoveragePercent = coveragePercent;
     }
 
@@ -170,6 +176,19 @@ public class GameController {
         }
         if (hasWonGame == 1) {
             System.out.println("Game Over. Maximum coverage reached!");
+
+            // Write exploration over time to file
+            try {
+                FileWriter writer = new FileWriter("coverage_output.txt");
+                int i = 0;
+                for (Double percent : explorationOverTime) {
+                    writer.write(i++ + " " + percent + System.lineSeparator());
+                }
+                writer.close();
+            } catch(Exception e) {
+                System.out.println("Write error");
+            }
+
             simulationGUI.pauseSimulation();
         }
     }
