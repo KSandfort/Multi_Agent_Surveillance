@@ -164,7 +164,7 @@ public class ExplorerBugAgent extends AbstractAgent {
         }
 
         // Move
-        double velocity = 0.2;
+        double velocity = Entity.baseSpeedGuard;
         e.getDirection().normalize();
         e.setPrevPos(e.getPosition());
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));

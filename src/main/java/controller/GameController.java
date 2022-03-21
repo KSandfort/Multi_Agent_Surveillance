@@ -179,7 +179,14 @@ public class GameController {
 
             // Write exploration over time to file
             try {
-                FileWriter writer = new FileWriter("coverage_output.txt");
+                // TODO - remove this (or put it somewhere cleaner in Phase 2)
+                String s = "Random";
+                if (GameController.guardAgentType == 1)
+                    s = "Remote";
+                else if (GameController.guardAgentType == 2)
+                    s = "Bug";
+
+                FileWriter writer = new FileWriter("output/coverage_output_" + s + ".txt");
                 int i = 0;
                 for (Double percent : explorationOverTime) {
                     writer.write(i++ + " " + percent + System.lineSeparator());
