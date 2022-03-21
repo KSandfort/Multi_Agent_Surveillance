@@ -1,0 +1,8 @@
+width = 100
+height = 100
+numGuards = 2
+wall = 29 19 31 81
+wall = 29 79 81 81
+wall = 79 19 81 81
+wall = 29 19 81 21
+spawnAreaGuards = 50 45 60 56
