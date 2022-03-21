@@ -25,7 +25,7 @@ public abstract class Entity extends MapItem {
     private boolean isIntruder;
     private boolean isSprinting = true;
     private ArrayList<Ray> fov;
-    private double turnSpeed; //rotation in degrees/sec
+    private double turnSpeed = 0.5;
     private double radius = 1; //width of the entity
     protected int ID;
     HitBox hitBox;
