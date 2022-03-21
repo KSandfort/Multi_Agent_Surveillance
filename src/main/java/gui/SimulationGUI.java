@@ -28,7 +28,7 @@ public class SimulationGUI extends Application {
     private int simulationDelay;
     private Timeline timeline;
     private GameController controller;
-    private final int FPS = 30;
+    private final int FPS = 50;
     private final int WIDTH = 1200;
     private final int HEIGHT = 800;
 
@@ -90,7 +90,6 @@ public class SimulationGUI extends Application {
      * Updates the simulation.
      */
     public void update() {
-        controller.update();
         updateGUI1step();
     }
 
