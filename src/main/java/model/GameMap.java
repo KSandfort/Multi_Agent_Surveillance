@@ -3,7 +3,6 @@ package model;
 import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;
-import controller.MapGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;

@@ -56,6 +56,7 @@ public abstract class Entity extends MapItem {
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
         entityKnowledge.setPositionOffset(getPosition());
+        this.markers = new ArrayList<>();
     }
 
     /**
@@ -189,9 +190,15 @@ public abstract class Entity extends MapItem {
         }
     }
 
+    /**
+     * Places a marker on the current position of the map.
+     * @param type
+     */
     public void placeMarker(int type) {
         Marker marker = new Marker(type, this.getPosition(), isIntruder);
+        markers.add(marker); // Add to internal list
         map.addToMap(marker);
+        System.out.println("Marker placed of type " + type);
     }
 
     public boolean checkWinningCondition(){

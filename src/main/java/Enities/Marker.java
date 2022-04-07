@@ -4,15 +4,17 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Sphere;
+import lombok.Getter;
+import lombok.Setter;
 import model.*;
-
 import java.util.ArrayList;
 
 /**
  * Class that represents a marker.
  * Markers can be placed on a map by entities.
  */
+@Getter
+@Setter
 public class Marker extends MapItem {
 
     // Variables
@@ -64,11 +66,12 @@ public class Marker extends MapItem {
         int offset = SimulationGUI.CANVAS_OFFSET;
         double sf = SimulationGUI.SCALING_FACTOR;
 
-        Circle circle = new Circle(5);
+        Circle circle = new Circle(3);
         circle.setCenterX(position.getX() * sf + offset);
         circle.setCenterY(position.getY() * sf + offset);
         circle.setFill(getColor());
 
+        components.add(circle);
         return components;
     }
 
