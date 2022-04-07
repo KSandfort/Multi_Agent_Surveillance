@@ -55,7 +55,6 @@ public class Wall extends Area {
             if (cornerPoints[i].getY() > targetY)
                 targetY = cornerPoints[i].getY();
         }
-        // get bottom right point
         Rectangle rectangle = new Rectangle(
                 (originX * sf) + offset,
                 (originY * sf) + offset,
