@@ -31,6 +31,7 @@ public abstract class Entity extends MapItem {
     HitBox hitBox;
     protected AbstractAgent agent;
     protected Vector2D prevPos;
+    protected ArrayList<Marker> markers;
 
     // Static
     public static double baseSpeedGuard = 0.2;
@@ -186,6 +187,11 @@ public abstract class Entity extends MapItem {
         if (rayLength + epsilon < fovDepth) { // Display walls in vision
             entityKnowledge.setCell(3, ray.getPoint());
         }
+    }
+
+    public void placeMarker(int type) {
+        Marker marker = new Marker(type, this.getPosition(), isIntruder);
+        map.addToMap(marker);
     }
 
     public boolean checkWinningCondition(){
