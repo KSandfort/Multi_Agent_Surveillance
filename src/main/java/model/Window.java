@@ -51,6 +51,7 @@ public class Window extends Wall{
         rectangle.setFill(Color.web("#5a4de3", 0.2));
         components.add(rectangle);
 
+        // outline
         for (int i = 0; i < cornerPoints.length; i++) {
             Line line = new Line(
                     (cornerPoints[i].getX() * sf) + offset,
