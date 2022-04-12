@@ -9,31 +9,45 @@ public class NeuralNetwork {
     final static double c3 =0.4;
 
     //mutation probabilities
-    final static double disabledChance = 0.75;
-    final double wMutationSelectionP = 0.25;
-    final double wMutationP = 0.8;
-    final double wResetP = 0.9;
-    final double addNodeP = 0.03;
-    final double addConnP = 0.05;
+    final static double disabledChance = 0.75;//chance that a disabled gene is inherited
+    final double wMutationSelectionP = 0.25;//chance a network is selected to mutate the weights
+    final double wMutationP = 0.8;//chance for each weight to be changed
+    final double wResetP = 0.9;//chance that the value of a weight is reset instead of just changed
+    final double addNodeP = 0.03;//chance that a node is added to the network
+    final double addConnP = 0.05;//chance that a connection is added to the network
 
-    public static int maxNeurons = 0;
     private List<NNConnection> connections;
     double fitness;
-    int inputNum;
-    int outputNum;
+
+    //hardcode these variables because its easier this way
+    public static int inputNum = 2 + 1;//including bias node
+    public static int outputNum = 1;//number of outputs
+    public static int maxNeurons = inputNum + outputNum + 1;//total possible number of neurons
+
+    private static List<NNConnection> newConnections = new ArrayList<>();//the new connections of the new generation
+
     Random random;
-    public NeuralNetwork(int in, int out)
+    public NeuralNetwork()
     {
-        inputNum = in + 1;//including bias node
-        outputNum = out;
-        maxNeurons = in;
         connections = new ArrayList<NNConnection>();
         random = new Random();
     }
 
+    public void init()
+    {
+        for(int i = 0; i < inputNum;i++)
+        {
+            for(int o = inputNum; o < inputNum + outputNum;o++)
+            {
+                addConnection(i,o,null);
+            }
+        }
+
+    }
+
     public NeuralNetwork copy()
     {
-        NeuralNetwork copy = new NeuralNetwork(inputNum - 1, outputNum);
+        NeuralNetwork copy = new NeuralNetwork();
 
         List<NNConnection> newConnections = copy.getConnections();
 
@@ -42,13 +56,14 @@ public class NeuralNetwork {
             newConnections.add(c.copy());
         }
 
+        copy.setFitness(fitness);
         return copy;
     }
 
     public void mutate()
     {
 
-        if(random.nextDouble() < addNodeP)
+        if(random.nextDouble() < wMutationSelectionP)
         {
             mutateWeights();
         }
@@ -68,7 +83,7 @@ public class NeuralNetwork {
     public double[] evaluate(double[] input)
     {
         double[] output = new double[outputNum];
-        double[] neuronValues = new double[maxNeurons + outputNum];
+        double[] neuronValues = new double[maxNeurons];
         if(input.length + 1 != inputNum)
         {
             System.out.println("Incorrect number of inputs ");
@@ -78,19 +93,37 @@ public class NeuralNetwork {
         neuronValues[0] = 1;//bias node
         System.arraycopy(input,0,neuronValues,1,input.length);
 
-        for (int i = inputNum; i < maxNeurons + outputNum; i++) {
-            for (NNConnection c : connections) {
-                if (c.getOut() != i) {
+        //calculate values of hidden layers in order of neurons
+        for(int i = inputNum + outputNum; i < maxNeurons;i++)
+        {
+            for(NNConnection c : connections)
+            {
+                if(c.getOut() != i)
+                {
                     continue;
                 }
+                if(c.isEnabled())
+                    neuronValues[i] += neuronValues[c.getIn()] * c.getWeight();
+            }
+            neuronValues[i] = sigmoid(neuronValues[i]);//sigmoid activation function
+        }
+        for(int i = inputNum; i < inputNum + outputNum;i++)//calculate output last
+        {
+            for(NNConnection c : connections)
+            {
+                if(c.getOut() != i)
+                {
+                    continue;
+                }
+                if(c.isEnabled())
                 neuronValues[i] += neuronValues[c.getIn()] * c.getWeight();
             }
             neuronValues[i] = sigmoid(neuronValues[i]);
         }
 
-        System.arraycopy(neuronValues,maxNeurons,output,0,outputNum);
-        
+        System.arraycopy(neuronValues,inputNum,output,0,outputNum);
         return output;
+        //return neuronValues;
     }
 
     public double sigmoid(double x)
@@ -113,7 +146,7 @@ public class NeuralNetwork {
             b = first;
         }
 
-        NeuralNetwork nn = new NeuralNetwork(a.getInputNum() - 1,a.getOutputNum());
+        NeuralNetwork nn = new NeuralNetwork();
         List<NNConnection> aConn = a.getConnections();
         List<NNConnection> bConn = b.getConnections();
         List<NNConnection> newConnections = new ArrayList<NNConnection>();
@@ -153,14 +186,14 @@ public class NeuralNetwork {
                 {
                     enabled = false;
                 }
-                System.out.println(aCount +"-"+ bCount);
+                //System.out.println(aCount +"-"+ bCount);
                 if(random.nextBoolean())//if genes match randomly select one of the two genes
                 {
-                    System.out.println("Selecting a");
+                    //System.out.println("Selecting a");
                     inherited = aC.copy();
                 }else
                 {
-                    System.out.println("Selecting b");
+                    //System.out.println("Selecting b");
                     inherited = bC.copy();
                 }
                 if(!enabled && random.nextDouble() < disabledChance)
@@ -284,10 +317,8 @@ public class NeuralNetwork {
         gene.setEnabled(false);
 
         maxNeurons++;
-        NNConnection newConn1 = new NNConnection(gene.getIn(), maxNeurons, 1, true);
-        NNConnection newConn2 = new NNConnection(maxNeurons,gene.getOut(), gene.getWeight(), true);
-        connections.add(newConn1);
-        connections.add(newConn2);
+        addConnection(gene.getIn(),maxNeurons - 1,1.0);
+        addConnection(maxNeurons - 1,gene.getOut(),gene.getWeight());
     }
 
     public void addConnection()
@@ -295,18 +326,36 @@ public class NeuralNetwork {
         int neuron1 = randomNeuron(true);
         int neuron2 = randomNeuron(false);
 
-        //check if connection exist in current genome
-        for (NNConnection c : connections) {
-            if(c.getIn() == neuron1 && c.getOut() == neuron2)
+        addConnection(neuron1,neuron2,null);
+    }
+
+    public void addConnection(int i, int o,Double weight)
+    {
+        for (NNConnection c : connections) {//check if the connection doesnt exist yet in the network
+            if(c.getIn() == i && c.getOut() == o)
                 return;
         }
 
-        //TODO: maybe add check to prevent two same structures having different innovation numbers, also needs to be added to other mutations
+        for(NNConnection c : newConnections) {//check if the connection has evolved before
 
-        NNConnection newConn = new NNConnection(neuron1, neuron2, 1, true);
-        newConn.resetWeight();
+            if (c.getIn() == i && c.getOut() == o){
+                NNConnection newConn = c.copy();
+                if(weight != null)
+                    newConn.setWeight(weight);
+                connections.add(newConn);
+                return;
+            }
+        }
 
+        NNConnection newConn = new NNConnection(i, o, 1, true);
+        if(weight != null)
+            newConn.setWeight(weight);
+        else
+            newConn.resetWeight();
+
+        newConnections.add(newConn);
         connections.add(newConn);
+
     }
 
     public int randomNeuron(boolean canBeInput)

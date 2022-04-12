@@ -42,6 +42,8 @@ public class NNConnection {
         return weight;
     }
 
+    public void setWeight(double weight) { this.weight = weight; }
+
     public void resetWeight() {
         this.weight = new Random().nextDouble() * 2 * initBound - initBound;
     }

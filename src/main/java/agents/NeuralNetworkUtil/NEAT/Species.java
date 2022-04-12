@@ -3,6 +3,7 @@ package agents.NeuralNetworkUtil.NEAT;
 import agents.NeuralNetworkUtil.NeuralNetwork;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Species
@@ -25,9 +26,50 @@ public class Species
     {
         NeuralNetwork[] networks = genomes.toArray(new NeuralNetwork[0]);
 
-        quickSort(networks,0,networks.length-1);
+        if(networks.length < 2)
+        {
+            return networks;//if length is 0 or 1 the network is already sorted
+        }
+        mergeSort(networks);
+        //quickSort(networks,0,networks.length-1);
 
         return networks;
+    }
+
+    private void mergeSort(NeuralNetwork[] arr)
+    {
+        if(arr.length <= 1)
+            return;
+
+        int middle = arr.length / 2;
+
+        //make two arrays half the length of the original array
+        NeuralNetwork[] left = new NeuralNetwork[middle];
+        NeuralNetwork[] right = new NeuralNetwork[arr.length - middle];
+
+        //copy values to the two new lists
+        System.arraycopy(arr,0,left,0, middle);
+        System.arraycopy(arr,middle,right,0, arr.length - middle);
+
+        //sort both lists
+        mergeSort(left);
+        mergeSort(right);
+
+        int iL = 0;//index of the left array
+        int iR = 0;//index of the right array
+
+        for (int i = 0; i < arr.length; i++) {
+            if(iL >= left.length)
+                arr[i] = right[iR++];
+            else if(iR >= right.length)
+                arr[i] = left[iL++];
+            else if(left[iL].getFitness() >= right[iR].getFitness())
+                arr[i] = left[iL++];
+            else
+                arr[i] = right[iR++];
+        }
+
+
     }
 
     private NeuralNetwork[] quickSort(NeuralNetwork[] arr, int Left, int Right)
@@ -39,11 +81,11 @@ public class Species
 
         do
         {
-            while(arr[l].getFitness() < middle)
+            while(arr[l].getFitness() > middle)
             {
                 l++;
             }
-            while(middle < arr[r].getFitness())
+            while(middle > arr[r].getFitness())
             {
                 r--;
             }

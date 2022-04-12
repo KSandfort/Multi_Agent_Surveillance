@@ -12,7 +12,7 @@ public class GenePool
     final double distanceThreshold = 3.0;
     final double crossoverChance = 0.75;
     final int maxStaleness = 15;
-    final int poolSize = 100;//population size. eg how many genomes in a generation
+    final int poolSize = 200;//population size. eg how many genomes in a generation
 
     int input;
     int output;
@@ -20,6 +20,7 @@ public class GenePool
     List<Species> speciesList;
     int generation;
     double maxFitness;
+    public NeuralNetwork bestNetwork;
 
     public GenePool(int in, int out)
     {
@@ -33,16 +34,13 @@ public class GenePool
     public void init()
     {
         List<NeuralNetwork> children = new ArrayList<>();//new generation
-        NeuralNetwork empty = new NeuralNetwork(input,output);
-        addToPool(empty);
 
-        while(children.size() + speciesList.size() < poolSize)
+        while(children.size() < poolSize)
         {
             //make new child
-            Random random = new Random();
-            Species s = speciesList.get(random.nextInt(speciesList.size()));
-            NeuralNetwork nn = newChild(s);
-            children.add(nn);
+            NeuralNetwork init = new NeuralNetwork();
+            init.init();
+            children.add(init);
         }
 
         //add new genomes to species
@@ -57,8 +55,14 @@ public class GenePool
         //simulate and calculate fitness
         simulate();
 
-        List<NeuralNetwork> children = new ArrayList<>();//new generation
-        cullSpecies(false);//remove bottom half of each species
+        //new generation
+        List<NeuralNetwork> children = new ArrayList<>();
+
+        //remove bottom half of each species
+        cullSpecies(false);
+
+        //rank species
+        ranking();
 
         //remove stale species
         removeStale();
@@ -83,6 +87,8 @@ public class GenePool
         //cull all but top member of each species
         cullSpecies(true);
 
+        System.out.println("Number of species: " + speciesList.size());
+
         //add remaining population using top of species
         while(children.size() + speciesList.size() < poolSize)
         {
@@ -102,15 +108,44 @@ public class GenePool
         generation++;
     }
 
+    private void ranking()
+    {
+        maxFitness = -1;
+        bestNetwork = null;
+        for(Species s : speciesList)
+        {
+            NeuralNetwork best = s.getGenomes().get(0);
+            if(best.getFitness() > maxFitness)
+            {
+                maxFitness = best.getFitness();
+                bestNetwork = best.copy();
+            }
+        }
+
+        System.out.println("Fitness of gen " + generation + ": " + maxFitness);
+    }
+
     private void simulate()
     {
         for(Species s : speciesList)
         {
             for(NeuralNetwork nn : s.getGenomes())
             {
-                NEATAgent agent = new NEATAgent(nn);
+                double[] expected = {0,1,1,0};
+                double res1 = nn.evaluate(new double[]{0, 0})[0];
+                double res2 = nn.evaluate(new double[]{1, 0})[0];
+                double res3 = nn.evaluate(new double[]{0, 1})[0];
+                double res4 = nn.evaluate(new double[]{1, 1})[0];
+                double[] result = {res1,res2,res3,res4};
 
-                //TODO: simulate agent somehow
+                double error = 0;
+                for (int i = 0; i < expected.length; i++) {
+                    error += (expected[i] - result[i])*(expected[i] - result[i]);//squared error
+                }
+                error = 4 - error;//make lowest error highest fitness
+                error *= error;//square error to make difference bigger
+
+                nn.setFitness(error);
             }
         }
     }
@@ -135,13 +170,18 @@ public class GenePool
     {
         List<Species> survivingSpecies = new ArrayList<>();
         double totalAvgFitness = calcTotalAvgFitness();
+        int counter =0;
         for(Species s : speciesList)
         {
             double amount = Math.floor(s.averageFitness / totalAvgFitness * poolSize);
             if(amount >= 1)
             {
                 survivingSpecies.add(s);
+            }else
+            {
+                System.out.println("Removed weak species:" + counter);
             }
+            counter++;
         }
         speciesList = survivingSpecies;
     }
@@ -149,6 +189,8 @@ public class GenePool
     private void removeStale()
     {
         List<Species> survivingSpecies = new ArrayList<>();
+
+        int counter =0;
 
         for (int i = 0; i < speciesList.size(); i++) {
             Species s = speciesList.get(i);
@@ -165,7 +207,11 @@ public class GenePool
 
             if(s.staleness < maxStaleness){
                 survivingSpecies.add(s);
+            }else
+            {
+                System.out.println("Removed stale species:" + counter);
             }
+            counter++;
         }
 
         speciesList = survivingSpecies;
@@ -176,6 +222,13 @@ public class GenePool
         double output = 0;
         for(Species s : speciesList)
         {
+            double totalFitness = 0;
+            for(NeuralNetwork nn : s.getGenomes())
+            {
+                totalFitness += nn.getFitness();
+            }
+            s.averageFitness = totalFitness/s.getGenomes().size();
+
             output += s.getAverageFitness();
         }
         return output;
@@ -186,14 +239,13 @@ public class GenePool
         for(Species s : speciesList)
         {
             NeuralNetwork[] genomes = s.sort();//sort genomes in species based on fitness value
-            if(!onlyBest)
-            {
-                s.getGenomes().clear();
-            }
+            s.getGenomes().clear();
+
             double newSize = onlyBest ? 1 : Math.ceil(genomes.length/2.0);
             for (int i = 0; i < newSize; i++) {
                 s.getGenomes().add(genomes[i]);
             }
+            System.out.println("Species best fitness: " + s.topFitness);
         }
     }
 
