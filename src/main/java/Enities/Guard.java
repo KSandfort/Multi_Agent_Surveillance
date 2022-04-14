@@ -8,6 +8,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import lombok.Getter;
+import lombok.Setter;
 import model.GameMap;
 import model.HitBox;
 import model.MapItem;
@@ -19,10 +21,14 @@ import java.util.ArrayList;
 /**
  * This class represents a guard on the board.
  */
+@Getter
+@Setter
 public class Guard extends Entity {
 
     // Variables
     static int guardCount = 0;
+    private boolean isYelling = false;
+    private double yellingFactor = 10;
 
     /**
      * Constructor
@@ -71,6 +77,10 @@ public class Guard extends Entity {
     public void chase(Vector2D position){
         Vector2D difference = Vector2D.subtract(position, getPosition());
         this.direction = difference;
+    }
+
+    public boolean isYelling(){
+        return isYelling;
     }
 
     /**

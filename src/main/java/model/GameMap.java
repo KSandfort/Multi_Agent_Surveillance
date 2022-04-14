@@ -1,5 +1,6 @@
 package model;
 
+import Enities.Entity;
 import Enities.Guard;
 import Enities.Intruder;
 import controller.GameController;

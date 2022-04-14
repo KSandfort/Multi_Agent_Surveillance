@@ -17,6 +17,7 @@ public abstract class Area extends MapItem{
     private double areaFovAngle = 30;
     private double areaSpeedFactor = 1;
     private double hearingFactor = 1;
+    private double areaSoundVolume = 1;
 
     /**
      * Constructor
