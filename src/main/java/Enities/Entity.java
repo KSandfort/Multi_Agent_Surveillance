@@ -198,7 +198,6 @@ public abstract class Entity extends MapItem {
         Marker marker = new Marker(type, this.getPosition(), isIntruder);
         markers.add(marker); // Add to internal list
         map.addToMap(marker);
-        System.out.println("Marker placed of type " + type);
     }
 
     public boolean checkWinningCondition(){
