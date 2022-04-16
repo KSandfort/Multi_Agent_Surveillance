@@ -13,6 +13,8 @@ import java.util.ArrayList;
  * object that the agent can see through, but not walks through
  */
 public class Window extends Wall{
+    private double areaSoundVolume = 2;
+
     public Window(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
     }
