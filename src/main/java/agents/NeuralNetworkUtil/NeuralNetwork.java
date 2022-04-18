@@ -3,10 +3,10 @@ package agents.NeuralNetworkUtil;
 import java.util.*;
 
 public class NeuralNetwork {
-    //coefficients for compatability distance calculation
-    final static double c1 =1;
-    final static double c2 =1;
-    final static double c3 =0.4;
+    //coefficients for compatibility distance calculation
+    final static double c1 =1.3;
+    final static double c2 =1.3;
+    final static double c3 =1;
 
     //mutation probabilities
     final static double disabledChance = 0.75;//chance that a disabled gene is inherited
@@ -26,13 +26,20 @@ public class NeuralNetwork {
 
     private static List<NNConnection> newConnections = new ArrayList<>();//the new connections of the new generation
 
+    //Hashmap storing the innovation number of each connection that has been used to create a new node
+    //this to prevent the creation of too many new nodes when the same node is evolved multiple times
+    private static HashMap<Integer,Integer> newNodes = new HashMap<>();
+
     Random random;
+
     public NeuralNetwork()
     {
         connections = new ArrayList<NNConnection>();
-        random = new Random();
+        random = new Random(System.nanoTime());
     }
 
+    //function to initialize the neural network
+    //it only connects the input nodes with a connection to each output node, no hidden inputs are created
     public void init()
     {
         for(int i = 0; i < inputNum;i++)
@@ -45,6 +52,7 @@ public class NeuralNetwork {
 
     }
 
+    //returns a copy of the network
     public NeuralNetwork copy()
     {
         NeuralNetwork copy = new NeuralNetwork();
@@ -53,13 +61,18 @@ public class NeuralNetwork {
 
         for(NNConnection c : connections)
         {
-            newConnections.add(c.copy());
+            newConnections.add(c.copy());//add copies of the connection to the new network
         }
 
-        copy.setFitness(fitness);
+        copy.setFitness(fitness);//copy the fitness value
         return copy;
     }
 
+    //function to mutate the network
+    //it mutates the network in three ways:
+    //  changes the weights of the connections in the network
+    //  adds a node to the network by replacing an existing connection in the network
+    //  adds a connection to connect two previously unconnected nodes
     public void mutate()
     {
 
@@ -79,7 +92,12 @@ public class NeuralNetwork {
         }
     }
 
-    //calculate neural network
+    //calculates the outputs of the neural network given the input
+    //TODO: change the implementation of this function
+    // this is a difficult thing to calculate and I am pretty sure the current implementation is not a proper one
+    // currently it calculates the value of the hidden neurons in order of index
+    // this works for small scale networks
+    // but for larger ones this will probably create problems if the network structure evolves to become larger
     public double[] evaluate(double[] input)
     {
         double[] output = new double[outputNum];
@@ -126,11 +144,18 @@ public class NeuralNetwork {
         //return neuronValues;
     }
 
+    //sigmoid function copied from the paper
     public double sigmoid(double x)
     {
         return 1/(1 + Math.exp(-4.9*x));
     }
 
+    //function to calculate the result of crossover between two networks
+    //it assumes the connections of both networks are sorted in ascending order based on innovation count
+    //it constructs a new network by combining connections from both networks
+    //if both networks have a connection with the same innovation count, one of the two connection is selected at random
+    //if one connection has a innovation count that is not in the other network,
+    //  only the connections of the fittest network are copied to the new network
     public static NeuralNetwork crossOver(NeuralNetwork first, NeuralNetwork second)
     {
         NeuralNetwork a;
@@ -222,7 +247,13 @@ public class NeuralNetwork {
         nn.setConnections(newConnections);
         return nn;
     }
-    
+
+    //distance measure between two networks
+    //this function calculates how different two networks are from each other
+    //it uses the innovation count of each network connection to figure this out
+    //it considers the average weight difference of the connections that have matching innovation counts
+    //and it considers the number of connections with non matching innovation counts
+    //using the number of connections in total and the predefined coefficients it calculates the distance
     public static double distance(NeuralNetwork a, NeuralNetwork b)
     {
         int i = 0;
@@ -282,15 +313,18 @@ public class NeuralNetwork {
             }
         }
 
+        //int n = 1;
         int n = Math.max(aConn.size(), bConn.size());
-
 
 
         return c1*e/n + c2*d/n + c3*dW/m;
     }
-    public void mutateWeights(){
-        
-        
+
+    //function to mutate the weights of the network connections
+    //for each weight there is a chance for it to change
+    //if the weight changes it can either permute the weight of assign a completely new value
+    public void mutateWeights()
+    {
         for (NNConnection c : connections) {
             if(random.nextDouble() > wMutationP)
                 continue;
@@ -304,6 +338,12 @@ public class NeuralNetwork {
         }
     }
 
+    //function to add a node to the network
+    //it will randomly choose one connection in the network
+    //this connection will be disabled, and replaced with two new connections
+    //one connection from the original input to a new neuron with a weight of one
+    //and one connection from the new neuron to the original output with the same weight as the original connection
+    //this will insure that the network will have the exact same function as than before the adding of the node
     public void addNode()
     {
         if(connections.size() == 0)
@@ -316,23 +356,44 @@ public class NeuralNetwork {
 
         gene.setEnabled(false);
 
-        maxNeurons++;
-        addConnection(gene.getIn(),maxNeurons - 1,1.0);
-        addConnection(maxNeurons - 1,gene.getOut(),gene.getWeight());
+        int neuronIndex = maxNeurons;
+
+        if(newNodes.containsKey(gene.getInnovationCount()))
+        {
+            neuronIndex = newNodes.get(gene.getInnovationCount());//neuron has been made before so use that neuron count
+        }else
+        {
+            newNodes.put(gene.getInnovationCount(), maxNeurons);
+            maxNeurons++;//neuron does not exist yet so make a new one
+        }
+
+        addConnection(gene.getIn(),neuronIndex,1.0);
+        addConnection(neuronIndex,gene.getOut(),gene.getWeight());
+
     }
 
+    //function to add a new connection to the network
+    //it will select two new neurons and add a connection to the network
     public void addConnection()
     {
-        int neuron1 = randomNeuron(true);
-        int neuron2 = randomNeuron(false);
+        //TODO: we need a more advanced way of selecting neurons,
+        // neurons can be selected in such a way that it can cause a cycle in the graph
+        // this will make it impossible to compute the output of the network accurately
+        int neuron1 = randomNeuron(connections,true);
+        int neuron2 = randomNeuron(connections,false);
+
+        if(neuron1 == neuron2)//cant make a connection if the neurons are the same
+            return;
 
         addConnection(neuron1,neuron2,null);
     }
 
+    //function to add  a new connection to the network
+    //it insures that if the connection exists in another network it will use the correct innovation number
     public void addConnection(int i, int o,Double weight)
     {
-        for (NNConnection c : connections) {//check if the connection doesnt exist yet in the network
-            if(c.getIn() == i && c.getOut() == o)
+        for (NNConnection c : connections) {//check if the two neurons are unconnected
+            if((c.getIn() == i && c.getOut() == o) || (c.getIn() == o && c.getOut() == i))
                 return;
         }
 
@@ -342,7 +403,9 @@ public class NeuralNetwork {
                 NNConnection newConn = c.copy();
                 if(weight != null)
                     newConn.setWeight(weight);
-                connections.add(newConn);
+                else
+                    newConn.resetWeight();
+                addConnectionInOrder(newConn);
                 return;
             }
         }
@@ -354,11 +417,25 @@ public class NeuralNetwork {
             newConn.resetWeight();
 
         newConnections.add(newConn);
-        connections.add(newConn);
+        addConnectionInOrder(newConn);
 
     }
 
-    public int randomNeuron(boolean canBeInput)
+    //function to add a new connection to the list of connections such that the list stays sorted
+    public void addConnectionInOrder(NNConnection newConn)
+    {
+        for (int j = 0; j < connections.size(); j++) {
+            if(newConn.getInnovationCount() < connections.get(j).getInnovationCount())
+            {
+                connections.add(j,newConn);
+                return;
+            }
+        }
+        connections.add(newConn);
+    }
+
+    //function to select a random neuron, it only selects neurons that are present in the network
+    public int randomNeuron(List<NNConnection> genes, boolean canBeInput)
     {
         //default value of boolean is false so we dont need to initialize the values of the array, since we want them to be false
         boolean[] possibleNeurons = new boolean[maxNeurons + outputNum];
@@ -371,24 +448,19 @@ public class NeuralNetwork {
             }
         }else
         {
-            for (int i = maxNeurons; i < maxNeurons + outputNum; i++) {
+            for(int i = inputNum;i < inputNum + outputNum;i++) {
                 possibleNeurons[i] = true;
             }
         }
 
-        for (int i = inputNum; i < maxNeurons; i++) {//add hidden neurons
-            possibleNeurons[i] = true;
-        }
-
-
-        for (NNConnection c : connections) {
-            if(canBeInput || (c.getIn() >= inputNum && c.getIn() < maxNeurons) )
+        for (int i = inputNum+outputNum; i < maxNeurons; i++) //only select neurons that are actually in the network
+        {
+            for(NNConnection c : connections)
             {
-                possibleNeurons[c.getIn()] = true;
-            }
-            if(!canBeInput || (c.getIn() >= inputNum && c.getIn() < maxNeurons))
-            {
-                possibleNeurons[c.getOut()] = true;
+                if(c.getIn() == i || c.getOut() == i)
+                {
+                    possibleNeurons[i] = true;
+                }
             }
         }
 

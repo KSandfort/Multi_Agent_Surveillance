@@ -9,9 +9,9 @@ import java.util.Random;
 
 public class GenePool
 {
-    final double distanceThreshold = 3.0;
+    final double distanceThreshold = 2.0;
     final double crossoverChance = 0.75;
-    final int maxStaleness = 15;
+    final int maxStaleness = 20;
     final int poolSize = 200;//population size. eg how many genomes in a generation
 
     int input;
@@ -50,19 +50,26 @@ public class GenePool
         }
     }
 
+    //make new generation
     public void newGeneration()
     {
+        //more debugging statements on lines: 186, 216, 252
+        System.out.println("\nGeneration " + generation);
+
         //simulate and calculate fitness
         simulate();
 
         //new generation
         List<NeuralNetwork> children = new ArrayList<>();
 
+        //rank species
+        ranking();
+
         //remove bottom half of each species
         cullSpecies(false);
 
-        //rank species
-        ranking();
+        System.out.println("Fitness of gen " + generation + ": " + maxFitness);
+        System.out.println("Number of species before culling: " + speciesList.size());
 
         //remove stale species
         removeStale();
@@ -87,7 +94,7 @@ public class GenePool
         //cull all but top member of each species
         cullSpecies(true);
 
-        System.out.println("Number of species: " + speciesList.size());
+        System.out.println("Number of species after culling: " + speciesList.size());
 
         //add remaining population using top of species
         while(children.size() + speciesList.size() < poolSize)
@@ -95,7 +102,7 @@ public class GenePool
             //make new child
             Random random = new Random();
             Species s = speciesList.get(random.nextInt(speciesList.size()));
-            NeuralNetwork nn = newChild(s);
+            NeuralNetwork nn = newChild(s);//TODO: this is wrong, crossover will select the same genome twice
             children.add(nn);
         }
 
@@ -108,6 +115,7 @@ public class GenePool
         generation++;
     }
 
+    //
     private void ranking()
     {
         maxFitness = -1;
@@ -121,10 +129,9 @@ public class GenePool
                 bestNetwork = best.copy();
             }
         }
-
-        System.out.println("Fitness of gen " + generation + ": " + maxFitness);
     }
 
+    //evaluate the fitness of the genomes, this method will have to change if you want to change the use of the network
     private void simulate()
     {
         for(Species s : speciesList)
@@ -150,6 +157,8 @@ public class GenePool
         }
     }
 
+    //adds a new child to the correct species, based on distance measure
+    //or creates new species if it does not belong to any species
     private void addToPool(NeuralNetwork nn)
     {
         for(Species s : speciesList)
@@ -166,6 +175,8 @@ public class GenePool
         speciesList.add(newSpecies);
     }
 
+    //removes any species that based on their average fitness are not supposed to produce any offspring
+    //the number of offspring a species is allowed to create is the percentage of the species average fitness compared to the total average fitness of all the species
     private void removeWeak()
     {
         List<Species> survivingSpecies = new ArrayList<>();
@@ -179,18 +190,17 @@ public class GenePool
                 survivingSpecies.add(s);
             }else
             {
-                System.out.println("Removed weak species:" + counter);
+                //System.out.println("Removed weak species:" + counter);
             }
             counter++;
         }
         speciesList = survivingSpecies;
     }
 
+    //remove any species that have not improved in a predefined amount of generations
     private void removeStale()
     {
         List<Species> survivingSpecies = new ArrayList<>();
-
-        int counter =0;
 
         for (int i = 0; i < speciesList.size(); i++) {
             Species s = speciesList.get(i);
@@ -207,16 +217,13 @@ public class GenePool
 
             if(s.staleness < maxStaleness){
                 survivingSpecies.add(s);
-            }else
-            {
-                System.out.println("Removed stale species:" + counter);
             }
-            counter++;
         }
 
         speciesList = survivingSpecies;
     }
 
+    //returns the sum of average fitness of all the species
     private double calcTotalAvgFitness()
     {
         double output = 0;
@@ -234,6 +241,7 @@ public class GenePool
         return output;
     }
 
+    //removes the least fit genomes in the species
     private void cullSpecies(boolean onlyBest)
     {
         for(Species s : speciesList)
@@ -241,14 +249,15 @@ public class GenePool
             NeuralNetwork[] genomes = s.sort();//sort genomes in species based on fitness value
             s.getGenomes().clear();
 
-            double newSize = onlyBest ? 1 : Math.ceil(genomes.length/2.0);
+            double newSize = onlyBest ? 1 : genomes.length;//Math.ceil(genomes.length/2.0);
             for (int i = 0; i < newSize; i++) {
                 s.getGenomes().add(genomes[i]);
             }
-            System.out.println("Species best fitness: " + s.topFitness);
+            //System.out.println("Species best fitness: " + s.topFitness);
         }
     }
 
+    //create a new child using a species, there is a 75% chance a new child is the result of a crossover
     private NeuralNetwork newChild(Species s)
     {
         NeuralNetwork child;

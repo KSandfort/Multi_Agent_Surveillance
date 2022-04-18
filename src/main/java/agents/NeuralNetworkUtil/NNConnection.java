@@ -13,7 +13,8 @@ public class NNConnection {
     private boolean enabled;
     private int innovationCount;
 
-    public NNConnection(int i, int o, double w, boolean e, int iC)
+    //i = input node, 0 = output node, w = weight, e = enabled? yes/no, iC = innovation count
+    public NNConnection(int i, int o, double w, boolean e, int iC)//constructor used for copying
     {
         in = i;
         out = o;
@@ -28,12 +29,13 @@ public class NNConnection {
         out = o;
         weight = w;
         enabled = e;
-        NNConnection.globalInnovation++;
         innovationCount = NNConnection.globalInnovation;
+        NNConnection.globalInnovation++;
     }
     public int getIn() {
         return in;
     }
+
     public int getOut() {
         return out;
     }
@@ -44,10 +46,12 @@ public class NNConnection {
 
     public void setWeight(double weight) { this.weight = weight; }
 
+    //give the weight of the connection a completely new random value
     public void resetWeight() {
         this.weight = new Random().nextDouble() * 2 * initBound - initBound;
     }
 
+    //change the value of the weight randomly
     public void permuteWeight() {
         this.weight += new Random().nextDouble() * 2 * initBound - initBound;
     }
@@ -64,6 +68,7 @@ public class NNConnection {
         return innovationCount;
     }
 
+    //returns a copy of the connection
     public NNConnection copy()
     {
         return new NNConnection(in,out,weight,enabled,innovationCount);
@@ -71,6 +76,6 @@ public class NNConnection {
 
     @Override
     public String toString() {
-        return "|"+ getIn() +"->" + getOut() +", w=" +getWeight()+", e="+isEnabled()+"| ";
+        return "|"+ getIn() +"->" + getOut() +", w=" +getWeight()+", e="+isEnabled()+", i="+getInnovationCount()+"| ";
     }
 }
