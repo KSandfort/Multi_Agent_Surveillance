@@ -50,6 +50,7 @@ public class GenePool
         }
     }
 
+    //TODO: speciation is probably not 100% optimal, this is pretty much copied from another project and deviates a bit from the papers
     //make new generation
     public void newGeneration()
     {
@@ -81,8 +82,7 @@ public class GenePool
         removeWeak();
 
         //breed proportional to fitness value
-        for(Species s : speciesList)
-        {
+        for(Species s : speciesList) {
             //children to be bred from this species
             double amount = Math.floor(s.averageFitness / totalAvgFitness * poolSize) - 1;
             for (int i = 0; i < amount; i++) {
