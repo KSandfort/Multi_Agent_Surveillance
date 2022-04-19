@@ -93,55 +93,50 @@ public class NeuralNetwork {
     }
 
     //calculates the outputs of the neural network given the input
-    //TODO: change the implementation of this function
-    // this is a difficult thing to calculate and I am pretty sure the current implementation is not a proper one
-    // currently it calculates the value of the hidden neurons in order of index
-    // this works for small scale networks
-    // but for larger ones this will probably create problems if the network structure evolves to become larger
+    //NOTE: this only works if no cycles are present in the network
+    //so when adding edges, this will need to be checked
     public double[] evaluate(double[] input)
     {
         double[] output = new double[outputNum];
-        double[] neuronValues = new double[maxNeurons];
+        double[] neuronValues = new double[maxNeurons + outputNum];
+        List<NNConnection>[] graph = orderConnectionsByNode(false);
+
         if(input.length + 1 != inputNum)
         {
             System.out.println("Incorrect number of inputs ");
             return null;
         }
 
-        neuronValues[0] = 1;//bias node
-        System.arraycopy(input,0,neuronValues,1,input.length);
+        double[] biasedInput = new double[input.length + 1];
+        biasedInput[0] = 1;//bias node
+        System.arraycopy(input,0,biasedInput,1,input.length);
 
-        //calculate values of hidden layers in order of neurons
-        for(int i = inputNum + outputNum; i < maxNeurons;i++)
-        {
-            for(NNConnection c : connections)
-            {
-                if(c.getOut() != i)
-                {
-                    continue;
-                }
-                if(c.isEnabled())
-                    neuronValues[i] += neuronValues[c.getIn()] * c.getWeight();
-            }
-            neuronValues[i] = sigmoid(neuronValues[i]);//sigmoid activation function
-        }
-        for(int i = inputNum; i < inputNum + outputNum;i++)//calculate output last
-        {
-            for(NNConnection c : connections)
-            {
-                if(c.getOut() != i)
-                {
-                    continue;
-                }
-                if(c.isEnabled())
-                neuronValues[i] += neuronValues[c.getIn()] * c.getWeight();
-            }
-            neuronValues[i] = sigmoid(neuronValues[i]);
+        for (int i = 0; i < outputNum; i++) {
+            output[i] = getValue(inputNum + i,graph,biasedInput);
         }
 
-        System.arraycopy(neuronValues,inputNum,output,0,outputNum);
         return output;
-        //return neuronValues;
+    }
+
+    //recursive method for evaluating the network
+    //starts from output nodes and moves backwards through the network calculating the values of each node
+    //not the most efficient since we recalculate some values when evaluating multiple outputs
+    //but it is the first implementation im confident actually is usable
+    private double getValue(int i, List<NNConnection>[] graph,double[] input )
+    {
+        if(i < inputNum)
+        {
+            return input[i];
+        }
+
+        double value = 0;
+        List<NNConnection> incoming = graph[i];
+        for(NNConnection c : incoming)
+        {
+            value += getValue(c.getIn(),graph,input) * c.getWeight();
+        }
+        value = sigmoid(value);
+        return value;
     }
 
     //sigmoid function copied from the paper
@@ -376,9 +371,6 @@ public class NeuralNetwork {
     //it will select two new neurons and add a connection to the network
     public void addConnection()
     {
-        //TODO: we need a more advanced way of selecting neurons,
-        // neurons can be selected in such a way that it can cause a cycle in the graph
-        // this will make it impossible to compute the output of the network accurately
         int neuron1 = randomNeuron(connections,true);
         int neuron2 = randomNeuron(connections,false);
 
@@ -395,6 +387,11 @@ public class NeuralNetwork {
         for (NNConnection c : connections) {//check if the two neurons are unconnected
             if((c.getIn() == i && c.getOut() == o) || (c.getIn() == o && c.getOut() == i))
                 return;
+        }
+
+        if(checkCycle(i,o))//check if due to adding the edge a cycle is formed in the network
+        {
+            return;
         }
 
         for(NNConnection c : newConnections) {//check if the connection has evolved before
@@ -419,6 +416,34 @@ public class NeuralNetwork {
         newConnections.add(newConn);
         addConnectionInOrder(newConn);
 
+    }
+
+    public boolean checkCycle(int i ,int o) {
+        List<NNConnection>[] graph = orderConnectionsByNode(true);
+        NNConnection toAdd = new NNConnection(i,o,1,true,0);//innovation count does not matter right now
+        graph[i].add(toAdd);
+
+        //start DFS from input node
+        //we know the graph does not contain any cycles
+        //thus after adding the edge, the only cycles that can be formed will use the new edge
+        boolean[] visited = new boolean[maxNeurons];
+        return DFS(i,graph,visited);
+    }
+
+    private boolean DFS(int node, List<NNConnection>[] graph, boolean[] visited)
+    {
+        if(visited[node])
+            return true;
+
+        visited[node] = true;
+
+        for(NNConnection c : graph[node])
+        {
+            if(DFS(c.getOut(),graph,visited))
+                return true;
+        }
+
+        return false;
     }
 
     //function to add a new connection to the list of connections such that the list stays sorted
@@ -490,6 +515,23 @@ public class NeuralNetwork {
         this.connections = connections;
     }
 
+    private List<NNConnection>[] orderConnectionsByNode(boolean sortByInput)
+    {
+        List<NNConnection>[] graph = new List[maxNeurons];
+        for (int i = 0; i < graph.length; i++) {
+            graph[i] = new ArrayList<NNConnection>();
+        }
+
+        for(NNConnection c : connections)
+        {
+            if(sortByInput)
+                graph[c.getIn()].add(c);
+            else
+                graph[c.getOut()].add(c);
+        }
+
+        return graph;
+    }
 
     public int getInputNum() {
         return inputNum;

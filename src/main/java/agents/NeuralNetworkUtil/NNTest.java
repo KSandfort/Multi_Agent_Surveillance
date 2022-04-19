@@ -8,6 +8,8 @@ public class NNTest {
     public static void main(String[] args) {
         //testNetworkOperations();
         testNEAT();
+        //testNetworkEvaluation();
+        //checkDFS();
     }
 
     private static void testNetworkOperations() {
@@ -64,6 +66,35 @@ public class NNTest {
         NeuralNetwork nn = pool.bestNetwork;
 
         testNN(nn);
+    }
+
+    public static void checkDFS()
+    {
+        //NN without cycle
+        NeuralNetwork nn = new NeuralNetwork();
+        List<NNConnection> conn = nn.getConnections();
+        conn.add(new NNConnection(0, 3, -15, true));
+        conn.add(new NNConnection(1, 3, 20, true));
+        conn.add(new NNConnection(2, 3, 20, true));
+        conn.add(new NNConnection(0, 4, -15, true));
+        conn.add(new NNConnection(1, 4, 10, true));
+        conn.add(new NNConnection(2, 4, 10, true));
+
+        //NN with cycle
+        NeuralNetwork nn2 = new NeuralNetwork();
+        List<NNConnection> conn2 = nn2.getConnections();
+        conn2.add(new NNConnection(0, 4, -15, true));
+        conn2.add(new NNConnection(2, 5, -15, true));
+        conn2.add(new NNConnection(1, 6, -15, true));
+        conn2.add(new NNConnection(4, 3, -15, true));
+        conn2.add(new NNConnection(5, 3, -15, true));
+        conn2.add(new NNConnection(6, 4, -15, true));
+        conn2.add(new NNConnection(4, 5, -15, true));
+
+        NeuralNetwork.maxNeurons = 7;
+
+        System.out.println(nn.checkCycle(4,3));
+        System.out.println(nn2.checkCycle(5,6));
     }
 
     public static void testNN(NeuralNetwork nn)
