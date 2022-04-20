@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class Area extends MapItem{
+public abstract class Area extends MapItem {
 
     // Variables
     protected Vector2D[] cornerPoints = new Vector2D[4];

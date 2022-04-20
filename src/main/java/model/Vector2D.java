@@ -126,7 +126,7 @@ public class Vector2D {
         return new Vector2D(a.getX() * factor, a.getY() * factor);
     }
 
-    public static Vector2D resize(Vector2D vector, double scalar){
+    public static Vector2D resize(Vector2D vector, double scalar) {
         Vector2D norm = Vector2D.normalize(vector);
         return Vector2D.scalar(norm, scalar);
     }

@@ -109,9 +109,24 @@ public abstract class Entity extends MapItem {
                         double angle = Vector2D.shortestAngle(this.getDirection(), markerDir);
                         if (Math.abs(angle) < 0.5*fovAngle) {
                             // check if there is a wall blocking the line between
-                            System.out.println("Detected " + getMap().getGameController().getSimulationGUI().getCurrentStep() + " Angle: " + Vector2D.shortestAngle(this.getDirection(), markerDir));
-                            int previousCount = (int) markerSensing[marker.getMarkerType()][0];
-                            markerSensing[marker.getMarkerType()][0] = previousCount + 1;
+                            boolean lineIsFree = true;
+                            for (MapItem wall : map.getSolidBodies()) {
+                                outerLoop:
+                                if (wall instanceof Wall) {
+                                    for (int i = 0; i < 4; i++) {
+                                        if (fovDepth >= Vector2D.distance(this.getPosition(), marker.getPosition(), wall.getCornerPoints()[i], wall.getCornerPoints()[(i + 1) % 4])) {
+                                            lineIsFree = false;
+                                            System.out.println(Vector2D.distance(this.getPosition(), marker.getPosition(), wall.getCornerPoints()[i], wall.getCornerPoints()[(i + 1) % 4]));
+                                            break outerLoop;
+                                        }
+                                    }
+                                }
+                            }
+                            if (lineIsFree) { // This means that a marker can be seen from the field of view
+                                System.out.println("Detected " + getMap().getGameController().getSimulationGUI().getCurrentStep() + " Angle: " + Vector2D.shortestAngle(this.getDirection(), markerDir));
+                                int previousCount = (int) markerSensing[marker.getMarkerType()][0];
+                                markerSensing[marker.getMarkerType()][0] = previousCount + 1;
+                            }
                         }
                     }
                 }
