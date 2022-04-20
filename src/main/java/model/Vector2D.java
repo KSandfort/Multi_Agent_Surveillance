@@ -1,10 +1,15 @@
 package model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Random;
 
 /**
  * Class that represents a two-dimensional vector.
  */
+@Getter
+@Setter
 public class Vector2D {
 
     // Variables
@@ -180,8 +185,7 @@ public class Vector2D {
      * checks if vector a lies on the line segment between b and c
      * @return true if
      */
-    public static boolean checkCollinearity(int o, Vector2D a,Vector2D b, Vector2D c){
-
+    public static boolean checkCollinearity(int o, Vector2D a,Vector2D b, Vector2D c) {
         return (o == 0 && isOnSegment(a,b,c));
     }
 
@@ -206,15 +210,14 @@ public class Vector2D {
      * @return 0 if the point lies on the line segment, 1 for clockwise orientation, 2 for counterclockwise orientation
      */
     public static int checkOrientation(Vector2D a, Vector2D b, Vector2D c){
-        Vector2D intersectB = subtractVector(a, b);
-        Vector2D intersectC = subtractVector(a, c);
+        Vector2D intersectB = subtract(a, b);
+        Vector2D intersectC = subtract(a, c);
         double orientation = crossProduct(intersectB, intersectC);
 
         if (orientation == 0) return 0;
         else if (orientation > 0) return 1; //clockwise
         else return 2;
     }
-
 
     /**
      * calculates cross product of two vectors
@@ -226,48 +229,6 @@ public class Vector2D {
         return (a.getX()*b.getY()) - (a.getY()* b.getX());
     }
 
-    /**
-     * subtracts vector b from vector a
-     * @param a
-     * @param b
-     * @return
-     */
-    private static Vector2D subtractVector(Vector2D a, Vector2D b){
-        return new Vector2D(b.getX()-a.getX(), b.getY()-a.getY());
-    }
-
-    /**
-     * Getter for x-coordinate.
-     * @return
-     */
-    public double getX(){
-        return x;
-    }
-
-    /**
-     * Setter for x-coordinate.
-     * @param x
-     */
-    public void setX(double x){
-        this.x = x;
-    }
-
-    /**
-     * Getter for y-coordinate.
-     * @return
-     */
-    public double getY(){
-        return y;
-    }
-
-    /**
-     * Setter for y-coordinate.
-     * @param y
-     */
-    public void setY(double y){
-        this.y = y;
-    }
-
     public static Vector2D randomVector(){
         Random rand = new Random();
         double newX = rand.nextDouble()*100 - 50;
@@ -275,10 +236,14 @@ public class Vector2D {
         return new Vector2D(newX, newY);
     }
 
-    public double dist(Vector2D other){
-        double a = other.getX() - getX();
-        double b = other.getY() - getY();
-        return Math.sqrt(Math.pow(a,2) + Math.pow(b,2));
+    /**
+     * atan2 in degrees
+     * @param a first vector (origin)
+     * @param b second vector
+     * @return
+     */
+    public static double shortestAngle(Vector2D a, Vector2D b) {
+        return Math.atan2(b.getY()*a.getX() - b.getX()*a.getY(), b.getX()*a.getX() - b.getY()*a.getY())*180/Math.PI;
     }
 
     public String print() {
