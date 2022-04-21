@@ -55,6 +55,31 @@ public class Teleport extends Area{
         int offset = SimulationGUI.CANVAS_OFFSET;
         double sf = SimulationGUI.SCALING_FACTOR;
 
+        // fill
+        // get top left and bottom right corner point
+        double originX = Double.MAX_VALUE;
+        double originY = Double.MAX_VALUE;
+        double targetX = Double.MIN_VALUE;
+        double targetY = Double.MIN_VALUE;
+        for(int i = 0; i < cornerPoints.length; i++) {
+            if (cornerPoints[i].getX() < originX)
+                originX = cornerPoints[i].getX();
+            if (cornerPoints[i].getX() > targetX)
+                targetX = cornerPoints[i].getX();
+            if (cornerPoints[i].getY() < originY)
+                originY = cornerPoints[i].getY();
+            if (cornerPoints[i].getY() > targetY)
+                targetY = cornerPoints[i].getY();
+        }
+        Rectangle rectangle = new Rectangle(
+                (originX * sf) + offset,
+                (originY * sf) + offset,
+                Math.abs(targetX - originX) * sf,
+                Math.abs(targetY - originY) * sf);
+        rectangle.setFill(Color.web("#FFAC12", 0.4));
+        components.add(rectangle);
+
+        // outline
         for (int i = 0; i < cornerPoints.length; i++) {
             Line line = new Line(
                     (cornerPoints[i].getX() * sf) + offset,

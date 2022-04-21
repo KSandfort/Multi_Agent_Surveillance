@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * this area decreases the visual range an angle of an entity
  */
 public class ShadedArea extends Area{
+    private double areaSoundVolume = 2;
+
     public ShadedArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaFovAngle(getAreaFovAngle()*0.5);

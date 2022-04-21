@@ -12,6 +12,7 @@ import java.util.Arrays;
  */
 public abstract class WallWithItem extends Wall{
 
+    private double areaSoundVolume = 2;
     private Wall leftWall;
     private Wall rightWall;
     private Area item;
