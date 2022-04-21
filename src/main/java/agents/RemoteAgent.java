@@ -43,6 +43,9 @@ public class RemoteAgent extends AbstractAgent {
                 entityInstance.getDirection().pivot(5);
                 entityInstance.getDirection().normalize();
             }
+            if(key.getCode()== KeyCode.Q) {
+                entityInstance.setSprinting(true);
+            }
         });
     }
 
@@ -53,10 +56,17 @@ public class RemoteAgent extends AbstractAgent {
         e.setPrevPos(prevPos);
         double velocity = 0;
         if (e.isIntruder()) {
+
             velocity = Entity.baseSpeedIntruder;
+            if (e.isSprinting()){
+                velocity = Entity.sprintSpeedIntruder;
+            }
         }
         else {
             velocity = Entity.baseSpeedGuard;
+            if (e.isSprinting()){
+                velocity = Entity.sprintSpeedGuard;
+            }
         }
         if (moving) {
             e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
