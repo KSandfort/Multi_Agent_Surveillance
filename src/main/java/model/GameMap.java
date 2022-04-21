@@ -26,6 +26,7 @@ public class GameMap {
     private ArrayList<MapItem> transparentItems = new ArrayList<>();
     private SpawnArea spawnAreaGuards;
     private SpawnArea spawnAreaIntruders;
+    private TargetArea targetArea;
 
     /**
      * Constructor

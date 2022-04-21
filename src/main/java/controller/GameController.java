@@ -36,7 +36,7 @@ public class GameController {
     private int coverageDenominator; // Total amount of cells
     private int noCoverageProgressSince; // Indicates for how many time-steps there hasn't been progress in the coverage
     private int coverageThreshold = 500; // Tolerance of not making progress in coverage until game stops.
-
+    private int gameMode;
     // Static
     public static int amountOfGuards;
     public static int amountOfIntruders;
@@ -84,6 +84,15 @@ public class GameController {
         this.map = map;
     }
 
+    public static GameController simulate(int steps, int numGuards, int numIntruders, int mapCode, int gameMode){
+        GameController controller = new GameController(null, mapCode);
+        controller.setGameMode(gameMode);
+        for (int i = 0; i < steps; i++){
+            controller.update();
+        }
+        return controller;
+    }
+
     /**
      * Does the update magic.
      */
@@ -97,6 +106,10 @@ public class GameController {
         explorationOverTime.add(coveragePercent);
 
         previousCoveragePercent = coveragePercent;
+    }
+
+    public void updateAgentTargetDirection(){
+
     }
 
     /**
@@ -114,8 +127,11 @@ public class GameController {
         }
         // Calculate percentage
         coveragePercent = (double) coverageNumerator / (double) coverageDenominator;
-        simulationGUI.getMainLayout().getCoverageBar().setProgress(coveragePercent);
-        simulationGUI.getMainLayout().getCoverageText().setText(Math.round(coveragePercent*10000) / 100.0 + " %");
+        if (simulationGUI != null){
+            simulationGUI.getMainLayout().getCoverageBar().setProgress(coveragePercent);
+            simulationGUI.getMainLayout().getCoverageText().setText(Math.round(coveragePercent*10000) / 100.0 + " %");
+        }
+
 
     }
 
@@ -145,7 +161,9 @@ public class GameController {
      * the guards win, if they manage to capture the intruders before they win
      */
     public void updateWinningCondition(){
-        int gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
+        if (simulationGUI != null){
+            gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
+        }
 
         if (coveragePercent == previousCoveragePercent) {
             noCoverageProgressSince++;
@@ -195,8 +213,9 @@ public class GameController {
             } catch(Exception e) {
                 System.out.println("Write error");
             }
-
-            simulationGUI.pauseSimulation();
+            if (simulationGUI != null){
+                simulationGUI.pauseSimulation();
+            }
         }
     }
 
@@ -237,4 +256,8 @@ public class GameController {
         layout.getCanvas().getChildren().addAll(nodes);
     }
 
+
+    public static void main(String [] args){
+        GameController.simulate(100,3,2,0,0);
+    }
 }
