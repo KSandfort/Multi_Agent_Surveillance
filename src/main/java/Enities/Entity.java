@@ -32,8 +32,11 @@ public abstract class Entity extends MapItem {
     HitBox hitBox;
     protected AbstractAgent agent;
     protected Vector2D prevPos;
-
+    public double stamina = maxStamina;
     // Static
+    public static double maxStamina = 100;
+    public static double sprintConsumption = 8;
+    public static double staminaRegeneration = 5;
     public static double baseSpeedGuard = 0.2;
     public static double sprintSpeedGuard = 0.4;
     public static double baseSpeedIntruder = 0.2;
@@ -74,6 +77,18 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
+        if (isSprinting){
+            if (stamina <= 0){
+                setSprinting(false);
+            }
+            else{
+                stamina -= sprintConsumption;
+            }
+        }
+        else if (!isSprinting && stamina < maxStamina){
+            stamina += staminaRegeneration;
+        }
+
         // Check collision detection
         if(!isInSpecialArea(items)){
             resetEntityParam();
