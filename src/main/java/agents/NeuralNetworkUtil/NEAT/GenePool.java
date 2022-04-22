@@ -4,6 +4,7 @@ import agents.NEATAgent;
 import agents.NeuralNetworkUtil.NeuralNetwork;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -18,6 +19,7 @@ public class GenePool
     int output;
 
     List<Species> speciesList;
+    List<NeuralNetwork> pool;
     int generation;
     double maxFitness;
     public NeuralNetwork bestNetwork;
@@ -27,6 +29,7 @@ public class GenePool
         input = in;
         output = out;
         speciesList =  new ArrayList<>();
+        pool = new ArrayList<>();
         generation = 0;
         maxFitness = 0;
     }
@@ -60,59 +63,53 @@ public class GenePool
         //simulate and calculate fitness
         simulate();
 
+        //calculate adjusted fitness value using fitness sharing
+        fitnessSharing();
+
         //new generation
         List<NeuralNetwork> children = new ArrayList<>();
 
-        //rank species
+        //sort and rank species
         ranking();
+
+        //add all to species
+        speciate();
 
         //remove bottom half of each species
         cullSpecies(false);
 
-        System.out.println("Fitness of gen " + generation + ": " + maxFitness);
-        System.out.println("Number of species before culling: " + speciesList.size());
 
-        //remove stale species
-        removeStale();
 
-        //calculate average fitness
-        double totalAvgFitness = calcTotalAvgFitness();
+        generation++;
+    }
 
-        //remove weak species
-        removeWeak();
-
-        //breed proportional to fitness value
-        for(Species s : speciesList) {
-            //children to be bred from this species
-            double amount = Math.floor(s.averageFitness / totalAvgFitness * poolSize) - 1;
-            for (int i = 0; i < amount; i++) {
-                NeuralNetwork nn = newChild(s);
-                children.add(nn);
-            }
-        }
-
-        //cull all but top member of each species
-        cullSpecies(true);
-
-        System.out.println("Number of species after culling: " + speciesList.size());
-
-        //add remaining population using top of species
-        while(children.size() + speciesList.size() < poolSize)
-        {
-            //make new child
-            Random random = new Random();
-            Species s = speciesList.get(random.nextInt(speciesList.size()));
-            NeuralNetwork nn = newChild(s);//TODO: this is wrong, crossover will select the same genome twice
-            children.add(nn);
-        }
-
+    private void speciate() {
         //add new genomes to species
-        for(NeuralNetwork nn : children)
+        for(NeuralNetwork nn : pool)
         {
             addToPool(nn);
         }
+    }
 
-        generation++;
+    private void fitnessSharing() {
+        for(NeuralNetwork nn : pool)
+        {
+            nn.setFitness(computeAdjustedFitnessValue(nn));
+        }
+    }
+
+    private double computeAdjustedFitnessValue(NeuralNetwork nn) {
+        int neighbourhood = 0;//number of genomes within distance threshold
+
+        for(NeuralNetwork nn2 : pool)
+        {
+            if(NeuralNetwork.distance(nn,nn2) < distanceThreshold)
+            {
+                neighbourhood++;
+            }
+        }
+
+        return nn.getFitness()/neighbourhood;
     }
 
     //
@@ -122,6 +119,8 @@ public class GenePool
         bestNetwork = null;
         for(Species s : speciesList)
         {
+            List<NeuralNetwork> networks = new ArrayList<NeuralNetwork>(Arrays.asList(s.sort()));
+            s.setGenomes(networks);
             NeuralNetwork best = s.getGenomes().get(0);
             if(best.getFitness() > maxFitness)
             {
@@ -246,7 +245,7 @@ public class GenePool
     {
         for(Species s : speciesList)
         {
-            NeuralNetwork[] genomes = s.sort();//sort genomes in species based on fitness value
+            NeuralNetwork[] genomes = s.getGenomes().toArray(new NeuralNetwork[0]);//sort genomes in species based on fitness value
             s.getGenomes().clear();
 
             double newSize = onlyBest ? 1 : genomes.length;//Math.ceil(genomes.length/2.0);

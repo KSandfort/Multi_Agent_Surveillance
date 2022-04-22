@@ -111,6 +111,10 @@ public class Species
         return arr;
     }
 
+    public void setGenomes(List<NeuralNetwork> genomes) {
+        this.genomes = genomes;
+    }
+
     public List<NeuralNetwork> getGenomes() {
         return genomes;
     }
