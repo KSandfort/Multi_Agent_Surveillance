@@ -84,12 +84,35 @@ public class GameController {
         this.map = map;
     }
 
-    public static GameController simulate(int steps, int numGuards, int numIntruders, int mapCode, int gameMode){
+    // TODO: Probably needs more arguments like agent algorithms
+    /**
+     * Simulates a run without GUI
+     * @param steps Maximum number of steps that the simulation should run
+     * @param numGuards Amount of guards
+     * @param numIntruders Amount of intruders
+     * @param mapCode ID of the map to be used in the simulation
+     * @param gameMode Game mode to be simulated (0 = exploration, 1 = guards vs intruders)
+     */
+    public static GameController simulate(int steps, int numGuards, int numIntruders, int mapCode, int gameMode) {
+        amountOfGuards = numGuards;
+        amountOfIntruders = numIntruders;
+
         GameController controller = new GameController(null, mapCode);
         controller.setGameMode(gameMode);
-        for (int i = 0; i < steps; i++){
+
+        boolean finished = false;
+        int step = 0;
+
+        while (!finished){
             controller.update();
+
+            // Abort simulation upon win
+            if (controller.hasWonGame > 0 || step > steps)
+                finished = true;
+
+            step++;
         }
+
         return controller;
     }
 
@@ -98,6 +121,7 @@ public class GameController {
      */
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
+
         for(MapItem item : items) {
             item.update(map.getStaticItems());
         }
@@ -123,10 +147,13 @@ public class GameController {
             coverageMatrix[x][y] = explored;
             coverageNumerator++;
             // Paint to coverage canvas
-            simulationGUI.getMainLayout().addCoveragePoint(x, y, explored);
+
+            if (simulationGUI != null)
+                simulationGUI.getMainLayout().addCoveragePoint(x, y, explored);
         }
         // Calculate percentage
         coveragePercent = (double) coverageNumerator / (double) coverageDenominator;
+
         if (simulationGUI != null){
             simulationGUI.getMainLayout().getCoverageBar().setProgress(coveragePercent);
             simulationGUI.getMainLayout().getCoverageText().setText(Math.round(coveragePercent*10000) / 100.0 + " %");
@@ -193,7 +220,7 @@ public class GameController {
             hasWonGame = 1;
         }
         if (hasWonGame == 1) {
-            System.out.println("Game Over. Maximum coverage reached!");
+            System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
 
             // Write exploration over time to file
             try {
@@ -226,14 +253,10 @@ public class GameController {
     public void drawFixedItems(MainLayout layout) {
         ArrayList<Node> nodes = new ArrayList<>();
         for (MapItem item : map.getStaticItems()) {
-            for (Node n : item.getComponents()) {
-                nodes.add(n);
-            }
+            nodes.addAll(item.getComponents());
         }
         for (MapItem item : map.getSolidBodies()) {
-            for (Node n : item.getComponents()) {
-                nodes.add(n);
-            }
+            nodes.addAll(item.getComponents());
         }
         layout.getCanvas().getChildren().addAll(nodes);
     }
@@ -258,6 +281,7 @@ public class GameController {
 
 
     public static void main(String [] args){
-        GameController.simulate(100,3,2,0,0);
+        // Pass Integer.MAX_VALUE as the steps parameter for indefinite simulation (terminates upon game over)
+        GameController.simulate(Integer.MAX_VALUE,3,2,0,0);
     }
 }

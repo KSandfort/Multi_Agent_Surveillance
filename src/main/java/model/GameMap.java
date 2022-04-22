@@ -78,18 +78,6 @@ public class GameMap {
     }
 
     /**
-     * Populates the map with bug exploration agents.
-     * @param count the amount of bugs
-     */
-    public void populateMapWithBugs(int count) {
-        for(double i = 0; i < count; i++) {
-            double alpha = 2*Math.PI * (i/count);
-            //Bug bug = new Bug(55, 30, this, alpha);
-            //addToMap(bug);
-        }
-    }
-
-    /**
      * Adds items to the map.
      * It automatically puts the item in the corresponding list.
      * - DynamicItems
