@@ -36,20 +36,12 @@ public class GenePool
 
     public void init()
     {
-        List<NeuralNetwork> children = new ArrayList<>();//new generation
-
-        while(children.size() < poolSize)
+        while(pool.size() < poolSize)
         {
             //make new child
             NeuralNetwork init = new NeuralNetwork();
             init.init();
-            children.add(init);
-        }
-
-        //add new genomes to species
-        for(NeuralNetwork nn : children)
-        {
-            addToPool(nn);
+            pool.add(init);
         }
     }
 
@@ -75,15 +67,85 @@ public class GenePool
         //add all to species
         speciate();
 
+        System.out.println("Best fitness " + maxFitness);
+
+        //best off species with >= 5 genomes move to next generation unchanged
+        List<NeuralNetwork> bestFromPreviousGen = bestFromPreviousGen();
+
         //remove bottom half of each species
-        cullSpecies(false);
+        List<NeuralNetwork> survivingGenomes = cullSpecies(false);
 
-
+        createNewGen(bestFromPreviousGen,survivingGenomes);
 
         generation++;
     }
 
+    private void createNewGen(List<NeuralNetwork> fromPrevious, List<NeuralNetwork> surviving) {
+        pool.clear();
+        pool.addAll(fromPrevious);
+        NeuralNetwork[] oldPool = Species.sort(surviving.toArray(new NeuralNetwork[0]));
+
+        //create new offspring
+        while (pool.size() < poolSize)
+        {
+            //select two new parents for crossover
+            if(new Random().nextDouble() <= crossoverChance)
+            {
+                NeuralNetwork newChild = NeuralNetwork.crossOver(newParent(oldPool),newParent(oldPool));
+                newChild.mutate();
+                pool.add(newChild);
+            }else
+            {
+                NeuralNetwork newChild = newParent(oldPool).copy();
+                newChild.mutate();
+                pool.add(newChild);
+            }
+        }
+    }
+
+    private NeuralNetwork newParent(NeuralNetwork[] oldPool)
+    {
+        double totalFitness = totalFitness(oldPool);
+        double selected = new Random().nextDouble() * totalFitness;
+
+        for(NeuralNetwork nn : oldPool)
+        {
+            if(nn.getFitness() >=  selected)
+            {
+                return nn;
+            }else
+            {
+                selected -= nn.getFitness();
+            }
+        }
+        //no parent found, should technically not be possible I think
+        return oldPool[oldPool.length - 1];
+    }
+
+    private double totalFitness(NeuralNetwork[] pool)
+    {
+        double fitness = 0;
+        for(NeuralNetwork nn : pool)
+        {
+            fitness += nn.getFitness();
+        }
+        return fitness;
+    }
+
+    private List<NeuralNetwork> bestFromPreviousGen() {
+        List<NeuralNetwork> toReturn = new ArrayList<NeuralNetwork>();
+        for(Species s : speciesList)
+        {
+            if(s.getGenomes().size() >= 5)
+            {
+                toReturn.add(s.getGenomes().get(0));
+            }
+        }
+        return toReturn;
+    }
+
     private void speciate() {
+        speciesList.clear();
         //add new genomes to species
         for(NeuralNetwork nn : pool)
         {
@@ -109,6 +171,11 @@ public class GenePool
             }
         }
 
+        if(neighbourhood == 0)
+        {
+            System.out.println("AHHHH how is this even possible!!!!!");
+        }
+
         return nn.getFitness()/neighbourhood;
     }
 
@@ -119,7 +186,8 @@ public class GenePool
         bestNetwork = null;
         for(Species s : speciesList)
         {
-            List<NeuralNetwork> networks = new ArrayList<NeuralNetwork>(Arrays.asList(s.sort()));
+            NeuralNetwork[] sortedNetworks = Species.sort(s.getGenomes().toArray(new NeuralNetwork[0]));
+            List<NeuralNetwork> networks = new ArrayList<NeuralNetwork>(Arrays.asList(sortedNetworks));
             s.setGenomes(networks);
             NeuralNetwork best = s.getGenomes().get(0);
             if(best.getFitness() > maxFitness)
@@ -133,26 +201,23 @@ public class GenePool
     //evaluate the fitness of the genomes, this method will have to change if you want to change the use of the network
     private void simulate()
     {
-        for(Species s : speciesList)
+        for(NeuralNetwork nn : pool)
         {
-            for(NeuralNetwork nn : s.getGenomes())
-            {
-                double[] expected = {0,1,1,0};
-                double res1 = nn.evaluate(new double[]{0, 0})[0];
-                double res2 = nn.evaluate(new double[]{1, 0})[0];
-                double res3 = nn.evaluate(new double[]{0, 1})[0];
-                double res4 = nn.evaluate(new double[]{1, 1})[0];
-                double[] result = {res1,res2,res3,res4};
+            double[] expected = {0,1,1,0};
+            double res1 = nn.evaluate(new double[]{0, 0})[0];
+            double res2 = nn.evaluate(new double[]{1, 0})[0];
+            double res3 = nn.evaluate(new double[]{0, 1})[0];
+            double res4 = nn.evaluate(new double[]{1, 1})[0];
+            double[] result = {res1,res2,res3,res4};
 
-                double error = 0;
-                for (int i = 0; i < expected.length; i++) {
-                    error += (expected[i] - result[i])*(expected[i] - result[i]);//squared error
-                }
-                error = 4 - error;//make lowest error highest fitness
-                error *= error;//square error to make difference bigger
-
-                nn.setFitness(error);
+            double error = 0;
+            for (int i = 0; i < expected.length; i++) {
+                error += (expected[i] - result[i])*(expected[i] - result[i]);//squared error
             }
+            error = 4 - error;//make lowest error highest fitness
+            error *= error;//square error to make difference bigger
+
+            nn.setFitness(error);
         }
     }
 
@@ -241,7 +306,7 @@ public class GenePool
     }
 
     //removes the least fit genomes in the species
-    private void cullSpecies(boolean onlyBest)
+    private List<NeuralNetwork> cullSpecies(boolean onlyBest)
     {
         for(Species s : speciesList)
         {
@@ -254,6 +319,13 @@ public class GenePool
             }
             //System.out.println("Species best fitness: " + s.topFitness);
         }
+        List<NeuralNetwork> surviving = new ArrayList<NeuralNetwork>();
+        for(Species s : speciesList)
+        {
+            surviving.addAll(s.getGenomes());
+        }
+
+        return surviving;
     }
 
     //create a new child using a species, there is a 75% chance a new child is the result of a crossover

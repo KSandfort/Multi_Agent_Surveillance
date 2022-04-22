@@ -22,9 +22,9 @@ public class Species
         averageFitness = 0;
     }
 
-    public NeuralNetwork[] sort()
+    public static NeuralNetwork[] sort(NeuralNetwork[] networks)
     {
-        NeuralNetwork[] networks = genomes.toArray(new NeuralNetwork[0]);
+        //NeuralNetwork[] networks = genomes.toArray(new NeuralNetwork[0]);
 
         if(networks.length < 2)
         {
@@ -36,7 +36,7 @@ public class Species
         return networks;
     }
 
-    private void mergeSort(NeuralNetwork[] arr)
+    private static void mergeSort(NeuralNetwork[] arr)
     {
         if(arr.length <= 1)
             return;
