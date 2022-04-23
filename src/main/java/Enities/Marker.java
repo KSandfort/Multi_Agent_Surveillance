@@ -26,6 +26,7 @@ public class Marker extends MapItem {
         // 3: Yellow
         // 4: Purple
     private Vector2D position;
+    private int tickPlaced; // The time when it was placed on the map
 
     public Marker(int markerType,Vector2D position, boolean isFromIntruder)
     {

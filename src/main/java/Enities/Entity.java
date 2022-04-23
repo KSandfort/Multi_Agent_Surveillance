@@ -31,7 +31,6 @@ public abstract class Entity extends MapItem {
     HitBox hitBox;
     protected AbstractAgent agent;
     protected Vector2D prevPos;
-    protected ArrayList<Marker> markers;
     protected double[][] markerSensing; // row = marker type [0, ..., 4],
                                         // column 0 = amount, column 1 = avg angle from direction (positive = right)
 
@@ -58,7 +57,6 @@ public abstract class Entity extends MapItem {
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
         entityKnowledge.setPositionOffset(getPosition());
-        this.markers = new ArrayList<>();
     }
 
     /**
@@ -99,35 +97,31 @@ public abstract class Entity extends MapItem {
 
         // detect markers
         markerSensing = new double[5][2];
-        for (MapItem item : map.getMovingItems()) {
-            if (item instanceof Entity) {
-                for (Marker marker : ((Entity) item).getMarkers()) {
-                    // check if it is in fov range and of its own team
-                    if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && isIntruder == ((Entity) item).isIntruder) {
-                        // check if it is in fov angel
-                        Vector2D markerDir = Vector2D.subtract(marker.getPosition(), this.getPosition());
-                        double angle = Vector2D.shortestAngle(this.getDirection(), markerDir); // angle between entity direction and marker
-                        if (Math.abs(angle) < 0.5*fovAngle) {
-                            // check if there is a wall blocking the line between
-                            boolean lineIsFree = true;
-                            for (MapItem wall : map.getSolidBodies()) {
-                                outerLoop:
-                                if (wall instanceof Wall) {
-                                    for (int i = 0; i < 4; i++) {
-                                        if (fovDepth >= Vector2D.distance(this.getPosition(), marker.getPosition(), wall.getCornerPoints()[i], wall.getCornerPoints()[(i + 1) % 4])) {
-                                            lineIsFree = false;
-                                            break outerLoop;
-                                        }
-                                    }
+        for (Marker marker : map.getMarkers()) {
+            // check if it is in fov range and of its own team
+            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && isIntruder == marker.isFromIntruder()) {
+                // check if it is in fov angel
+                Vector2D markerDir = Vector2D.subtract(marker.getPosition(), this.getPosition());
+                double angle = Vector2D.shortestAngle(this.getDirection(), markerDir); // angle between entity direction and marker
+                if (Math.abs(angle) < 0.5*fovAngle) {
+                    // check if there is a wall blocking the line between
+                    boolean lineIsFree = true;
+                    for (MapItem wall : map.getSolidBodies()) {
+                        outerLoop:
+                        if (wall instanceof Wall) {
+                            for (int i = 0; i < 4; i++) {
+                                if (fovDepth >= Vector2D.distance(this.getPosition(), marker.getPosition(), wall.getCornerPoints()[i], wall.getCornerPoints()[(i + 1) % 4])) {
+                                    lineIsFree = false;
+                                    break outerLoop;
                                 }
                             }
-                            if (lineIsFree) { // This means that a marker can be seen from the field of view
-                                int previousCount = (int) markerSensing[marker.getMarkerType()][0];
-                                double previousAngle = markerSensing[marker.getMarkerType()][1];
-                                markerSensing[marker.getMarkerType()][0] = previousCount + 1;
-                                markerSensing[marker.getMarkerType()][1] = previousAngle + (angle / markerSensing[marker.getMarkerType()][0]);
-                            }
                         }
+                    }
+                    if (lineIsFree) { // This means that a marker can be seen from the field of view
+                        int previousCount = (int) markerSensing[marker.getMarkerType()][0];
+                        double previousAngle = markerSensing[marker.getMarkerType()][1];
+                        markerSensing[marker.getMarkerType()][0] = previousCount + 1;
+                        markerSensing[marker.getMarkerType()][1] = previousAngle + (angle / markerSensing[marker.getMarkerType()][0]);
                     }
                 }
             }
@@ -234,7 +228,6 @@ public abstract class Entity extends MapItem {
      */
     public void placeMarker(int type) {
         Marker marker = new Marker(type, this.getPosition(), isIntruder);
-        markers.add(marker); // Add to internal list
         map.addToMap(marker);
     }
 
