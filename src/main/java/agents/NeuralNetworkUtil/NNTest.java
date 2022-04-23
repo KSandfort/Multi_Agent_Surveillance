@@ -10,6 +10,15 @@ public class NNTest {
         testNEAT();
         //testNetworkEvaluation();
         //checkDFS();
+        //checkDistance();
+    }
+
+    private static void checkDistance() {
+        NeuralNetwork nn = new NeuralNetwork();
+        nn.init();
+        nn.addNode();
+        testNN(nn);
+        System.out.println("Distance to itself: " + NeuralNetwork.distance(nn,nn));
     }
 
     private static void testNetworkOperations() {

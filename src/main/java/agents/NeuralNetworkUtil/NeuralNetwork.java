@@ -251,68 +251,50 @@ public class NeuralNetwork {
     //using the number of connections in total and the predefined coefficients it calculates the distance
     public static double distance(NeuralNetwork a, NeuralNetwork b)
     {
+        //we assume a is the larger network
+        int n = a.getConnections().size();
+
+        //officially disjoint and excess genes are evaluated separately, in practise they are given the same coefficient
+        // and thus we combine them
+        int W = 0;//sum of weight differences between matching genes
+        int D = 0;//number of non matching genes
+        int w= 0;//number of matching genes
+
+        //indices for iterating
         int i = 0;
         int k = 0;
 
-        List<NNConnection> aConn = a.getConnections();
-        List<NNConnection> bConn = b.getConnections();
-
-        int e = 0;//number of excess genes
-        int d = 0;//number of disjoint genes
-        int m = 0;//number of matching genes
-        int dW = 0;// total difference in weight between matching genes
-        boolean isExcess = false;
-
-        while(i < aConn.size() || k < bConn.size())
+        while(i < a.getConnections().size() && k < b.getConnections().size())
         {
-            int aIn;
-            int bIn;
-            try{
-                aIn = aConn.get(i).getInnovationCount();
-            }catch(Exception ex)
+            if(i >= a.getConnections().size())
             {
-                isExcess = true;
-                aIn = Integer.MAX_VALUE;
+                D += b.getConnections().size() - k;
+                break;
             }
-            
-            try{
-                bIn = bConn.get(k).getInnovationCount();
-            }catch(Exception ex)
+            if(k >= b.getConnections().size())
             {
-                isExcess = true;
-                bIn = Integer.MAX_VALUE;
+                D += a.getConnections().size() - i;
+                break;
             }
 
-            if(aIn == bIn)
+            if(a.getConnections().get(i).getInnovationCount() == b.getConnections().get(k).getInnovationCount())
             {
-                dW += Math.abs(aConn.get(i).getWeight() + bConn.get(k).getWeight());
-                m++;
+                W+= Math.abs(a.getConnections().get(i).getWeight() - b.getConnections().get(k).getWeight());
+                w++;
                 i++;
                 k++;
-                continue;
-            }
-            if(isExcess)
+            }else if(a.getConnections().get(i).getInnovationCount() > b.getConnections().get(k).getInnovationCount())
             {
-                e++;
+                D++;
+                k++;
             }else
             {
-                d++;
-            }
-            if(aIn < bIn)
-            {
+                D++;
                 i++;
-            }
-            else
-            {
-                k++;
             }
         }
 
-        //int n = 1;
-        int n = Math.max(aConn.size(), bConn.size());
-
-
-        return c1*e/n + c2*d/n + c3*dW/m;
+        return c1*D/n + c2*W/w;
     }
 
     //function to mutate the weights of the network connections
