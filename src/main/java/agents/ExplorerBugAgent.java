@@ -130,10 +130,12 @@ public class ExplorerBugAgent extends AbstractAgent {
         double pivotToGoal =  goalPivotWeight * (1-wallCloseness) * angleDifference;
         double pivotFromWall = wallPivotWeight * wallCloseness * wallRotationPreference;
 
-        if (crawlingAlongWall)
-            dir.pivot(pivotFromWall);
-        else
-            dir.pivot(pivotToGoal);
+        //  if (crawlingAlongWall)
+        //      dir.pivot(pivotFromWall);
+        //  else
+        //      dir.pivot(pivotToGoal);
+
+        dir.pivot(pivotFromWall);
 
         // Everything to do with the bug getting stuck somewhere
         // stuckTimer calculates how long the distance between the bug's current & previous position has been < 0.05.
