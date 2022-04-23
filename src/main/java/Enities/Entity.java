@@ -99,7 +99,7 @@ public abstract class Entity extends MapItem {
         markerSensing = new double[5][2];
         for (Marker marker : map.getMarkers()) {
             // check if it is in fov range and of its own team
-            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && isIntruder == marker.isFromIntruder()) {
+            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder == marker.isFromIntruder()) {
                 // check if it is in fov angel
                 Vector2D markerDir = Vector2D.subtract(marker.getPosition(), this.getPosition());
                 double angle = Vector2D.shortestAngle(this.getDirection(), markerDir); // angle between entity direction and marker
@@ -126,6 +126,7 @@ public abstract class Entity extends MapItem {
                 }
             }
         }
+        // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
     /**
