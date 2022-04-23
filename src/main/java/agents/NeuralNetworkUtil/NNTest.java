@@ -16,8 +16,11 @@ public class NNTest {
     private static void checkDistance() {
         NeuralNetwork nn = new NeuralNetwork();
         nn.init();
+        NeuralNetwork nn2 = nn.copy();
         nn.addNode();
-        testNN(nn);
+        System.out.println(nn);
+        System.out.println(nn2);
+        System.out.println("Distance to smaller version: " + NeuralNetwork.distance(nn,nn2));
         System.out.println("Distance to itself: " + NeuralNetwork.distance(nn,nn));
     }
 

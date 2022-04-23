@@ -165,7 +165,12 @@ public class GenePool
 
         for(NeuralNetwork nn2 : pool)
         {
-            if(NeuralNetwork.distance(nn,nn2) < distanceThreshold)
+            double dist;
+            if(nn2.getConnections().size() > nn.getConnections().size())
+                dist = NeuralNetwork.distance(nn2,nn);
+            else
+                dist = NeuralNetwork.distance(nn,nn2);
+            if(dist < distanceThreshold)
             {
                 neighbourhood++;
             }
@@ -227,7 +232,13 @@ public class GenePool
     {
         for(Species s : speciesList)
         {
-            if(NeuralNetwork.distance(nn,s.getGenomes().get(0)) < distanceThreshold)
+            double dist;
+            NeuralNetwork rep = s.getGenomes().get(0);
+            if(nn.getConnections().size() > rep.getConnections().size())
+                dist = NeuralNetwork.distance(nn,rep);
+            else
+                dist = NeuralNetwork.distance(rep,nn);
+            if(dist < distanceThreshold)
             {
                 s.getGenomes().add(nn);
                 return;

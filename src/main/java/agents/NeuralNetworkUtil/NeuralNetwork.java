@@ -49,7 +49,7 @@ public class NeuralNetwork {
                 addConnection(i,o,null);
             }
         }
-
+        //mutate();
     }
 
     //returns a copy of the network
@@ -264,7 +264,7 @@ public class NeuralNetwork {
         int i = 0;
         int k = 0;
 
-        while(i < a.getConnections().size() && k < b.getConnections().size())
+        while(i < a.getConnections().size() || k < b.getConnections().size())
         {
             if(i >= a.getConnections().size())
             {
@@ -398,6 +398,7 @@ public class NeuralNetwork {
         newConnections.add(newConn);
         addConnectionInOrder(newConn);
 
+        System.out.println("Added edge");
     }
 
     public boolean checkCycle(int i ,int o) {
