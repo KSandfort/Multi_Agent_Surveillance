@@ -69,15 +69,54 @@ public class NNTest {
 
     public static void testNEAT()
     {
+        double epsilon = 0.1;
         GenePool pool = new GenePool(2,1);
         pool.init();
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 240; i++) {
+            if(i > 0 && 16 - calculateFilteredFitnessValue(pool.bestNetwork) < epsilon)
+                break;
             pool.newGeneration();
         }
 
         NeuralNetwork nn = pool.bestNetwork;
 
         testNN(nn);
+    }
+
+    public static double calculateFilteredFitnessValue(NeuralNetwork nn)
+    {
+        double[] expected = {0,1,1,0};
+        double res1 = nn.evaluate(new double[]{0, 0})[0] >= 0.5 ? 1 : 0;
+        double res2 = nn.evaluate(new double[]{1, 0})[0] >= 0.5 ? 1 : 0;
+        double res3 = nn.evaluate(new double[]{0, 1})[0] >= 0.5 ? 1 : 0;
+        double res4 = nn.evaluate(new double[]{1, 1})[0] >= 0.5 ? 1 : 0;
+        double[] result = {res1,res2,res3,res4};
+
+        double error = 0;
+        for (int i = 0; i < expected.length; i++) {
+            error += (expected[i] - result[i])*(expected[i] - result[i]);//squared error
+        }
+        error = 4 - error;//make lowest error highest fitness
+        error *= error;//square error to make difference bigger
+        return error;
+    }
+
+    public static double calculateFitnessValue(NeuralNetwork nn)
+    {
+        double[] expected = {0,1,1,0};
+        double res1 = nn.evaluate(new double[]{0, 0})[0];
+        double res2 = nn.evaluate(new double[]{1, 0})[0];
+        double res3 = nn.evaluate(new double[]{0, 1})[0];
+        double res4 = nn.evaluate(new double[]{1, 1})[0];
+        double[] result = {res1,res2,res3,res4};
+
+        double error = 0;
+        for (int i = 0; i < expected.length; i++) {
+            error += (expected[i] - result[i])*(expected[i] - result[i]);//squared error
+        }
+        error = 4 - error;//make lowest error highest fitness
+        error *= error;//square error to make difference bigger
+        return error;
     }
 
     public static void checkDFS()
@@ -111,10 +150,10 @@ public class NNTest {
 
     public static void testNN(NeuralNetwork nn)
     {
-        System.out.println(Arrays.toString(nn.evaluate(new double[]{0, 0})));
-        System.out.println(Arrays.toString(nn.evaluate(new double[]{1, 0})));
-        System.out.println(Arrays.toString(nn.evaluate(new double[]{0, 1})));
-        System.out.println(Arrays.toString(nn.evaluate(new double[]{1, 1})));
+        System.out.println((nn.evaluate(new double[]{0, 0})[0] ));
+        System.out.println((nn.evaluate(new double[]{1, 0})[0] ));
+        System.out.println((nn.evaluate(new double[]{0, 1})[0] ));
+        System.out.println((nn.evaluate(new double[]{1, 1})[0] ));
         System.out.println(nn);
     }
 }
