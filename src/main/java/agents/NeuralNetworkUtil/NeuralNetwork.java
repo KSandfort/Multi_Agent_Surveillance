@@ -13,9 +13,10 @@ public class NeuralNetwork {
     final double wMutationSelectionP = 0.25;//chance a network is selected to mutate the weights
     final double wMutationP = 0.8;//chance for each weight to be changed
     final double wResetP = 0.9;//chance that the value of a weight is reset instead of just changed
+    final double wActivationP = 0.25;//chance that the value of a weight is reset instead of just changed
     final double addNodeP = 0.03;//chance that a node is added to the network
-    final double addConnP = 0.05;//chance that a connection is added to the network
-
+    final double addConnP = 1.0;//chance that a connection is added to the network
+    final double maxTryCount = 10;
     private List<NNConnection> connections;
     double fitness;
 
@@ -46,7 +47,7 @@ public class NeuralNetwork {
         {
             for(int o = inputNum; o < inputNum + outputNum;o++)
             {
-                addConnection(i,o,null);
+                addConnection(i,o,null,0);
             }
         }
         //mutate();
@@ -86,9 +87,8 @@ public class NeuralNetwork {
             addNode();
         }
 
-        if(random.nextDouble() < addConnP)
-        {
-            addConnection();
+        if(random.nextDouble() < addConnP) {
+            addConnection(0);
         }
     }
 
@@ -133,7 +133,8 @@ public class NeuralNetwork {
         List<NNConnection> incoming = graph[i];
         for(NNConnection c : incoming)
         {
-            value += getValue(c.getIn(),graph,input) * c.getWeight();
+            if(c.isEnabled())
+                value += getValue(c.getIn(),graph,input) * c.getWeight();
         }
         value = sigmoid(value);
         return value;
@@ -216,6 +217,8 @@ public class NeuralNetwork {
                     //System.out.println("Selecting b");
                     inherited = bC.copy();
                 }
+
+                inherited.setEnabled(true);
                 if(!enabled && random.nextDouble() < disabledChance)
                 {
                     inherited.setEnabled(false);
@@ -227,7 +230,9 @@ public class NeuralNetwork {
             else if(aCount < bCount)
             {
                 NNConnection newConn = aC.copy();
-                if(!newConn.isEnabled() && random.nextDouble() < disabledChance)
+                newConn.setEnabled(true);
+
+                if(!aC.isEnabled() && random.nextDouble() < disabledChance)
                     newConn.setEnabled(false);
 
                 newConnections.add(newConn);//only copy excess/disjoint genes from fittest genome
@@ -312,6 +317,10 @@ public class NeuralNetwork {
             {
                 c.permuteWeight();
             }
+            if(!c.isEnabled() && random.nextDouble() > wActivationP)
+            {
+                c.setEnabled(true);
+            }
         }
     }
 
@@ -344,35 +353,46 @@ public class NeuralNetwork {
             maxNeurons++;//neuron does not exist yet so make a new one
         }
 
-        addConnection(gene.getIn(),neuronIndex,1.0);
-        addConnection(neuronIndex,gene.getOut(),gene.getWeight());
+        addConnection(gene.getIn(),neuronIndex,1.0,0);
+        addConnection(neuronIndex,gene.getOut(),gene.getWeight(),0);
 
     }
 
     //function to add a new connection to the network
     //it will select two new neurons and add a connection to the network
-    public void addConnection()
+    public void addConnection(int tryCount)
     {
+        if(tryCount > maxTryCount)
+            return;
+
         int neuron1 = randomNeuron(connections,true);
         int neuron2 = randomNeuron(connections,false);
 
-        if(neuron1 == neuron2)//cant make a connection if the neurons are the same
+        if(neuron1 == neuron2) {//cant make a connection if the neurons are the same
+            addConnection(tryCount + 1);
             return;
-
-        addConnection(neuron1,neuron2,null);
+        }
+        addConnection(neuron1,neuron2,null, tryCount);
     }
 
     //function to add  a new connection to the network
     //it insures that if the connection exists in another network it will use the correct innovation number
-    public void addConnection(int i, int o,Double weight)
+    public void addConnection(int i, int o,Double weight,int tryCount)
     {
+        boolean isAllowed = true;
+
         for (NNConnection c : connections) {//check if the two neurons are unconnected
             if((c.getIn() == i && c.getOut() == o) || (c.getIn() == o && c.getOut() == i))
-                return;
+                isAllowed = false;
         }
 
         if(checkCycle(i,o))//check if due to adding the edge a cycle is formed in the network
         {
+            isAllowed = false;
+        }
+
+        if(!isAllowed) {
+            addConnection(tryCount + 1);
             return;
         }
 
@@ -397,8 +417,6 @@ public class NeuralNetwork {
 
         newConnections.add(newConn);
         addConnectionInOrder(newConn);
-
-        System.out.println("Added edge");
     }
 
     public boolean checkCycle(int i ,int o) {
@@ -410,19 +428,19 @@ public class NeuralNetwork {
         //we know the graph does not contain any cycles
         //thus after adding the edge, the only cycles that can be formed will use the new edge
         boolean[] visited = new boolean[maxNeurons];
-        return DFS(i,graph,visited);
+        return DFS(i,graph,i,false);
     }
 
-    private boolean DFS(int node, List<NNConnection>[] graph, boolean[] visited)
+    private boolean DFS(int node, List<NNConnection>[] graph,int input, boolean foundInput)
     {
-        if(visited[node])
+        if(node == input && foundInput)
             return true;
 
-        visited[node] = true;
+        foundInput = true;
 
         for(NNConnection c : graph[node])
         {
-            if(DFS(c.getOut(),graph,visited))
+            if(DFS(c.getOut(),graph,input,foundInput))
                 return true;
         }
 
@@ -525,7 +543,7 @@ public class NeuralNetwork {
     }
     @Override
     public String toString() {
-        String output = "NeuralNetwork : ";
+        String output = "NeuralNetwork : " + "[fitness: " + fitness + "]";
         List<NNConnection> conn = getConnections();
         for (NNConnection c : conn) {
             output += c.toString();

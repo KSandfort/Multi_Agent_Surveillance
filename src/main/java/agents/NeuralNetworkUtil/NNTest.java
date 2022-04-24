@@ -71,7 +71,7 @@ public class NNTest {
     {
         GenePool pool = new GenePool(2,1);
         pool.init();
-        for (int i = 0; i < 120; i++) {
+        for (int i = 0; i < 40; i++) {
             pool.newGeneration();
         }
 

@@ -130,4 +130,14 @@ public class Species
         averageFitness = average;
         return averageFitness;
     }
+
+    @Override
+    public String toString() {
+        String output = "";
+        for(NeuralNetwork nn : genomes)
+        {
+            output += nn.toString();
+        }
+        return  output;
+    }
 }

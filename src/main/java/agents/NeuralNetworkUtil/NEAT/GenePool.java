@@ -55,26 +55,26 @@ public class GenePool
         //simulate and calculate fitness
         simulate();
 
-        //calculate adjusted fitness value using fitness sharing
-        fitnessSharing();
-
-        //new generation
-        List<NeuralNetwork> children = new ArrayList<>();
+        //add all to species
+        speciate();
 
         //sort and rank species
         ranking();
 
-        //add all to species
-        speciate();
-
         System.out.println("Best fitness " + maxFitness);
-
+        //System.out.println("First specie: " + speciesList.get(0));
         //best off species with >= 5 genomes move to next generation unchanged
         List<NeuralNetwork> bestFromPreviousGen = bestFromPreviousGen();
+
+        //System.out.println(Arrays.toString(bestFromPreviousGen.toArray()));
 
         //remove bottom half of each species
         List<NeuralNetwork> survivingGenomes = cullSpecies(false);
 
+        //calculate adjusted fitness value using fitness sharing
+        fitnessSharing();
+
+        //create new generation
         createNewGen(bestFromPreviousGen,survivingGenomes);
 
         generation++;
@@ -138,9 +138,13 @@ public class GenePool
         {
             if(s.getGenomes().size() >= 5)
             {
-                toReturn.add(s.getGenomes().get(0));
+                toReturn.add(s.getGenomes().get(0).copy());
             }
         }
+        toReturn.add(bestNetwork.copy());
+        NeuralNetwork mutatedBest = bestNetwork.copy();
+        mutatedBest.mutate();
+        toReturn.add(mutatedBest);
         return toReturn;
     }
 
@@ -324,7 +328,7 @@ public class GenePool
             NeuralNetwork[] genomes = s.getGenomes().toArray(new NeuralNetwork[0]);//sort genomes in species based on fitness value
             s.getGenomes().clear();
 
-            double newSize = onlyBest ? 1 : genomes.length;//Math.ceil(genomes.length/2.0);
+            double newSize = onlyBest ? 1 : Math.ceil(genomes.length/2.0);
             for (int i = 0; i < newSize; i++) {
                 s.getGenomes().add(genomes[i]);
             }
