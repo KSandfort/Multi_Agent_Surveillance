@@ -3,7 +3,10 @@ package model;
 import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+
 import java.util.ArrayList;
 
 /**
@@ -36,6 +39,31 @@ public class Wall extends Area {
         int offset = SimulationGUI.CANVAS_OFFSET;
         double sf = SimulationGUI.SCALING_FACTOR;
 
+        // fill
+        // get top left and bottom right corner point
+        double originX = Double.MAX_VALUE;
+        double originY = Double.MAX_VALUE;
+        double targetX = Double.MIN_VALUE;
+        double targetY = Double.MIN_VALUE;
+        for(int i = 0; i < cornerPoints.length; i++) {
+            if (cornerPoints[i].getX() < originX)
+                originX = cornerPoints[i].getX();
+            if (cornerPoints[i].getX() > targetX)
+                targetX = cornerPoints[i].getX();
+            if (cornerPoints[i].getY() < originY)
+                originY = cornerPoints[i].getY();
+            if (cornerPoints[i].getY() > targetY)
+                targetY = cornerPoints[i].getY();
+        }
+        Rectangle rectangle = new Rectangle(
+                (originX * sf) + offset,
+                (originY * sf) + offset,
+                Math.abs(targetX - originX) * sf,
+                Math.abs(targetY - originY) * sf);
+        rectangle.setFill(Color.web("#331a13"));
+        components.add(rectangle);
+
+        // outline
         for (int i = 0; i < cornerPoints.length; i++) {
             components.add(new Line(
                     (cornerPoints[i].getX() * sf) + offset,
@@ -44,6 +72,7 @@ public class Wall extends Area {
                     (cornerPoints[(i + 1) % 4].getY() * sf) + offset));
         }
         // Add diagonal lines
+        /*
         components.add(new Line(
                 (cornerPoints[0].getX() * sf) + offset,
                 (cornerPoints[0].getY() * sf) + offset,
@@ -54,6 +83,9 @@ public class Wall extends Area {
                 (cornerPoints[1].getY() * sf) + offset,
                 (cornerPoints[3].getX() * sf) + offset,
                 (cornerPoints[3].getY() * sf) + offset));
+
+
+         */
         return components;
     }
 

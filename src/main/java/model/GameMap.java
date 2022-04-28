@@ -1,5 +1,6 @@
 package model;
 
+import Enities.Entity;
 import Enities.Guard;
 import Enities.Intruder;
 import Enities.Marker;
@@ -27,6 +28,7 @@ public class GameMap {
     private ArrayList<Marker> markers = new ArrayList<>();
     private SpawnArea spawnAreaGuards;
     private SpawnArea spawnAreaIntruders;
+    private TargetArea targetArea;
 
     /**
      * Constructor
@@ -74,18 +76,6 @@ public class GameMap {
     public void populateMap(int guards, int intruders) {
         addGuards(guards);
         addIntruders(intruders);
-    }
-
-    /**
-     * Populates the map with bug exploration agents.
-     * @param count the amount of bugs
-     */
-    public void populateMapWithBugs(int count) {
-        for(double i = 0; i < count; i++) {
-            double alpha = 2*Math.PI * (i/count);
-            //Bug bug = new Bug(55, 30, this, alpha);
-            //addToMap(bug);
-        }
     }
 
     /**

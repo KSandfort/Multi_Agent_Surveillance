@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 import model.GameMap;
 import model.MapItem;
 import model.TargetArea;
+import model.Vector2D;
 
 
 import java.util.ArrayList;
@@ -20,12 +21,14 @@ public class Intruder extends Entity{
     boolean isAlive = true;
     AbstractAgent agent;
     static int intruderCount = 0;
+    Vector2D targetAreaDirection;
 
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
         intruderCount++;
         this.setID(intruderCount);
     }
+
 
     @Override
     public boolean isIntruder() {
@@ -38,6 +41,16 @@ public class Intruder extends Entity{
 
     public void kill(){
         isAlive = false;
+    }
+
+    @Override
+    public void update(ArrayList<MapItem> mapItems){
+        super.update(mapItems);
+        //updates intruder knowledge on target area direction
+        if (getMap().getTargetArea() != null){
+            Vector2D targetPosition = getMap().getTargetArea().getPosition();
+            this.targetAreaDirection = Vector2D.normalize(Vector2D.subtract(targetPosition, getPosition()));
+        }
     }
 
     @Override

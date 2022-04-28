@@ -13,6 +13,8 @@ import java.util.ArrayList;
  * TODO makes a sound when entering
  */
 public class Door extends Wall {
+    private double areaSoundVolume = 2;
+
     public Door(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
         setAreaSpeedFactor(0.7);

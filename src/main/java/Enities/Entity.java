@@ -27,14 +27,18 @@ public abstract class Entity extends MapItem {
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
+
     protected int ID;
     HitBox hitBox;
     protected AbstractAgent agent;
     protected Vector2D prevPos;
     protected double[][] markerSensing; // row = marker type [0, ..., 4],
                                         // column 0 = amount, column 1 = avg angle from direction (positive = right)
-
+    public double stamina = maxStamina;
     // Static
+    public static double maxStamina = 100;
+    public static double sprintConsumption = 8;
+    public static double staminaRegeneration = 5;
     public static double baseSpeedGuard = 0.2;
     public static double sprintSpeedGuard = 0.4;
     public static double baseSpeedIntruder = 0.2;
@@ -75,16 +79,21 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
-        // Check collision detection
-        boolean inSpecialArea = false;
-        for (MapItem item : items) {
-            if (((Area) item).isAgentInsideArea(this)) {
-                Area areaItem = (Area) item;
-                areaItem.onAgentCollision(this);
-                inSpecialArea = true;
+
+        if (isSprinting){
+            if (stamina <= 0){
+                setSprinting(false);
+            }
+            else{
+                stamina -= sprintConsumption;
             }
         }
-        if (!inSpecialArea) {
+        else if (!isSprinting && stamina < maxStamina){
+            stamina += staminaRegeneration;
+        }
+
+        // Check collision detection
+        if(!isInSpecialArea(items)){
             resetEntityParam();
         }
         // Update HitBox
@@ -127,6 +136,26 @@ public abstract class Entity extends MapItem {
             }
         }
         // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
+    }
+
+    public boolean isInSpecialArea(ArrayList<MapItem> items){
+        return (getCurrentArea(items) == null);
+    }
+
+    /**
+     *
+     * @param items list of static items of the map
+     * @return the area that the entity is currently residing in, null if it is not residing in a special srea type
+     */
+    public Area getCurrentArea(ArrayList<MapItem> items){
+        for(MapItem item : items) {
+            if (((Area) item).isAgentInsideArea(this)){
+                Area areaItem = (Area) item;
+                areaItem.onAgentCollision(this);
+                return areaItem;
+            }
+        }
+        return null;
     }
 
     /**
@@ -235,6 +264,67 @@ public abstract class Entity extends MapItem {
     public boolean checkWinningCondition(){
         return false;
     }
+
+
+    /**
+     * entities are audible based on their speed and the proximity to other entities
+     * gets a volume factor for an entity based on its speed, current area and yelling status
+     * @param entity
+     * @param items list of static items of the current map
+     * @return
+     */
+    public double calculateAudibleFactor(Entity entity, ArrayList<MapItem> items){
+        double dist = Vector2D.distance(this.getPosition(), entity.getPosition());
+        double speedVolume = 1; double yellVolume = 1; double areaVolume = 1;
+        Area curArea = entity.getCurrentArea(items);
+        if (curArea != null){
+            areaVolume = curArea.getAreaSoundVolume();
+        }
+
+        if (entity instanceof Guard){
+            if (((Guard)entity).isYelling()){
+                yellVolume = ((Guard)entity).getYellingFactor();
+            }
+            if (entity.isSprinting()){
+                speedVolume = sprintSpeedGuard;
+            }else{
+                speedVolume = baseSpeedGuard;
+            }
+        } else{
+            if (entity.isSprinting()){
+                speedVolume = sprintSpeedIntruder;
+            }else{
+                speedVolume = baseSpeedIntruder;
+            }
+        }
+
+        // want closer entities to be heard better
+        return ((1/dist) * speedVolume * yellVolume * areaVolume);
+    }
+
+    /**
+     * gets the direction from which the agent hears a sound
+     *
+     * entity will hear the entity that has the highest audible factor
+     * the direction will be determined based on the positions of the entities, their velocity and what area they move in
+     * @return a vector for the direction from which the sound is most audible
+     */
+    public Vector2D getListeningDirection(ArrayList<MapItem> entities, ArrayList<MapItem> items){
+        double audibilityFactor = 0;
+        double newAudibleFactor;
+        Vector2D listeningDir = new Vector2D(0,0);
+        for (MapItem entity : entities){
+            if (!(this == entity)){
+                newAudibleFactor = this.calculateAudibleFactor((Entity) entity, items);
+                if ((newAudibleFactor > audibilityFactor)){
+                    listeningDir = Vector2D.subtract(entity.getPosition(), this.getPosition());
+                    audibilityFactor = newAudibleFactor;
+                }
+            }
+        }
+        return listeningDir; //TODO add uncertainty
+    }
+
 
     @Override
     public boolean isSolidBody() {
