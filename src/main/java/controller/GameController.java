@@ -1,11 +1,9 @@
 package controller;
 
-import Enities.Entity;
-import Enities.EntityKnowledge;
-import Enities.Guard;
-import Enities.Intruder;
+import Enities.*;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +34,8 @@ public class GameController {
     private int coverageDenominator; // Total amount of cells
     private int noCoverageProgressSince; // Indicates for how many time-steps there hasn't been progress in the coverage
     private int coverageThreshold = 500; // Tolerance of not making progress in coverage until game stops.
+    private Group notChangingNodes; // Walls etc.
+    private Group changingNodes; // Entities, markers, etc.
     private int gameMode;
     // Static
     public static int amountOfGuards;
@@ -80,6 +80,9 @@ public class GameController {
 
         coverageMatrix = new boolean[map.getSizeX()][map.getSizeY()];
         coverageDenominator = map.getSizeX() * map.getSizeY();
+
+        notChangingNodes = new Group();
+        changingNodes = new Group();
 
         this.map = map;
     }
@@ -251,14 +254,19 @@ public class GameController {
      * @param layout
      */
     public void drawFixedItems(MainLayout layout) {
-        ArrayList<Node> nodes = new ArrayList<>();
         for (MapItem item : map.getStaticItems()) {
-            nodes.addAll(item.getComponents());
+           for (Node n : item.getComponents()) {
+                notChangingNodes.getChildren().add(n);
+            }
         }
         for (MapItem item : map.getSolidBodies()) {
-            nodes.addAll(item.getComponents());
+            for (Node n : item.getComponents()) {
+                notChangingNodes.getChildren().add(n);
+            }
+
         }
-        layout.getCanvas().getChildren().addAll(nodes);
+        layout.getCanvas().getChildren().add(notChangingNodes);
+        layout.getCanvas().getChildren().add(changingNodes);
     }
 
     /**
@@ -266,17 +274,15 @@ public class GameController {
      * @param layout
      */
     public void drawMovingItems(MainLayout layout){
-        ArrayList<Node> nodes = new ArrayList<>();
-        ArrayList<MapItem> items = map.getMovingItems();
-        for (MapItem item : items){
-            for (Node n : item.getComponents()) {
-                if (simulationGUI.getCurrentStep() != 0) {
-                    layout.getCanvas().getChildren().remove(layout.getCanvas().getChildren().size() - 1); // Remove old node
-                }
-                nodes.add(n);
-            }
+        // Clear old moving nodes
+        changingNodes.getChildren().clear();
+        // Add new ones
+        for (MapItem item : map.getMovingItems()) {
+            changingNodes.getChildren().addAll(item.getComponents());
         }
-        layout.getCanvas().getChildren().addAll(nodes);
+        for (Marker m : map.getMarkers()) {
+            changingNodes.getChildren().addAll(m.getComponents());
+        }
     }
 
 

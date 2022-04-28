@@ -3,8 +3,8 @@ package model;
 import Enities.Entity;
 import Enities.Guard;
 import Enities.Intruder;
+import Enities.Marker;
 import controller.GameController;
-import controller.MapGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ public class GameMap {
     private ArrayList<MapItem> movingItems = new ArrayList<>();
     private ArrayList<MapItem> solidBodies = new ArrayList<>();
     private ArrayList<MapItem> transparentItems = new ArrayList<>();
+    private ArrayList<Marker> markers = new ArrayList<>();
     private SpawnArea spawnAreaGuards;
     private SpawnArea spawnAreaIntruders;
     private TargetArea targetArea;
@@ -80,27 +81,34 @@ public class GameMap {
     /**
      * Adds items to the map.
      * It automatically puts the item in the corresponding list.
+     * - Markers
      * - DynamicItems
      * - StaticItems
      * - SolidItems
      * @param item item to put on the map
      */
     public void addToMap(MapItem item){
-        if (item.isDynamicObject()){
-            addToDynamicItems(item);
-        }else{
-            addToStaticItems(item);
+        if (item instanceof Marker) {
+            markers.add((Marker) item);
         }
-        if (item.isSolidBody()){
-            if (item instanceof WallWithItem){
-                addToSolidItems(((WallWithItem) item).getWalls().get(0));
-                addToSolidItems(((WallWithItem) item).getWalls().get(1));
-            }if (!(item instanceof WallWithWindow)){
-                addToSolidItems(item);
+        else {
+            if (item.isDynamicObject()) {
+                addToDynamicItems(item);
+            } else {
+                addToStaticItems(item);
             }
-        }
-        if (item.isTransparentObject()){
-            addToTransparentItems(item);
+            if (item.isSolidBody()) {
+                if (item instanceof WallWithItem) {
+                    addToSolidItems(((WallWithItem) item).getWalls().get(0));
+                    addToSolidItems(((WallWithItem) item).getWalls().get(1));
+                }
+                if (!(item instanceof WallWithWindow)) {
+                    addToSolidItems(item);
+                }
+            }
+            if (item.isTransparentObject()) {
+                addToTransparentItems(item);
+            }
         }
     }
 

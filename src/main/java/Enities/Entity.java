@@ -32,6 +32,8 @@ public abstract class Entity extends MapItem {
     HitBox hitBox;
     protected AbstractAgent agent;
     protected Vector2D prevPos;
+    protected double[][] markerSensing; // row = marker type [0, ..., 4],
+                                        // column 0 = amount, column 1 = avg angle from direction (positive = right)
     public double stamina = maxStamina;
     // Static
     public static double maxStamina = 100;
@@ -77,6 +79,7 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
+
         if (isSprinting){
             if (stamina <= 0){
                 setSprinting(false);
@@ -98,8 +101,41 @@ public abstract class Entity extends MapItem {
 
         // Update agent knowledge
         entityKnowledge.setCell(1, previousPos); // Remove current position marker
-        // Add new position marker
+        // Add new position to internal knowledge
         entityKnowledge.setCell(2, getPosition());
+
+        // detect markers
+        markerSensing = new double[5][2];
+        for (Marker marker : map.getMarkers()) {
+            // check if it is in fov range and of its own team
+            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder == marker.isFromIntruder()) {
+                // check if it is in fov angel
+                Vector2D markerDir = Vector2D.subtract(marker.getPosition(), this.getPosition());
+                double angle = Vector2D.shortestAngle(this.getDirection(), markerDir); // angle between entity direction and marker
+                if (Math.abs(angle) < 0.5*fovAngle) {
+                    // check if there is a wall blocking the line between
+                    boolean lineIsFree = true;
+                    for (MapItem wall : map.getSolidBodies()) {
+                        outerLoop:
+                        if (wall instanceof Wall) {
+                            for (int i = 0; i < 4; i++) {
+                                if (fovDepth >= Vector2D.distance(this.getPosition(), marker.getPosition(), wall.getCornerPoints()[i], wall.getCornerPoints()[(i + 1) % 4])) {
+                                    lineIsFree = false;
+                                    break outerLoop;
+                                }
+                            }
+                        }
+                    }
+                    if (lineIsFree) { // This means that a marker can be seen from the field of view
+                        int previousCount = (int) markerSensing[marker.getMarkerType()][0];
+                        double previousAngle = markerSensing[marker.getMarkerType()][1];
+                        markerSensing[marker.getMarkerType()][0] = previousCount + 1;
+                        markerSensing[marker.getMarkerType()][1] = previousAngle + (angle / markerSensing[marker.getMarkerType()][0]);
+                    }
+                }
+            }
+        }
+        // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
@@ -214,6 +250,15 @@ public abstract class Entity extends MapItem {
         if (rayLength + epsilon < fovDepth) { // Display walls in vision
             entityKnowledge.setCell(3, ray.getPoint());
         }
+    }
+
+    /**
+     * Places a marker on the current position of the map.
+     * @param type
+     */
+    public void placeMarker(int type) {
+        Marker marker = new Marker(type, this.getPosition(), isIntruder);
+        map.addToMap(marker);
     }
 
     public boolean checkWinningCondition(){

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public abstract class MapItem {
 
     // Variables
-    Vector2D position;
+    protected Vector2D position;
     protected GameMap map;
 
     public void update(ArrayList<MapItem> items) {
