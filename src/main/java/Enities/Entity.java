@@ -325,6 +325,19 @@ public abstract class Entity extends MapItem {
         return listeningDir; //TODO add uncertainty
     }
 
+    public ArrayList <Entity> detectedEntities(){
+        ArrayList<MapItem> entities = this.getMap().getMovingItems();
+        ArrayList<Ray> fov = FOV();
+        ArrayList<Entity> detectedEntities = new ArrayList<>();
+        for (MapItem mapItem :entities){
+            Entity entity = (Entity) mapItem;
+            for (Ray ray : fov) {
+                detectedEntities.addAll(ray.getDetectedEntities(this));
+            }
+        }
+        return detectedEntities;
+    }
+
 
     @Override
     public boolean isSolidBody() {
