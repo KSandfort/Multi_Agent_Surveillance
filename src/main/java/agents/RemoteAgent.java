@@ -47,7 +47,7 @@ public class RemoteAgent extends AbstractAgent {
                 entityInstance.setSprinting(true);
             }
             if(key.getCode()== KeyCode.P) {
-                System.out.println("Detected Entities: " + entityInstance.detectedEntities().size());
+                System.out.println("Detected Entities: " + entityInstance.getDetectedEntities().size());
             }
             if(key.getCode()== KeyCode.DIGIT1) {
                 entityInstance.placeMarker(0);

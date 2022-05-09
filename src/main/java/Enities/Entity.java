@@ -1,9 +1,6 @@
 package Enities;
 
-import agents.AbstractAgent;
-import agents.ExplorerBugAgent;
-import agents.RandomAgent;
-import agents.RemoteAgent;
+import agents.*;
 import lombok.Getter;
 import lombok.Setter;
 import model.*;
@@ -182,6 +179,11 @@ public abstract class Entity extends MapItem {
                 agent.setEntityInstance(this);
                 break;
             }
+            case 3: { // Intruder Destroyer
+                agent = new RuleBasedGuardAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
             default: {
                 System.out.println("No agent defined!");
             }
@@ -325,14 +327,19 @@ public abstract class Entity extends MapItem {
         return listeningDir; //TODO add uncertainty
     }
 
-    public ArrayList <Entity> detectedEntities(){
+    public ArrayList <Entity> getDetectedEntities(){
         ArrayList<MapItem> entities = this.getMap().getMovingItems();
         ArrayList<Ray> fov = FOV();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
         for (MapItem mapItem :entities){
             Entity entity = (Entity) mapItem;
             for (Ray ray : fov) {
-                detectedEntities.addAll(ray.getDetectedEntities(this));
+                for (Entity e: ray.getDetectedEntities(this)){
+                    if (!Ray.contains(detectedEntities, e)){
+                        detectedEntities.add(e);
+                    }
+                }
+
             }
         }
         return detectedEntities;

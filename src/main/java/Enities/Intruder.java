@@ -22,6 +22,7 @@ public class Intruder extends Entity{
     AbstractAgent agent;
     static int intruderCount = 0;
     Vector2D targetAreaDirection;
+    boolean isDetected = false;
 
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
@@ -40,6 +41,13 @@ public class Intruder extends Entity{
     }
 
     public void kill(){
+        GameMap map = this.getMap();
+        for (MapItem mapItem : map.getMovingItems()){
+            Entity e = (Entity) mapItem;
+            if (e.getID() == this.getID()){
+                map.getMovingItems().remove(mapItem);
+            }
+        }
         isAlive = false;
     }
 
