@@ -1,9 +1,6 @@
 package Enities;
 
-import agents.AbstractAgent;
-import agents.ExplorerBugAgent;
-import agents.RandomAgent;
-import agents.RemoteAgent;
+import agents.*;
 import lombok.Getter;
 import lombok.Setter;
 import model.*;
@@ -23,7 +20,7 @@ public abstract class Entity extends MapItem {
     private double fovDepth = 20;
     protected Vector2D direction;
     private boolean isIntruder;
-    private boolean isSprinting = true;
+    private boolean isSprinting = false;
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
@@ -182,6 +179,11 @@ public abstract class Entity extends MapItem {
                 agent.setEntityInstance(this);
                 break;
             }
+            case 3: { // Intruder Destroyer
+                agent = new RuleBasedGuardAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
             default: {
                 System.out.println("No agent defined!");
             }
@@ -323,6 +325,33 @@ public abstract class Entity extends MapItem {
             }
         }
         return listeningDir; //TODO add uncertainty
+    }
+
+    public ArrayList <Entity> getDetectedEntities(){
+        ArrayList<MapItem> entities = this.getMap().getMovingItems();
+        ArrayList<Ray> fov = FOV();
+        ArrayList<Entity> detectedEntities = new ArrayList<>();
+        for (MapItem mapItem :entities){
+            Entity entity = (Entity) mapItem;
+            for (Ray ray : fov) {
+                for (Entity e: ray.getDetectedEntities(this)){
+                    if (!Ray.contains(detectedEntities, e)){
+                        detectedEntities.add(e);
+                    }
+                }
+
+            }
+        }
+        return detectedEntities;
+    }
+
+    public void setSprinting(boolean sprint){
+        if (sprint && stamina <= 0){
+            isSprinting = false;
+        }
+        else{
+            isSprinting = sprint;
+        }
     }
 
 
