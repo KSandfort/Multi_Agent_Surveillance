@@ -57,7 +57,8 @@ public class StartLayout extends BorderPane {
             FXCollections.observableArrayList(
                     "Random Agent",
                     "Remote Agent",
-                    "Bug Agent"
+                    "Bug Agent",
+                    "Intruder Destroyer"
             );
     private ComboBox guardAgentBox;
 
@@ -218,6 +219,9 @@ public class StartLayout extends BorderPane {
             }
             if (guardAgentBox.getValue().equals("Bug Agent")) {
                 GameController.guardAgentType = 2;
+            }
+            if (guardAgentBox.getValue().equals("Intruder Destroyer")) {
+                GameController.guardAgentType = 3;
             }
             // Determine agent type - Intruder
             if (intruderAgentBox.getValue().equals("Random Agent")) {

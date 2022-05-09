@@ -33,6 +33,7 @@ public class HitBox extends Area {
         return components;
     }
 
+
     public void transform(Entity entity) {
         double radius = entity.getRadius();
         Vector2D c2 = Vector2D.add(entity.getPosition(), new Vector2D(-radius,-radius));
