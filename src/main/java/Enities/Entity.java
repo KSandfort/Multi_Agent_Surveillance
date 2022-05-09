@@ -1,9 +1,6 @@
 package Enities;
 
-import agents.AbstractAgent;
-import agents.ExplorerBugAgent;
-import agents.RandomAgent;
-import agents.RemoteAgent;
+import agents.*;
 import lombok.Getter;
 import lombok.Setter;
 import model.*;
@@ -179,6 +176,11 @@ public abstract class Entity extends MapItem {
             }
             case 2: { // Bug Agent
                 agent = new ExplorerBugAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
+            case 3: { // NEAT Agent
+                agent = new NeatAgent();
                 agent.setEntityInstance(this);
                 break;
             }

@@ -87,7 +87,6 @@ public class GameController {
         this.map = map;
     }
 
-    // TODO: Probably needs more arguments like agent algorithms
     /**
      * Simulates a run without GUI
      * @param steps Maximum number of steps that the simulation should run
