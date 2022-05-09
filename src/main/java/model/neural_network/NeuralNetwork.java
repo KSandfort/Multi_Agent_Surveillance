@@ -1,6 +1,7 @@
 package model.neural_network;
 
 import java.util.*;
+import java.io.*;
 
 public class NeuralNetwork {
     //coefficients for compatibility distance calculation
@@ -21,15 +22,15 @@ public class NeuralNetwork {
     double fitness;
 
     //hardcode these variables because its easier this way
-    public static int inputNum = 2 + 1;//including bias node
-    public static int outputNum = 1;//number of outputs
-    public static int maxNeurons = inputNum + outputNum + 1;//total possible number of neurons
+    public final static int inputNum = 2 + 1;//including bias node
+    public final static int outputNum = 1;//number of outputs
+    public static int maxNeurons = inputNum + outputNum;//total possible number of neurons
 
-    private static List<NNConnection> newConnections = new ArrayList<>();//the new connections of the new generation
+    public static List<NNConnection> newConnections = new ArrayList<>();//the new connections of the new generation
 
     //Hashmap storing the innovation number of each connection that has been used to create a new node
     //this to prevent the creation of too many new nodes when the same node is evolved multiple times
-    private static HashMap<Integer,Integer> newNodes = new HashMap<>();
+    public static HashMap<Integer,Integer> newNodes = new HashMap<>();
 
     Random random;
 
@@ -541,6 +542,92 @@ public class NeuralNetwork {
     public int getOutputNum() {
         return outputNum;
     }
+
+    public void saveNetwork(String file)
+    {
+        try
+        {
+            FileWriter fw = new FileWriter(file);
+            String text = "f=" + fitness;//first line is fitness
+            text += "\nmn=" + maxNeurons;//second line is maxNeurons
+            //next print connections
+            for(NNConnection c : connections)
+            {
+                text += "\nc=" + c.toString();
+            }
+            text += "\n-----------------------";//add separation between connection lists
+            //print stored connections
+            for(NNConnection c : newConnections)
+            {
+                text += "\nnc=" + c.toString();
+            }
+            text += "\n-----------------------";//add separation between connection lists and hashmap
+            for(Integer i : newNodes.keySet())
+            {
+                text += "\nnn=" + newNodes.get(i);
+            }
+        }
+        catch (IOException exception)
+        {
+            System.out.println("Error writing to file:\n" + exception);
+        }
+    }
+
+    public static NeuralNetwork readNetwork(String file)
+    {
+        NeuralNetwork nn = new NeuralNetwork();
+
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String record = "";
+
+            while ((record = br.readLine()) != null)
+            {
+                if( record.startsWith("f="))//read fitness from file
+                {
+                    nn.setFitness(Double.parseDouble(record.substring(2)));
+                }
+
+                if( record.startsWith("mn="))//read maxneurons from file
+                {
+                    NeuralNetwork.maxNeurons = Integer.parseInt(record.substring(3));
+                }
+
+                if(record.startsWith("c="))//add connections to arrays
+                {
+                    nn.connections.add(NNConnection.readConnectionFromString(record.substring(2)));
+                }
+
+                if(record.startsWith("nc="))//add connections to arrays
+                {
+                    NeuralNetwork.newConnections.add(NNConnection.readConnectionFromString(record.substring(3)));
+                }
+
+                if(record.startsWith("nn="))//add connections to arrays
+                {
+                    char[] text = record.toCharArray();
+                    int commaIndex = -1;
+                    for (int i = 0; i < text.length; i++) {
+                        if(text[i] == ',')
+                        {
+                            commaIndex = i;
+                        }
+                    }
+
+                    int key = Integer.parseInt(record.substring(3,commaIndex));
+                    int value = Integer.parseInt(record.substring(commaIndex+1));
+                    NeuralNetwork.newNodes.put(key,value);
+                }
+            }
+        }
+        catch (IOException exception)
+        {
+            System.out.println("Error reading file:\n" + exception);
+        }
+        return nn;
+    }
+
     @Override
     public String toString() {
         String output = "NeuralNetwork : " + "[fitness: " + fitness + "]";
