@@ -90,7 +90,18 @@ public class Teleport extends Area{
             line.setStrokeWidth(4);
             components.add(line);
         }
-        Rectangle rect = new Rectangle((target.getX() * sf) + offset, (target.getY() * sf) + offset, 10, 10);
+
+        // target line
+        Line line = new Line(
+                (cornerPoints[0].getX() + cornerPoints[2].getX())/2 * sf + offset,
+                (cornerPoints[0].getY() + cornerPoints[1].getY())/2 * sf + offset,
+                target.getX() * sf + offset,
+                target.getY() * sf + offset);
+        line.setStroke(Color.web("#FFAC12", 1));
+        line.getStrokeDashArray().addAll(10d);
+        components.add(line);
+
+        Rectangle rect = new Rectangle((target.getX() * sf) + offset - 5, (target.getY() * sf) + offset - 5, 10, 10);
         rect.setFill(Color.web("#FFAC12", 1));
         components.add(rect);
 

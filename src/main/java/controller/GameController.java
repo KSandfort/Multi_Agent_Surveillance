@@ -125,9 +125,14 @@ public class GameController {
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
 
+        // use static & dynamic objects when updating
+        ArrayList<MapItem> itemsToCheck = map.getStaticItems();
+        itemsToCheck.addAll(items);
+
         for(MapItem item : items) {
-            item.update(map.getStaticItems());
+            item.update(itemsToCheck);
         }
+
         updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
 
         explorationOverTime.add(coveragePercent);
@@ -255,11 +260,17 @@ public class GameController {
      */
     public void drawFixedItems(MainLayout layout) {
         for (MapItem item : map.getStaticItems()) {
-           for (Node n : item.getComponents()) {
+
+            for (Node n : item.getComponents()) {
                 notChangingNodes.getChildren().add(n);
             }
         }
         for (MapItem item : map.getSolidBodies()) {
+            // Don't draw entities as solid objects despite being marked as solid
+            // (otherwise the GUI shows static copies of agents)
+            if (item instanceof Guard || item instanceof Intruder)
+                continue;
+
             for (Node n : item.getComponents()) {
                 notChangingNodes.getChildren().add(n);
             }

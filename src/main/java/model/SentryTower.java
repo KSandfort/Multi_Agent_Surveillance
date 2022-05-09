@@ -1,5 +1,6 @@
 package model;
 
+import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -31,6 +32,11 @@ public class SentryTower extends Area{
         setAreaFovAngle(getAreaFovAngle()*1.5);
         setAreaFovDepth(getAreaFovDepth()*1.5);
         setAreaSpeedFactor(0.5);
+    }
+
+    public void onAgentCollision(Entity entity) {
+        entity.setFovDepth(getAreaFovDepth());
+        entity.setFovAngle(getAreaFovAngle());
     }
 
     @Override

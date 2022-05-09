@@ -27,6 +27,7 @@ public abstract class Entity extends MapItem {
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
+    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
 
     protected int ID;
     HitBox hitBox;
@@ -43,6 +44,7 @@ public abstract class Entity extends MapItem {
     public static double sprintSpeedGuard = 0.4;
     public static double baseSpeedIntruder = 0.2;
     public static double sprintSpeedIntruder = 0.4;
+
 
     /**
      * Constructor
@@ -139,7 +141,7 @@ public abstract class Entity extends MapItem {
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
-        return (getCurrentArea(items) == null);
+        return (getCurrentArea(items) != null);
     }
 
     /**
@@ -148,14 +150,50 @@ public abstract class Entity extends MapItem {
      * @return the area that the entity is currently residing in, null if it is not residing in a special srea type
      */
     public Area getCurrentArea(ArrayList<MapItem> items){
+        Area insideArea = null;
+
+        boolean isInSpawn = false;
+
         for(MapItem item : items) {
-            if (((Area) item).isAgentInsideArea(this)){
+            if (item == this)
+                continue;
+
+            // Agent/Agent collision (only if the agent has already left spawn)
+            if (item instanceof Guard || item instanceof Intruder) {
+                if (!leftSpawn)
+                    continue;
+
+                Vector2D[] corners = ((Entity)item).hitBox.getCornerPoints();
+
+                Area tempArea = new Wall(corners[1].getX(), corners[1].getY(), corners[3].getX(), corners[3].getY());
+                if (tempArea.isAgentInsideArea(this)) {
+                    tempArea.onAgentCollision(this);
+                    insideArea = tempArea;
+                }
+            }
+
+            // Agent/Area collision
+            else if (((Area) item).isAgentInsideArea(this)){
+
+                if (item instanceof SpawnArea)
+                    isInSpawn = true;
+
                 Area areaItem = (Area) item;
                 areaItem.onAgentCollision(this);
-                return areaItem;
+                insideArea = areaItem;
             }
         }
-        return null;
+
+        if (!isInSpawn && !leftSpawn)
+            leftSpawn = true;
+
+        return insideArea;
+    }
+
+    public void onAgentCollision(Entity entity)
+    {
+        Vector2D pos = entity.getPosition();
+        entity.setPosition(entity.getPrevPos());
     }
 
     /**
@@ -216,6 +254,9 @@ public abstract class Entity extends MapItem {
             double minDistance = fovDepth;
             // Scan all fixed items on the map
             for (MapItem item: map.getSolidBodies()) {
+                if (item instanceof Entity)
+                    continue;
+
                 Area area = (Area) item;
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){
@@ -328,7 +369,7 @@ public abstract class Entity extends MapItem {
 
     @Override
     public boolean isSolidBody() {
-        return false;
+        return true;
     }
 
     @Override
