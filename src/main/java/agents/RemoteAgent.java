@@ -63,8 +63,10 @@ public class RemoteAgent extends AbstractAgent {
             }
             if(key.getCode()== KeyCode.DIGIT5) {
                 entityInstance.placeMarker(4);
-
-
+            }
+            if(key.getCode()== KeyCode.Q) {
+                entityInstance.setSprinting(true);
+            }
         }});
     }
 

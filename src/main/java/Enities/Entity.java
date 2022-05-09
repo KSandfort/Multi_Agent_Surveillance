@@ -16,7 +16,7 @@ public abstract class Entity extends MapItem {
 
     // Variables
     private EntityKnowledge entityKnowledge;
-    private double fovAngle = 30;
+    private double fovAngle = 90;
     private double fovDepth = 20;
     protected Vector2D direction;
     private boolean isIntruder;
@@ -126,11 +126,12 @@ public abstract class Entity extends MapItem {
                     if (lineIsFree) { // This means that a marker can be seen from the field of view
                         int previousCount = (int) markerSensing[marker.getMarkerType()][0];
                         double previousAngle = markerSensing[marker.getMarkerType()][1];
-                        markerSensing[marker.getMarkerType()][0] = previousCount + 1;
+                        markerSensing[marker.getMarkerType()][0] = previousCount + marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
                         markerSensing[marker.getMarkerType()][1] = previousAngle + (angle / markerSensing[marker.getMarkerType()][0]);
                     }
                 }
             }
+            //System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
         }
         // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
@@ -191,7 +192,7 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setFovAngle(30);
+        this.setFovAngle(90);
         this.setFovDepth(20);
     }
 
@@ -208,7 +209,7 @@ public abstract class Entity extends MapItem {
     public ArrayList<Ray> FOV() {
         ArrayList<Ray> rays = new ArrayList<>();
         // Create all the rays
-        for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 1){
+        for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 3){
             Vector2D direction = new Vector2D(
                     getDirection().getX()*Math.cos(Math.toRadians(i)) - getDirection().getY()*Math.sin(Math.toRadians(i)),
                     getDirection().getX()*Math.sin(Math.toRadians(i)) + getDirection().getY()*Math.cos(Math.toRadians(i))

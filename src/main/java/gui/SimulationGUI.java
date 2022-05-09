@@ -28,7 +28,7 @@ public class SimulationGUI extends Application {
     private int simulationDelay;
     private Timeline timeline;
     private GameController controller;
-    private final int FPS = 50;
+    private final int FPS = 20;
     private final int WIDTH = 1200;
     private final int HEIGHT = 800;
 
