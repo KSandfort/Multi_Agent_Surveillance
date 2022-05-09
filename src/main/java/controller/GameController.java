@@ -128,6 +128,19 @@ public class GameController {
         for(MapItem item : items) {
             item.update(map.getStaticItems());
         }
+
+        ArrayList<Marker> toRemove = new ArrayList<>();
+        for(Marker marker : map.getMarkers()){
+            // TODO update marker intensity
+                if(marker.getIntensity() < 0.0001){
+                    toRemove.add(marker);
+                }else{
+                    marker.setIntensity(marker.getIntensity() * 0.95);
+                }
+        }
+        map.getMarkers().removeAll(toRemove);
+
+        System.out.println(map.getMarkers().get(0).getIntensity());
         updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
 
         explorationOverTime.add(coveragePercent);
