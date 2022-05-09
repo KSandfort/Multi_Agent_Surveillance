@@ -42,7 +42,6 @@ public abstract class Entity extends MapItem {
     public static double baseSpeedIntruder = 0.2;
     public static double sprintSpeedIntruder = 0.4;
 
-
     /**
      * Constructor
      * @param x
@@ -226,6 +225,11 @@ public abstract class Entity extends MapItem {
                 agent.setEntityInstance(this);
                 break;
             }
+            case 5: { // NEAT Agent
+                agent = new NeatAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
             default: {
                 System.out.println("No agent defined!");
             }
@@ -264,9 +268,9 @@ public abstract class Entity extends MapItem {
             double minDistance = fovDepth;
             // Scan all fixed items on the map
             for (MapItem item: map.getSolidBodies()) {
-                if (item instanceof Entity)
+                if (item instanceof Entity) {
                     continue;
-
+                }
                 Area area = (Area) item;
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){

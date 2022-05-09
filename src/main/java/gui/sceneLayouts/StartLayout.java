@@ -59,7 +59,8 @@ public class StartLayout extends BorderPane {
                     "Remote Agent",
                     "Bug Agent",
                     "Intruder Destroyer",
-                    "Ant Agent"
+                    "Ant Agent",
+                    "NEAT Agent"
             );
     private ComboBox guardAgentBox;
 
@@ -67,7 +68,8 @@ public class StartLayout extends BorderPane {
             FXCollections.observableArrayList(
                     "Random Agent",
                     "Remote Agent",
-                    "Ant Agent"
+                    "Ant Agent",
+                    "NEAT Agent"
             );
     private ComboBox intruderAgentBox;
 
@@ -228,6 +230,9 @@ public class StartLayout extends BorderPane {
             if (guardAgentBox.getValue().equals("Ant Agent")) {
                 GameController.guardAgentType = 4;
             }
+            if (guardAgentBox.getValue().equals("NEAT Agent")) {
+                GameController.guardAgentType = 5;
+            }
 
             // Determine agent type - Intruder
             if (intruderAgentBox.getValue().equals("Random Agent")) {
@@ -238,6 +243,9 @@ public class StartLayout extends BorderPane {
             }
             if (intruderAgentBox.getValue().equals("Ant Agent")) {
                 GameController.intruderAgentType = 4;
+            }
+            if (intruderAgentBox.getValue().equals("NEAT Agent")) {
+                GameController.intruderAgentType = 5;
             }
             simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });
