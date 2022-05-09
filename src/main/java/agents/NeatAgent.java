@@ -1,6 +1,8 @@
 package agents;
 
+import Enities.Entity;
 import model.MapItem;
+import model.Vector2D;
 import model.neural_network.NeuralNetwork;
 
 import java.util.ArrayList;
@@ -48,15 +50,32 @@ public class NeatAgent extends AbstractAgent {
                 6: place marker 5
 
          */
-        // Define inputs
+        Entity e = entityInstance;
+
+        // --- Step 1: Define inputs ---
         double[] input = new double[5];
 
-        // Do the NN magic
-        double[] output = nn.evaluate();
+        // --- Step 2: Do the NN magic ---
+        double[] output = nn.evaluate(input);
 
-        // Apply output results
+        // --- Step 3: Apply output results ---
+
+        // Velocity
+        double velocity = 0;
+        if (output[0] > (double) 1/3) {
+            if (output[0] > (double) 2/3) {
+                velocity = Entity.sprintSpeedGuard; //TODO: make dynamic for guard or agent
+            }
+            else {
+                velocity = Entity.baseSpeedGuard;
+            }
+        }
+
+        // Direction (Turning)
+        double angle = 0;
 
 
-        System.out.println("I am a neat agent!");
+        e.getDirection().pivot(angle); // Turn
+        e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity))); // Move
     }
 }
