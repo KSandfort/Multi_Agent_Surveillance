@@ -20,7 +20,7 @@ public abstract class Entity extends MapItem {
     private double fovDepth = 20;
     protected Vector2D direction;
     private boolean isIntruder;
-    private boolean isSprinting = true;
+    private boolean isSprinting = false;
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
@@ -343,6 +343,15 @@ public abstract class Entity extends MapItem {
             }
         }
         return detectedEntities;
+    }
+
+    public void setSprinting(boolean sprint){
+        if (sprint && stamina <= 0){
+            isSprinting = false;
+        }
+        else{
+            isSprinting = sprint;
+        }
     }
 
 
