@@ -23,7 +23,7 @@ public abstract class Entity extends MapItem {
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
-
+    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
     protected int ID;
     HitBox hitBox;
     protected AbstractAgent agent;
