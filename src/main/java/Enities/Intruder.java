@@ -91,7 +91,7 @@ public class Intruder extends Entity{
             components.addAll(hitBox.getComponents());
             return components;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**

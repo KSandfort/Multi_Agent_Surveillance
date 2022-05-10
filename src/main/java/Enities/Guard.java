@@ -29,6 +29,7 @@ public class Guard extends Entity {
     static int guardCount = 0;
     private boolean isYelling = false;
     private double yellingFactor = 10;
+    public static double killDistance = 10;
 
     /**
      * Constructor
