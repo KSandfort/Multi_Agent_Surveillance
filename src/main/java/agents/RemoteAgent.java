@@ -67,7 +67,7 @@ public class RemoteAgent extends AbstractAgent {
             if(key.getCode()== KeyCode.Q) {
                 entityInstance.setSprinting(true);
             }
-        }});
+        });
     }
 
     @Override
