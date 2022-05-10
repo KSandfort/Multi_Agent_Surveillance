@@ -224,6 +224,7 @@ public class GameMap {
     }
 
 
+
     // Breadth-first search algorithm to calculate walkable space
     // Upper bound: map area
     public int calculateMaximalPossibleCoverage() {
