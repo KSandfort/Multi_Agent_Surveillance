@@ -237,6 +237,10 @@ public abstract class Entity extends MapItem {
         this.setFovDepth(20);
     }
 
+    /**
+     * Defines if an entity is an intruder or a guard, if the return value is false.
+     * @return
+     */
     public abstract boolean isIntruder();
 
     public Vector2D [] getCornerPoints(){
@@ -308,10 +312,14 @@ public abstract class Entity extends MapItem {
         map.addToMap(marker);
     }
 
+    /**
+     * Checks the winning condition for the game
+     * TODO: Implement
+     * @return
+     */
     public boolean checkWinningCondition(){
         return false;
     }
-
 
     /**
      * entities are audible based on their speed and the proximity to other entities
