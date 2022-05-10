@@ -146,8 +146,6 @@ public class GameController {
         }
         map.getMarkers().removeAll(toRemove);
 
-        System.out.println(map.getMarkers().get(0).getIntensity());
-
         updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
 
         explorationOverTime.add(coveragePercent);
