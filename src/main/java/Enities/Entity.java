@@ -19,12 +19,10 @@ public abstract class Entity extends MapItem {
     private double fovAngle = 90;
     private double fovDepth = 20;
     protected Vector2D direction;
-    private boolean isIntruder;
     private boolean isSprinting = false;
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
-    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
 
     protected int ID;
     HitBox hitBox;
@@ -42,7 +40,6 @@ public abstract class Entity extends MapItem {
     public static double baseSpeedIntruder = 0.2;
     public static double sprintSpeedIntruder = 0.4;
 
-
     /**
      * Constructor
      * @param x
@@ -51,7 +48,7 @@ public abstract class Entity extends MapItem {
      */
     public Entity(double x, double y, GameMap currentMap) {
         setMap(currentMap);
-        entityKnowledge = new EntityKnowledge(currentMap, !isIntruder);
+        entityKnowledge = new EntityKnowledge(currentMap, !isIntruder());
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));
@@ -107,7 +104,7 @@ public abstract class Entity extends MapItem {
         markerSensing = new double[5][2];
         for (Marker marker : map.getMarkers()) {
             // check if it is in fov range and of its own team
-            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder == marker.isFromIntruder()) {
+            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder() == marker.isFromIntruder()) {
                 // check if it is in fov angel
                 Vector2D markerDir = Vector2D.subtract(marker.getPosition(), this.getPosition());
                 double angle = Vector2D.shortestAngle(this.getDirection(), markerDir); // angle between entity direction and marker
@@ -134,6 +131,7 @@ public abstract class Entity extends MapItem {
                 }
             }
         }
+        // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
@@ -226,6 +224,11 @@ public abstract class Entity extends MapItem {
                 agent.setEntityInstance(this);
                 break;
             }
+            case 5: { // NEAT Agent
+                agent = new NeatAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
             default: {
                 System.out.println("No agent defined!");
             }
@@ -264,9 +267,9 @@ public abstract class Entity extends MapItem {
             double minDistance = fovDepth;
             // Scan all fixed items on the map
             for (MapItem item: map.getSolidBodies()) {
-                if (item instanceof Entity)
+                if (item instanceof Entity) {
                     continue;
-
+                }
                 Area area = (Area) item;
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){
@@ -308,7 +311,7 @@ public abstract class Entity extends MapItem {
      * @param type
      */
     public void placeMarker(int type) {
-        Marker marker = new Marker(type, this.getPosition(), isIntruder);
+        Marker marker = new Marker(type, this.getPosition(), isIntruder());
         map.addToMap(marker);
     }
 
