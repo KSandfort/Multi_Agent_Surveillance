@@ -23,7 +23,6 @@ public abstract class Entity extends MapItem {
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
-    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
 
     protected int ID;
     HitBox hitBox;
@@ -49,7 +48,6 @@ public abstract class Entity extends MapItem {
      */
     public Entity(double x, double y, GameMap currentMap) {
         setMap(currentMap);
-        System.out.println(isIntruder());
         entityKnowledge = new EntityKnowledge(currentMap, !isIntruder());
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
@@ -133,6 +131,7 @@ public abstract class Entity extends MapItem {
                 }
             }
         }
+        // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
