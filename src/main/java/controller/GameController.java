@@ -13,7 +13,6 @@ import utils.MapReader;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * This class acts as the heart of the game. It controls all the parts
@@ -28,6 +27,7 @@ public class GameController {
     private SimulationGUI simulationGUI;
     private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
     private boolean[][] coverageMatrix; // 0 = not explored, 1 = explored
+    private double maximumCoveragePossible; // how much of the map can actually be explored by the agents
     private double coveragePercent; // Coverage value in percent (from 0 to 1)
     private double previousCoveragePercent; // One time-step earlier
     private int coverageNumerator; // Amount of explored cells
@@ -48,7 +48,9 @@ public class GameController {
 
     /**
      * Constructor
-     * @param gui
+     * @param gui Simulation GUI
+     * @param mapCode The unique identifier for a specific map type (0 = test map, 1 = text file map, 2 = random)
+     *
      */
     public GameController(SimulationGUI gui, int mapCode) {
         this.simulationGUI = gui;
@@ -77,9 +79,9 @@ public class GameController {
             }
         }
 
-
         coverageMatrix = new boolean[map.getSizeX()][map.getSizeY()];
-        coverageDenominator = map.getSizeX() * map.getSizeY();
+        // denominator = amount of units that can be explored
+        coverageDenominator = map.calculateMaximalPossibleCoverage();
 
         notChangingNodes = new Group();
         changingNodes = new Group();
@@ -298,7 +300,7 @@ public class GameController {
 
 
     public static void main(String [] args){
-        // Pass Integer.MAX_VALUE as the steps parameter for indefinite simulation (terminates upon game over)
+        // Pass Integer.MAX_VALUE as the "steps" parameter for indefinite simulation (terminates upon game over)
         GameController.simulate(Integer.MAX_VALUE,3,2,0,0);
     }
 }

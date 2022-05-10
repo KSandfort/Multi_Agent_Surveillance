@@ -36,6 +36,10 @@ public class Teleport extends Area{
         this.direction = direction;
     }
 
+    public Vector2D getExitPosition() {
+        return target;
+    }
+
     /**
      * updates position of the agent and direction he faces
      * @param agent
