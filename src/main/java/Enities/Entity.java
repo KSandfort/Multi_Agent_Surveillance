@@ -133,9 +133,7 @@ public abstract class Entity extends MapItem {
                     }
                 }
             }
-            //System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
         }
-        // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
@@ -220,6 +218,11 @@ public abstract class Entity extends MapItem {
             }
             case 3: { // Intruder Destroyer
                 agent = new RuleBasedGuardAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
+            case 4: { // Ant Agent
+                agent = new AntAgent();
                 agent.setEntityInstance(this);
                 break;
             }
