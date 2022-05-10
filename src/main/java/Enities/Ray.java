@@ -100,4 +100,32 @@ public class Ray {
         return closestItem;
     }
 
+    public ArrayList<Entity> getDetectedEntities(Entity entity){
+        ArrayList<Entity> closestEntities = new ArrayList<>();
+        ArrayList<MapItem> allItems = new ArrayList<>();
+        allItems.addAll(entity.getMap().getMovingItems());
+        for (MapItem item : allItems){
+            Entity e = (Entity) item;
+
+            for (int j = 0; j < e.getHitBox().getCornerPoints().length; j++){
+                double currentDistance = Vector2D.distance(this.getOrigin(), this.getPoint(), e.getHitBox().getCornerPoints()[j], e.getHitBox().getCornerPoints()[(j + 1) % 4]);
+                if (currentDistance <= entity.getFovDepth() && currentDistance > 0 && e != entity) {
+                    if (!contains(closestEntities,e)){
+                        closestEntities.add(e);
+                    }
+                }
+            }
+        }
+        return closestEntities;
+    }
+
+    public static boolean contains(ArrayList<Entity> entities, Entity entity){
+        for (Entity entity1: entities){
+            if (entity1.getID() == entity.getID()){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
