@@ -3,6 +3,7 @@ package model;
 import Enities.Entity;
 import lombok.Getter;
 import lombok.Setter;
+import utils.DefaultValues;
 
 /**
  * Abstract class for any area placed on a map.
@@ -13,11 +14,11 @@ public abstract class Area extends MapItem {
 
     // Variables
     protected Vector2D[] cornerPoints = new Vector2D[4];
-    private double areaFovDepth = 20;
-    private double areaFovAngle = 30;
-    private double areaSpeedFactor = 1;
-    private double hearingFactor = 1;
-    private double areaSoundVolume = 1;
+    private double areaFovDepth     = DefaultValues.agentFovDepth;
+    private double areaFovAngle     = DefaultValues.agentFovAngle;
+    private double areaSpeedFactor  = DefaultValues.areaSpeedFactor;
+    private double hearingFactor    = 1;
+    private double areaSoundVolume  = DefaultValues.areaSoundVolume;
 
     /**
      * Constructor

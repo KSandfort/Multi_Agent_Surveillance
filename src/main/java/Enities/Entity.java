@@ -4,6 +4,7 @@ import agents.*;
 import lombok.Getter;
 import lombok.Setter;
 import model.*;
+import utils.DefaultValues;
 import java.util.ArrayList;
 
 
@@ -16,8 +17,9 @@ public abstract class Entity extends MapItem {
 
     // Variables
     private EntityKnowledge entityKnowledge;
-    private double fovAngle = 60;
-    private double fovDepth = 20;
+    private double fovAngle = DefaultValues.agentFovAngle;
+    private double fovDepth = DefaultValues.agentFovDepth;
+
     protected Vector2D direction;
     private boolean isSprinting = false;
     private ArrayList<Ray> fov;
@@ -32,13 +34,13 @@ public abstract class Entity extends MapItem {
                                         // column 0 = amount, column 1 = avg angle from direction (positive = right), column 2 = intensity
     public double stamina = maxStamina;
     // Static
-    public static double maxStamina = 100;
-    public static double sprintConsumption = 8;
-    public static double staminaRegeneration = 5;
-    public static double baseSpeedGuard = 0.2;
-    public static double sprintSpeedGuard = 0.4;
-    public static double baseSpeedIntruder = 0.2;
-    public static double sprintSpeedIntruder = 0.4;
+    public static double maxStamina             = DefaultValues.agentMaxStamina;
+    public static double sprintConsumption      = DefaultValues.agentSprintConsumption;
+    public static double staminaRegeneration    = DefaultValues.agentStaminaRegeneration;
+    public static double baseSpeedGuard         = DefaultValues.agentBaseSpeedGuard;
+    public static double sprintSpeedGuard       = DefaultValues.agentSprintSpeedGuard;
+    public static double baseSpeedIntruder      = DefaultValues.agentBaseSpeedIntruder;
+    public static double sprintSpeedIntruder    = DefaultValues.agentSprintSpeedIntruder;
 
     /**
      * Constructor
@@ -243,7 +245,7 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setFovAngle(60);
+        this.setFovAngle(90);
         this.setFovDepth(20);
     }
 
