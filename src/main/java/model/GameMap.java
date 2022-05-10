@@ -1,6 +1,5 @@
 package model;
 
-import Enities.Entity;
 import Enities.Guard;
 import Enities.Intruder;
 import Enities.Marker;
@@ -66,6 +65,7 @@ public class GameMap {
         addToMap(new Wall(60, 10, 75, 50));
         addToMap(new WallWithWindow(40, 20, 10, 40, true));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
+        addToMap(new ShadedArea(75,10,90,50));
     }
 
     /**
@@ -194,5 +194,124 @@ public class GameMap {
     public void setSpawnAreaIntruders(SpawnArea spawnAreaIntruders) {
         this.spawnAreaIntruders = spawnAreaIntruders;
         addToMap(spawnAreaIntruders);
+    }
+
+
+    public ArrayList<MapItem> getAllItems() {
+        ArrayList<MapItem> items = (ArrayList<MapItem>) getStaticItems().clone();
+
+        items.addAll(getMovingItems());
+        items.addAll(getTransparentItems());
+
+        return items;
+    }
+
+
+    public ArrayList<MapItem> getMapItemsAtCoordinates(double x, double y) {
+        ArrayList<MapItem> itemsAtCoordinates = new ArrayList<>();
+
+        ArrayList<MapItem> items = getAllItems();
+
+        for (MapItem item : items) {
+            Vector2D[] cp = item.getCornerPoints();
+
+            if (x >= cp[1].getX() && y >= cp[1].getY() &&
+                x <= cp[3].getX() && y <= cp[3].getY())
+                itemsAtCoordinates.add(item);
+        }
+
+        return itemsAtCoordinates;
+    }
+
+
+    // Breadth-first search algorithm to calculate walkable space
+    // Upper bound: map area
+    public int calculateMaximalPossibleCoverage() {
+        int maxCoverage = 0;
+
+        boolean[][] discovered = new boolean[getSizeY()][getSizeX()];
+
+        // This is a subclass simply for the sake of readability
+        class SearchUnit {
+            final int x, y;
+
+            public SearchUnit(int x, int y) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public boolean continueSearch(int new_x, int new_y) {
+                if (new_x >= 0 && new_y >= 0 && new_x < getSizeX() && new_y < getSizeY()) {
+                    ArrayList<MapItem> itemsHere = getMapItemsAtCoordinates(new_x, new_y);
+
+                    boolean emptySpace = true;
+                    for(MapItem item : itemsHere) {
+                        if (item.isSolidBody())
+                            emptySpace = false;
+                    }
+
+                    return emptySpace;
+                }
+                return false;
+            }
+        }
+
+        ArrayList<SearchUnit> searchers = new ArrayList<>();
+
+        // Initiate search units by the spawn areas
+        if (spawnAreaGuards != null) {
+            int spawnX = (int)(spawnAreaGuards.getCornerPoints()[1].getX() + spawnAreaGuards.getCornerPoints()[3].getX())/2;
+            int spawnY = (int)(spawnAreaGuards.getCornerPoints()[1].getY() + spawnAreaGuards.getCornerPoints()[3].getY())/2;
+
+            searchers.add(new SearchUnit(spawnX, spawnY));
+        }
+
+        if (spawnAreaIntruders != null) {
+            int spawnX = (int)(spawnAreaIntruders.getCornerPoints()[1].getX() + spawnAreaIntruders.getCornerPoints()[3].getX())/2;
+            int spawnY = (int)(spawnAreaIntruders.getCornerPoints()[1].getY() + spawnAreaIntruders.getCornerPoints()[3].getY())/2;
+
+            searchers.add(new SearchUnit(spawnX, spawnY));
+        }
+
+        // Initiate search units at teleport exits (in case a teleport leads to a blocked off area)
+        for(MapItem item : getAllItems()) {
+            if (item instanceof Teleport) {
+                searchers.add(
+                    new SearchUnit(
+                        (int)((Teleport) item).getExitPosition().getX(),
+                        (int)((Teleport) item).getExitPosition().getY()));
+            }
+        }
+
+        boolean done = false;
+        while(!done) {
+            ArrayList<SearchUnit> newIteration = new ArrayList<>();
+            for(SearchUnit search : searchers) {
+                if (discovered[search.y][search.x])
+                    continue;
+
+                discovered[search.y][search.x] = true;
+                maxCoverage++;
+
+                int[][] positions = {
+                        {search.x-1, search.y},
+                        {search.x + 1, search.y},
+                        {search.x, search.y-1},
+                        {search.x, search.y+1}
+                };
+
+                for(int[] pos : positions) {
+                    if (search.continueSearch(pos[0], pos[1]))
+                        newIteration.add(new SearchUnit(pos[0], pos[1]));
+                }
+            }
+
+            if (newIteration.size() == 0)
+                done = true;
+
+            searchers = newIteration;
+        }
+
+        return maxCoverage;
     }
 }

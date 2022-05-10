@@ -78,6 +78,11 @@ public class Marker extends MapItem {
     }
 
     @Override
+    public void onAgentCollision(Entity entity) {
+
+    }
+
+    @Override
     public boolean isSolidBody() {
         return false;
     }
