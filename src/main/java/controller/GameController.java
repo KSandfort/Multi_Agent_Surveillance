@@ -12,6 +12,9 @@ import model.MapItem;
 import utils.MapReader;
 
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
@@ -307,7 +310,6 @@ public class GameController {
             changingNodes.getChildren().addAll(m.getComponents());
         }
     }
-
 
     public static void main(String [] args){
         // Pass Integer.MAX_VALUE as the "steps" parameter for indefinite simulation (terminates upon game over)
