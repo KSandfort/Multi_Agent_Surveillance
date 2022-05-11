@@ -326,7 +326,6 @@ public abstract class Entity extends MapItem {
 
     /**
      * Checks the winning condition for the game
-     * TODO: Implement
      * @return
      */
     public boolean checkWinningCondition(){
