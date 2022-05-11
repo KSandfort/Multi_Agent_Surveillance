@@ -80,6 +80,20 @@ public abstract class Area extends MapItem {
         }
     }
 
+    public Vector2D getClosestBorder(Entity entity){
+        Vector2D closestBorder = Vector2D.subtract(cornerPoints[3],cornerPoints[0]);
+        double shortestDist = Vector2D.distance(entity.getPosition(), closestBorder);
+        for (int i = 0; i<3; i++){
+            Vector2D border = Vector2D.subtract(cornerPoints[i],cornerPoints[i+1]);
+            double dist = Vector2D.distance(entity.getPosition(), border);
+            if( dist < shortestDist){
+                shortestDist = dist;
+                closestBorder = border;
+            }
+        }
+        return closestBorder;
+    }
+
     public Vector2D [] getCornerPoints(){
         return cornerPoints;
     }

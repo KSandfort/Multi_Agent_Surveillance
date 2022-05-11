@@ -16,7 +16,7 @@ public abstract class Entity extends MapItem {
 
     // Variables
     private EntityKnowledge entityKnowledge;
-    private double fovAngle = 90;
+    private double fovAngle = 60;
     private double fovDepth = 20;
     protected Vector2D direction;
     private boolean isSprinting = false;
@@ -29,7 +29,7 @@ public abstract class Entity extends MapItem {
     protected AbstractAgent agent;
     protected Vector2D prevPos;
     protected double[][] markerSensing; // row = marker type [0, ..., 4],
-                                        // column 0 = amount, column 1 = avg angle from direction (positive = right)
+                                        // column 0 = amount, column 1 = avg angle from direction (positive = right), column 2 = intensity
     public double stamina = maxStamina;
     // Static
     public static double maxStamina = 100;
@@ -101,7 +101,7 @@ public abstract class Entity extends MapItem {
         entityKnowledge.setCell(2, getPosition());
 
         // detect markers
-        markerSensing = new double[5][2];
+        markerSensing = new double[5][3];
         for (Marker marker : map.getMarkers()) {
             // check if it is in fov range and of its own team
             if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder() == marker.isFromIntruder()) {
@@ -125,12 +125,19 @@ public abstract class Entity extends MapItem {
                     if (lineIsFree) { // This means that a marker can be seen from the field of view
                         int previousCount = (int) markerSensing[marker.getMarkerType()][0];
                         double previousAngle = markerSensing[marker.getMarkerType()][1];
-                        markerSensing[marker.getMarkerType()][0] = previousCount + marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
-                        markerSensing[marker.getMarkerType()][1] = previousAngle + (angle / markerSensing[marker.getMarkerType()][0]);
+                        markerSensing[marker.getMarkerType()][0] = previousCount + 1; //marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
+                        markerSensing[marker.getMarkerType()][1] = previousAngle + angle;
+                        markerSensing[marker.getMarkerType()][2] = markerSensing[marker.getMarkerType()][2] + marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
                     }
                 }
             }
         }
+        // calculate average angle and intensity
+        for (int i =0; i<markerSensing.length;i++){
+            markerSensing[i][1] = markerSensing[i][1]/markerSensing[i][0];
+            markerSensing[i][2] = markerSensing[i][2]/markerSensing[i][0];
+        }
+
         // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
@@ -236,7 +243,7 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setFovAngle(90);
+        this.setFovAngle(60);
         this.setFovDepth(20);
     }
 
