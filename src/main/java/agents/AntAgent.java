@@ -1,28 +1,14 @@
 package agents;
 
-import Enities.Entity;
-import Enities.Marker;
-import Enities.Ray;
+import Enities.*;
+import model.Area;
 import model.MapItem;
 import model.Vector2D;
+import model.Wall;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
-
-/**
- * // extent to shich ants prefer nearby points
- // too high and algorithm will be greedy search
- // too low, will proabbly stagnate
- public double dstPower = 4;
- // how likely each ant is to follow a certain path as previous ants
- // to high and ants will keep walking on the same path
- // too low and it will search too many paths
- public double pheromonePower = 1;
-
- public double pheromoneIntensity = 10; // intensity of trail
-
- public double initPherIntensity = 1; //init pher strength along all paths
- public double pherEvapRate = 0.2; // rate at which phoromones evaporate*/
+import java.util.Random;
 
 public class AntAgent extends AbstractAgent{
     Vector2D pos;
@@ -33,7 +19,8 @@ public class AntAgent extends AbstractAgent{
     double q0 = 0.4; //proportion of occasions when the greedy selection technique is used
     public double pherEvapRateLocal = 0.2; // rate at which pheromones evaporate, rho in formula
     public double pherEvapRateGlobal = 0.2; // rate at which pheromones evaporate, rho in formula
-
+    double explorationFactor = 0.1;
+    double timeStuck = 0;
 
     @Override
     public void addControls() {
@@ -43,40 +30,63 @@ public class AntAgent extends AbstractAgent{
     @Override
     public void changeMovement(ArrayList<MapItem> items) {
         Entity e = entityInstance;
+        Vector2D prevPos = e.getDirection();
 
         setAgentParameters(e);
         double q = Math.random();
 
-        //getDestination(q); // TODO
         double[][] markers = entityInstance.getMarkerSensing();
-        //e.setDirection(getNewDirection(markers));
 
-        double angle;
-        angle = 0;
+        double angle = getNewDirection(markers);
         e.getDirection().pivot(angle);
-        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 20 == 0) {
+        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 5 == 0) {
             dropPheromone();
         }
 
         e.getDirection().normalize();
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
-
     }
 
-    private Vector2D getNewDirection(double[][] markers) {
+    private double getNewDirection(double[][] markers) {
         double maxPheromone = 0;
-        double angle = 1;
+        double angle = 0;
 
         if(markers != null) {
             for (int i = 0; i < markers.length; i++) {
-                if (markers[i][0] > maxPheromone) {
+                if (markers[i][2] > maxPheromone) {
                     angle = markers[i][1];
+                    maxPheromone = markers[i][2];
                 }
             }
         }
-        double newX = Math.cos(angle * entityInstance.getDirection().getX()) - Math.sin(angle * entityInstance.getDirection().getY());
-        double newY = Math.sin(angle * entityInstance.getDirection().getX()) + Math.cos(angle * entityInstance.getDirection().getY());
-        return new Vector2D(newX, newY);
+        if (isStuck()){
+
+            double dir = Vector2D.shortestAngle(entityInstance.getDirection(), entityInstance.getListeningDirection(entityInstance.getMap().getMovingItems(), entityInstance.getMap().getStaticItems()));
+            double maxAngle;
+            double minAngle;
+            if (timeStuck > 20){
+                maxAngle = entityInstance.getFovAngle()*2 * explorationFactor;
+                minAngle = dir;
+            }
+            else if (dir>0){
+                // agent moves to the left
+                maxAngle = -30;
+                minAngle = entityInstance.getFovAngle()*2 * -explorationFactor;
+            }else{
+                maxAngle = entityInstance.getFovAngle()*2 * explorationFactor;
+                minAngle = 30;
+            }
+            angle = (Math.random() * (maxAngle-minAngle)) + minAngle;
+        } else if ((angle == 0 && maxPheromone == 0)) {
+            double maxAngle = entityInstance.getFovAngle() * explorationFactor;
+            double minAngle = entityInstance.getFovAngle() * -explorationFactor;
+            angle = (Math.random() * (maxAngle - minAngle)) + minAngle;
+        }
+
+        //double newX = Math.cos(angle * entityInstance.getDirection().getX()) - Math.sin(angle * entityInstance.getDirection().getY());
+        //double newY = Math.sin(angle * entityInstance.getDirection().getX()) + Math.cos(angle * entityInstance.getDirection().getY());
+
+        return angle; //new Vector2D(newX, newY);
     }
 
 
@@ -101,6 +111,35 @@ public class AntAgent extends AbstractAgent{
         //use formula 1 and 2
     }
 
+    private boolean isStuck(){
+        boolean stuckAtObject = false;
+        for (MapItem item: entityInstance.getMap().getSolidBodies()){
+            if (item instanceof Area){
+                if(((Area) item).isAgentInsideArea(entityInstance)){
+                    stuckAtObject = true;
+                }
+            }
+        }
+        for (MapItem item: entityInstance.getMap().getMovingItems()){
+            if(item instanceof Entity) {
+                if (((Entity) item).getID() != entityInstance.getID()) {
+                    Vector2D[] corners = ((Entity) item).getHitBox().getCornerPoints();
+                    Area tempArea = new Wall(corners[1].getX(), corners[1].getY(), corners[3].getX(), corners[3].getY());
+                    if (tempArea.isAgentInsideArea(entityInstance)) {
+                        stuckAtObject = true;
+                    }
+                }
+            }
+        }
+
+        if (stuckAtObject == true){
+            timeStuck++;
+        }else {
+            timeStuck = 0;
+        }
+        return timeStuck>3;
+    }
+
     private void setAgentParameters(Entity e) {
         e.setPrevPos(e.getPosition());
         pos = e.getPosition();
@@ -108,6 +147,8 @@ public class AntAgent extends AbstractAgent{
         dir = e.getDirection();
         velocity = Entity.baseSpeedGuard;
     }
+
+
 
 
 }
