@@ -1,6 +1,8 @@
 package agents;
 
-import Enities.*;
+import Enities.Entity;
+import Enities.Marker;
+import Enities.Ray;
 import model.Area;
 import model.MapItem;
 import model.Vector2D;
@@ -8,6 +10,22 @@ import model.Wall;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Random;
+
+/**
+ * // extent to shich ants prefer nearby points
+ // too high and algorithm will be greedy search
+ // too low, will probably stagnate
+ public double dstPower = 4;
+ // how likely each ant is to follow a certain path as previous ants
+ // to high and ants will keep walking on the same path
+ // too low and it will search too many paths
+ public double pheromonePower = 1;
+
+ public double pheromoneIntensity = 10; // intensity of trail
+
+ public double initPherIntensity = 1; //init pher strength along all paths
+ public double pherEvapRate = 0.2; // rate at which phoromones evaporate*/
 import java.util.Random;
 
 public class AntAgent extends AbstractAgent{
