@@ -40,7 +40,7 @@ public class AntAgent extends AbstractAgent{
         double angle = getNewDirection(markers);
         e.getDirection().pivot(angle);
         if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 5 == 0) {
-            dropPheromone();
+            entityInstance.placeMarker(0);
         }
 
         e.getDirection().normalize();
@@ -90,27 +90,6 @@ public class AntAgent extends AbstractAgent{
     }
 
 
-    /**
-     * dropping markers after finding new direction
-     */
-    private void dropPheromone() {
-        //use formula 3
-        entityInstance.placeMarker(1);
-        // TODO implement evaporation
-        //pher(i, j) = (1 - pherEvapRateLocal) * pher(i, j)
-    }
-
-
-    private void getDestination(double q) {
-        // instead of this we try marker array
-        if (q <= q0){
-
-        }else{
-
-        }
-        //use formula 1 and 2
-    }
-
     private boolean isStuck(){
         boolean stuckAtObject = false;
         for (MapItem item: entityInstance.getMap().getSolidBodies()){
@@ -147,8 +126,4 @@ public class AntAgent extends AbstractAgent{
         dir = e.getDirection();
         velocity = Entity.baseSpeedGuard;
     }
-
-
-
-
 }
