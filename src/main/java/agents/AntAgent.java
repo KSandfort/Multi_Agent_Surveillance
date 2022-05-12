@@ -65,7 +65,6 @@ public class AntAgent extends AbstractAgent{
         }
         else {
             pheromoneDir = e.getMarkerSensing()[0][1];
-            System.out.println(e.getMarkerSensing()[0][0] + " " + e.getMarkerSensing()[0][1]);
         }
         // Combine angles in a weighted sum
         double randomness = 0.4;
@@ -108,7 +107,7 @@ public class AntAgent extends AbstractAgent{
      */
     private void dropPheromone() {
         //use formula 3
-        entityInstance.placeMarker(1);
+        entityInstance.placeMarker(0);
         // TODO implement evaporation
         //pher(i, j) = (1 - pherEvapRateLocal) * pher(i, j)
     }
