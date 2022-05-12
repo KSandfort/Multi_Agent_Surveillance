@@ -15,10 +15,6 @@ public class AntAgent extends AbstractAgent{
     Vector2D prevPos;
     Vector2D dir;
     double velocity;
-    // TODO, need to choose a good value for q0
-    double q0 = 0.4; //proportion of occasions when the greedy selection technique is used
-    public double pherEvapRateLocal = 0.2; // rate at which pheromones evaporate, rho in formula
-    public double pherEvapRateGlobal = 0.2; // rate at which pheromones evaporate, rho in formula
     double explorationFactor = 0.1;
     double timeStuck = 0;
 
@@ -30,13 +26,9 @@ public class AntAgent extends AbstractAgent{
     @Override
     public void changeMovement(ArrayList<MapItem> items) {
         Entity e = entityInstance;
-        Vector2D prevPos = e.getDirection();
-
         setAgentParameters(e);
-        double q = Math.random();
 
         double[][] markers = entityInstance.getMarkerSensing();
-
         double angle = getNewDirection(markers);
         e.getDirection().pivot(angle);
         if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 5 == 0) {
@@ -59,16 +51,18 @@ public class AntAgent extends AbstractAgent{
                 }
             }
         }
-        if (isStuck()){
 
-            double dir = Vector2D.shortestAngle(entityInstance.getDirection(), entityInstance.getListeningDirection(entityInstance.getMap().getMovingItems(), entityInstance.getMap().getStaticItems()));
+        if (isStuck()){
+            double dirSound = Vector2D.shortestAngle(entityInstance.getDirection(), entityInstance.getListeningDirection(entityInstance.getMap().getMovingItems(), entityInstance.getMap().getStaticItems()));
             double maxAngle;
             double minAngle;
+            // if agent stays stuck, move towards direction without sound
             if (timeStuck > 20){
                 maxAngle = entityInstance.getFovAngle()*2 * explorationFactor;
-                minAngle = dir;
+                minAngle = dirSound;
             }
-            else if (dir>0){
+            // directing agent away from the wall
+            else if (dirSound>0){
                 // agent moves to the left
                 maxAngle = -30;
                 minAngle = entityInstance.getFovAngle()*2 * -explorationFactor;
@@ -83,40 +77,52 @@ public class AntAgent extends AbstractAgent{
             angle = (Math.random() * (maxAngle - minAngle)) + minAngle;
         }
 
-        //double newX = Math.cos(angle * entityInstance.getDirection().getX()) - Math.sin(angle * entityInstance.getDirection().getY());
-        //double newY = Math.sin(angle * entityInstance.getDirection().getX()) + Math.cos(angle * entityInstance.getDirection().getY());
-
-        return angle; //new Vector2D(newX, newY);
+        return angle;
     }
 
 
+    /**
+     * checks if agent is currently stuck at an object or another agent
+     * @return
+     */
     private boolean isStuck(){
-        boolean stuckAtObject = false;
+        if (stuckAtWall() || stuckAtAgent()){
+            timeStuck++;
+        }else {
+            timeStuck = 0;
+        }
+        return timeStuck>3;
+    }
+
+    private boolean stuckAtWall(){
+        boolean stuckAtWall = false;
+        // checks for being stuck at walls
         for (MapItem item: entityInstance.getMap().getSolidBodies()){
             if (item instanceof Area){
                 if(((Area) item).isAgentInsideArea(entityInstance)){
-                    stuckAtObject = true;
+                    stuckAtWall = true;
                 }
             }
         }
+        return stuckAtWall;
+    }
+
+    private boolean stuckAtAgent(){
+        boolean stuckAtAgent = false;
+
+        // checks for being stuck with other agents
         for (MapItem item: entityInstance.getMap().getMovingItems()){
             if(item instanceof Entity) {
                 if (((Entity) item).getID() != entityInstance.getID()) {
                     Vector2D[] corners = ((Entity) item).getHitBox().getCornerPoints();
                     Area tempArea = new Wall(corners[1].getX(), corners[1].getY(), corners[3].getX(), corners[3].getY());
                     if (tempArea.isAgentInsideArea(entityInstance)) {
-                        stuckAtObject = true;
+                        stuckAtAgent = true;
                     }
                 }
             }
         }
-
-        if (stuckAtObject == true){
-            timeStuck++;
-        }else {
-            timeStuck = 0;
-        }
-        return timeStuck>3;
+        return stuckAtAgent;
     }
 
     private void setAgentParameters(Entity e) {
