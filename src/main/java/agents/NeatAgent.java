@@ -4,6 +4,7 @@ import Enities.Entity;
 import model.MapItem;
 import model.Vector2D;
 import model.neural_network.NeuralNetwork;
+import java.util.Arrays;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,20 @@ public class NeatAgent extends AbstractAgent {
         // --- Step 1: Define inputs ---
         double[] input = new double[5];
 
+        input[0] = e.getMarkerSensing()[0][0];
+        input[1] = e.getMarkerSensing()[1][0];
+        input[2] = e.getMarkerSensing()[2][0];
+        input[3] = e.getMarkerSensing()[3][0];
+        input[4] = e.getMarkerSensing()[4][0];
+        input[5] = e.getMarkerSensing()[0][1];
+        input[6] = e.getMarkerSensing()[1][1];
+        input[7] = e.getMarkerSensing()[2][1];
+        input[8] = e.getMarkerSensing()[3][1];
+        input[9] = e.getMarkerSensing()[4][1];
+        input[10] = 0; // TODO: Wall angle sensing
+        input[11] = 0; // TODO: Teammate sensing
+        input[12] = 0; // TODO: Enemy sensing
+
         // --- Step 2: Do the NN magic ---
         double[] output = nn.evaluate(input);
 
@@ -74,6 +89,18 @@ public class NeatAgent extends AbstractAgent {
         // Direction (Turning)
         double angle = 0;
 
+        // Marker placing
+        double[] markers = Arrays.copyOfRange(output, 2, 6);
+        int markerPriority = 0;
+        for (int i = 0; i < markers.length; i++) {
+            if (i > markerPriority) {
+                markerPriority = i;
+            }
+        }
+
+        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 20 == 0) {
+            e.placeMarker(markerPriority);
+        }
 
         e.getDirection().pivot(angle); // Turn
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity))); // Move
