@@ -8,11 +8,12 @@ import model.Vector2D;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * // extent to shich ants prefer nearby points
  // too high and algorithm will be greedy search
- // too low, will proabbly stagnate
+ // too low, will probably stagnate
  public double dstPower = 4;
  // how likely each ant is to follow a certain path as previous ants
  // to high and ants will keep walking on the same path
@@ -28,6 +29,7 @@ public class AntAgent extends AbstractAgent{
     Vector2D pos;
     Vector2D prevPos;
     Vector2D dir;
+    double explorationFactor = 0.2;
     double velocity;
     // TODO, need to choose a good value for q0
     double q0 = 0.4; //proportion of occasions when the greedy selection technique is used
@@ -53,6 +55,27 @@ public class AntAgent extends AbstractAgent{
 
         double angle;
         angle = 0;
+
+        // Define random angle
+        double randomDir = (new Random().nextDouble()*180 - 90)*explorationFactor;
+        // Get avg pheromone angle
+        double pheromoneDir;
+        if (e.getMarkerSensing() == null) {
+            pheromoneDir = 0;
+        }
+        else {
+            pheromoneDir = e.getMarkerSensing()[0][1];
+            System.out.println(e.getMarkerSensing()[0][0] + " " + e.getMarkerSensing()[0][1]);
+        }
+        // Combine angles in a weighted sum
+        double randomness = 0.4;
+        if (pheromoneDir != 0) {
+            angle = (randomDir * randomness) + (pheromoneDir * (1 - randomness));
+        }
+        else {
+            angle = randomDir;
+        }
+
         e.getDirection().pivot(angle);
         if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 20 == 0) {
             dropPheromone();
