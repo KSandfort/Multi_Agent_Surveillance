@@ -28,29 +28,19 @@ public class AntAgent extends AbstractAgent{
         Entity e = entityInstance;
         setAgentParameters(e);
 
-        double[][] markers = entityInstance.getMarkerSensing();
-        double angle = getNewDirection(markers);
+        double angle = getNewDirection();
+
         e.getDirection().pivot(angle);
         if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 5 == 0) {
-            entityInstance.placeMarker(0);
+            e.placeMarker(0);
         }
 
         e.getDirection().normalize();
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
     }
 
-    private double getNewDirection(double[][] markers) {
-        double maxPheromone = 0;
-        double angle = 0;
-
-        if(markers != null) {
-            for (int i = 0; i < markers.length; i++) {
-                if (markers[i][2] > maxPheromone) {
-                    angle = markers[i][1];
-                    maxPheromone = markers[i][2];
-                }
-            }
-        }
+    private double getNewDirection() {
+        double angle = getDirectionWithRandomness();
 
         if (isStuck()){
             double dirSound = Vector2D.shortestAngle(entityInstance.getDirection(), entityInstance.getListeningDirection(entityInstance.getMap().getMovingItems(), entityInstance.getMap().getStaticItems()));
@@ -71,12 +61,11 @@ public class AntAgent extends AbstractAgent{
                 minAngle = 30;
             }
             angle = (Math.random() * (maxAngle-minAngle)) + minAngle;
-        } else if ((angle == 0 && maxPheromone == 0)) {
+        } else if ((angle == 0 && getMaxPheromone(entityInstance.getMarkerSensing()) == 0)) {
             double maxAngle = entityInstance.getFovAngle() * explorationFactor;
             double minAngle = entityInstance.getFovAngle() * -explorationFactor;
             angle = (Math.random() * (maxAngle - minAngle)) + minAngle;
         }
-
         return angle;
     }
 
@@ -123,6 +112,52 @@ public class AntAgent extends AbstractAgent{
             }
         }
         return stuckAtAgent;
+    }
+
+    private double getDirectionWithRandomness(){
+        double angle;
+        // Define random angle
+        double randomDir = (new Random().nextDouble()*180 - 90)*explorationFactor;
+        // Get avg pheromone angle
+        double pheromoneDir = getPheromoneDirection(entityInstance.getMarkerSensing());
+
+        // Combine angles in a weighted sum
+        double randomness = 0.4;
+        if (pheromoneDir != 0) {
+            angle = (randomDir * randomness) + (pheromoneDir * (1 - randomness));
+        }
+        else {
+            angle = randomDir;
+        }
+        return angle;
+    }
+
+    private double getPheromoneDirection(double[][] markers){
+        double angle = 0;
+        double maxPheromone = 0;
+        if(markers != null) {
+            for (int i = 0; i < markers.length; i++) {
+                if (markers[i][2] > maxPheromone) {
+                    angle = markers[i][1];
+                    maxPheromone = markers[i][2];
+                }
+            }
+        }
+        return angle;
+    }
+
+    private double getMaxPheromone(double[][] markers){
+        double angle = 0;
+        double maxPheromone = 0;
+        if(markers != null) {
+            for (int i = 0; i < markers.length; i++) {
+                if (markers[i][2] > maxPheromone) {
+                    angle = markers[i][1];
+                    maxPheromone = markers[i][2];
+                }
+            }
+        }
+        return maxPheromone;
     }
 
     private void setAgentParameters(Entity e) {
