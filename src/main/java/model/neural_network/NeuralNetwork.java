@@ -54,7 +54,7 @@ public class NeuralNetwork {
                 addConnection(i,o,null,0);
             }
         }
-        //mutate();
+        mutate();
     }
 
     //returns a copy of the network
@@ -552,13 +552,28 @@ public class NeuralNetwork {
         {
             FileWriter fw = new FileWriter(file);
             String text = "f=" + fitness;//first line is fitness
-            text += "\nmn=" + maxNeurons;//second line is maxNeurons
             //next print connections
             for(NNConnection c : connections)
             {
                 text += "\nc=" + c.toString();
             }
-            text += "\n-----------------------";//add separation between connection lists
+
+            fw.write(text);
+            fw.flush();
+            fw.close();
+        }
+        catch (IOException exception)
+        {
+            System.out.println("Error writing to file:\n" + exception);
+        }
+    }
+
+    public void saveGlobals(String file)
+    {
+        try
+        {
+            FileWriter fw = new FileWriter(file);
+            String text = "\nmn=" + maxNeurons;//first line is maxNeurons
             //print stored connections
             for(NNConnection c : newConnections)
             {
@@ -567,8 +582,12 @@ public class NeuralNetwork {
             text += "\n-----------------------";//add separation between connection lists and hashmap
             for(Integer i : newNodes.keySet())
             {
-                text += "\nnn=" + newNodes.get(i);
+                text += "\nnn=" + i + "," + newNodes.get(i);
             }
+
+            fw.write(text);
+            fw.flush();
+            fw.close();
         }
         catch (IOException exception)
         {
@@ -576,10 +595,8 @@ public class NeuralNetwork {
         }
     }
 
-    public static NeuralNetwork readNetwork(String file)
+    public static void readGlobals(String file)
     {
-        NeuralNetwork nn = new NeuralNetwork();
-
         try
         {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -587,19 +604,9 @@ public class NeuralNetwork {
 
             while ((record = br.readLine()) != null)
             {
-                if( record.startsWith("f="))//read fitness from file
-                {
-                    nn.setFitness(Double.parseDouble(record.substring(2)));
-                }
-
                 if( record.startsWith("mn="))//read maxneurons from file
                 {
                     NeuralNetwork.maxNeurons = Integer.parseInt(record.substring(3));
-                }
-
-                if(record.startsWith("c="))//add connections to arrays
-                {
-                    nn.connections.add(NNConnection.readConnectionFromString(record.substring(2)));
                 }
 
                 if(record.startsWith("nc="))//add connections to arrays
@@ -623,6 +630,36 @@ public class NeuralNetwork {
                     NeuralNetwork.newNodes.put(key,value);
                 }
             }
+            br.close();
+        }
+        catch (IOException exception)
+        {
+            System.out.println("Error reading file:\n" + exception);
+        }
+    }
+
+    public static NeuralNetwork readNetwork(String file)
+    {
+        NeuralNetwork nn = new NeuralNetwork();
+
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String record = "";
+
+            while ((record = br.readLine()) != null)
+            {
+                if( record.startsWith("f="))//read fitness from file
+                {
+                    nn.setFitness(Double.parseDouble(record.substring(2)));
+                }
+
+                if(record.startsWith("c="))//add connections to arrays
+                {
+                    nn.connections.add(NNConnection.readConnectionFromString(record.substring(2)));
+                }
+            }
+            br.close();
         }
         catch (IOException exception)
         {
