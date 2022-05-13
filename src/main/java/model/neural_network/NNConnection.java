@@ -74,8 +74,30 @@ public class NNConnection {
         return new NNConnection(in,out,weight,enabled,innovationCount);
     }
 
+    public static NNConnection readConnectionFromString(String input)
+    {
+        String[] dataSubstrings = new String[5];
+        char[] text = input.toCharArray();
+        int prevIndex = 1;
+        int subStringIndex = 0;
+        for (int i = 1; i < text.length; i++)
+        {
+            if(text[i] == ',' || text[i] == '|')
+            {
+                dataSubstrings[subStringIndex++] = input.substring(prevIndex,i);
+                prevIndex = i+1;
+            }
+        }
+        int in = Integer.parseInt(dataSubstrings[0]);
+        int out = Integer.parseInt(dataSubstrings[1]);
+        double w = Double.parseDouble(dataSubstrings[2].substring(2));
+        boolean e = Boolean.parseBoolean(dataSubstrings[3].substring(2));
+        int i = Integer.parseInt(dataSubstrings[4].substring(2));
+        return new NNConnection(in,out,w,e,i);
+    }
+
     @Override
     public String toString() {
-        return "|"+ getIn() +"->" + getOut() +", w=" +getWeight()+", e="+isEnabled()+", i="+getInnovationCount()+"| ";
+        return "|"+ getIn() +"," + getOut() +",w=" +getWeight()+",e="+isEnabled()+",i="+getInnovationCount()+"|";
     }
 }
