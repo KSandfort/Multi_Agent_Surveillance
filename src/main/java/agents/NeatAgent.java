@@ -6,22 +6,28 @@ import model.MapItem;
 import model.Vector2D;
 import model.neural_network.NeuralNetwork;
 import java.util.Arrays;
-
 import java.util.ArrayList;
-import java.util.Random;
 
+/**
+ *
+ */
 public class NeatAgent extends AbstractAgent {
 
+    // Variables
     NeuralNetwork nn;
 
+    /**
+     * Constructor
+     */
     public NeatAgent() {
         super();
         nn = new NeuralNetwork();
+        nn.init();
     }
 
     @Override
     public void addControls() {
-        nn.init();
+
     }
 
     @Override
@@ -54,12 +60,14 @@ public class NeatAgent extends AbstractAgent {
                 4: place marker 3
                 5: place marker 4
                 6: place marker 5
-
          */
+
         Entity e = entityInstance;
 
         // --- Step 1: Define inputs ---
-        double[] input = new double[5];
+        double[] input = new double[17];
+        double[] entitySensing = entitySensing();
+        double[] wallSensing = wallSensing();
 
         input[0] = e.getMarkerSensing()[0][0];
         input[1] = e.getMarkerSensing()[1][0];
@@ -71,13 +79,14 @@ public class NeatAgent extends AbstractAgent {
         input[7] = e.getMarkerSensing()[2][1];
         input[8] = e.getMarkerSensing()[3][1];
         input[9] = e.getMarkerSensing()[4][1];
-
-        double[] wallSensing = wallSensing();
-
         input[10] = wallSensing[0];
         input[11] = wallSensing[1];
+        input[12] = 0; // entitySensing[0];
+        input[13] = 0; // entitySensing[2];
+        input[14] = 0; // entitySensing[1];
+        input[15] = 0; // entitySensing[3];
 
-        input[12] = 0;
+        input[16] = Vector2D.shortestAngle(e.getDirection(), e.getListeningDirection(e.getMap().getMovingItems(), e.getMap().getStaticItems()));
 
         // --- Step 2: Do the NN magic ---
         double[] output = nn.evaluate(input);
@@ -96,6 +105,7 @@ public class NeatAgent extends AbstractAgent {
 
         // Direction (Turning)
         double angle = 0;
+        // TODO: implement turning
 
         // Marker placing
         double[] markers = Arrays.copyOfRange(output, 2, 6);
@@ -111,7 +121,16 @@ public class NeatAgent extends AbstractAgent {
         }
 
         e.getDirection().pivot(angle); // Turn
+        e.getDirection().normalize();
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity))); // Move
+
+        // Print the output array
+        System.out.println("--- OUTPUT: ---");
+        for (int i = 0; i < output.length; i++) {
+            System.out.println(i + " output: "+ output[i]);
+        }
+
+        System.out.println(nn);
     }
 
     /**
