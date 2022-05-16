@@ -1,12 +1,14 @@
 package agents;
 
 import Enities.Entity;
+import Enities.Ray;
 import model.MapItem;
 import model.Vector2D;
 import model.neural_network.NeuralNetwork;
 import java.util.Arrays;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class NeatAgent extends AbstractAgent {
 
@@ -36,10 +38,13 @@ public class NeatAgent extends AbstractAgent {
                 7: marker type 3 angle
                 8: marker type 4 angle
                 9: marker type 5 angle
-                10: wall angle
-                11: team-mate vision count
-                12: enemy vision count
-                13:
+                10: wall side (avg)
+                11: wall distance (avg)
+                12: team-mate vision count
+                13: team-mate vision angle
+                14: enemy vision count
+                15: enemy vision angle
+                16: sound volume
 
             Output array:
                 0: speed (0 to 1/3: stand, 1/3 to 2/3: walk, 2/3 to 1: sprint)
@@ -66,9 +71,13 @@ public class NeatAgent extends AbstractAgent {
         input[7] = e.getMarkerSensing()[2][1];
         input[8] = e.getMarkerSensing()[3][1];
         input[9] = e.getMarkerSensing()[4][1];
-        input[10] = 0; // TODO: Wall angle sensing
-        input[11] = 0; // TODO: Teammate sensing
-        input[12] = 0; // TODO: Enemy sensing
+
+        double[] wallSensing = wallSensing();
+
+        input[10] = wallSensing[0];
+        input[11] = wallSensing[1];
+
+        input[12] = 0;
 
         // --- Step 2: Do the NN magic ---
         double[] output = nn.evaluate(input);
@@ -77,11 +86,10 @@ public class NeatAgent extends AbstractAgent {
 
         // Velocity
         double velocity = 0;
-        if (output[0] > (double) 1/3) {
-            if (output[0] > (double) 2/3) {
+        if (output[0] > (double) 1 / 3) {
+            if (output[0] > (double) 2 / 3) {
                 velocity = Entity.sprintSpeedGuard; //TODO: make dynamic for guard or agent
-            }
-            else {
+            } else {
                 velocity = Entity.baseSpeedGuard;
             }
         }
@@ -104,5 +112,59 @@ public class NeatAgent extends AbstractAgent {
 
         e.getDirection().pivot(angle); // Turn
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity))); // Move
+    }
+
+    /**
+     *
+     * @return
+     */
+    private double[] wallSensing() {
+        ArrayList<Ray> vision = this.entityInstance.FOV();
+
+        double averageDistance = 0;
+        // Average distance to the left of the bug, average distance to the right of the bug
+        double leftSideAverage = 0;
+        double rightSideAverage = 0;
+        double i = 0;
+        for (Ray ray : vision) {
+            Vector2D rayVector = ray.getDirection();
+            averageDistance += Vector2D.length(rayVector);
+
+            // Not sure if this is needed...? It gives the corner-vision rays more weight than middle rays
+            double sideScaler = Math.abs((i / (vision.size() / 2.0)) - 1);
+
+            if (i < vision.size() / 2.0)
+                leftSideAverage += Vector2D.length(rayVector) * sideScaler;
+            else if (i > vision.size() / 2.0)
+                rightSideAverage += Vector2D.length(rayVector) * sideScaler;
+            i += 1;
+        }
+        return new double[]{averageDistance, rightSideAverage - leftSideAverage};
+    }
+
+    /**
+     *
+     * @return
+     */
+    private double[] entitySensing() {
+        double mateCount = 0;
+        double enemyCount = 0;
+        double mateDirectionSum = 0;
+        double enemyDirectionSum = 0;
+        Entity e = this.entityInstance;
+        ArrayList<Entity> detectedEntities = e.getDetectedEntities();
+        if (detectedEntities.size() != 0){
+            for (Entity otherEntity : detectedEntities) {
+                if (otherEntity.isIntruder() == e.isIntruder()) { // If in own team
+                    mateCount++;
+                    mateDirectionSum += Vector2D.shortestAngle(otherEntity.getPosition(), e.getPosition());
+                }
+                else { // if in opposite team
+                    enemyCount++;
+                    enemyDirectionSum += Vector2D.shortestAngle(otherEntity.getPosition(), e.getPosition());
+                }
+            }
+        }
+        return new double[]{mateCount, enemyCount, mateDirectionSum/mateCount, enemyDirectionSum/enemyCount};
     }
 }
