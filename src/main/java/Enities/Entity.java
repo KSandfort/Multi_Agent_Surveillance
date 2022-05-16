@@ -57,6 +57,7 @@ public abstract class Entity extends MapItem {
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
         entityKnowledge.setPositionOffset(getPosition());
+        markerSensing = new double[5][2];
     }
 
     /**
@@ -331,7 +332,7 @@ public abstract class Entity extends MapItem {
      * @param items list of static items of the current map
      * @return
      */
-    public double calculateAudibleFactor(Entity entity, ArrayList<MapItem> items){
+    public double calculateAudibleFactor(Entity entity, ArrayList<MapItem> items) {
         double dist = Vector2D.distance(this.getPosition(), entity.getPosition());
         double speedVolume = 1; double yellVolume = 1; double areaVolume = 1;
         Area curArea = entity.getCurrentArea(items);
