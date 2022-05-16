@@ -81,10 +81,10 @@ public class NeatAgent extends AbstractAgent {
         input[9] = e.getMarkerSensing()[4][1];
         input[10] = wallSensing[0];
         input[11] = wallSensing[1];
-        input[12] = 0; // entitySensing[0];
-        input[13] = 0; // entitySensing[2];
-        input[14] = 0; // entitySensing[1];
-        input[15] = 0; // entitySensing[3];
+        input[12] = entitySensing[0];
+        input[13] = entitySensing[2];
+        input[14] = entitySensing[1];
+        input[15] = entitySensing[3];
 
         input[16] = Vector2D.shortestAngle(e.getDirection(), e.getListeningDirection(e.getMap().getMovingItems(), e.getMap().getStaticItems()));
 
@@ -123,14 +123,6 @@ public class NeatAgent extends AbstractAgent {
         e.getDirection().pivot(angle); // Turn
         e.getDirection().normalize();
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity))); // Move
-
-        // Print the output array
-        System.out.println("--- OUTPUT: ---");
-        for (int i = 0; i < output.length; i++) {
-            System.out.println(i + " output: "+ output[i]);
-        }
-
-        System.out.println(nn);
     }
 
     /**
@@ -184,6 +176,16 @@ public class NeatAgent extends AbstractAgent {
                 }
             }
         }
-        return new double[]{mateCount, enemyCount, mateDirectionSum/mateCount, enemyDirectionSum/enemyCount};
+        double mateDirection = 0;
+        double enemyDirection = 0;
+
+        if (mateCount != 0) {
+            mateDirection = mateDirectionSum / mateCount;
+        }
+        if (enemyCount != 0) {
+            enemyDirection = enemyDirectionSum / enemyCount;
+        }
+
+        return new double[]{mateCount, enemyCount, mateDirection, enemyDirection};
     }
 }
