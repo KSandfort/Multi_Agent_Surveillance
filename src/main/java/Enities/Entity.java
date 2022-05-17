@@ -392,15 +392,11 @@ public abstract class Entity extends MapItem {
         ArrayList<MapItem> entities = this.getMap().getMovingItems();
         ArrayList<Ray> fov = FOV();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
-        for (MapItem mapItem :entities){
-            Entity entity = (Entity) mapItem;
-            for (Ray ray : fov) {
-                for (Entity e: ray.getDetectedEntities(this)){
-                    if (!Ray.contains(detectedEntities, e)){
-                        detectedEntities.add(e);
-                    }
+        for (Ray ray : fov) {
+            for (Entity e: ray.getDetectedEntities(this)){
+                if (!Ray.contains(detectedEntities, e)){
+                    detectedEntities.add(e);
                 }
-
             }
         }
         return detectedEntities;

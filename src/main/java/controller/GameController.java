@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class GameController {
 
     // Variables
+    private int currentStep;
     private GameMap map;
     private SimulationGUI simulationGUI;
     private int hasWonGame = 0; // 0 for game is not won, 1 for Guards have won, 2 for Intruders have won
@@ -162,9 +163,11 @@ public class GameController {
         previousCoveragePercent = coveragePercent;
 
         // Print to terminal if wanted
-        if (terminalFeedback && simulationGUI.getCurrentStep() % 100 == 0) {
-            System.out.println("Simulation is running at step: " + simulationGUI.getCurrentStep());
+        if (terminalFeedback && getCurrentStep() % 1 == 0) {
+            System.out.println("Simulation is running at step: " + getCurrentStep());
         }
+
+        currentStep++;
     }
 
     /**
