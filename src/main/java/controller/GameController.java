@@ -52,6 +52,9 @@ public class GameController {
     public static int intruderAgentType = 0;
     // 0 = random, 1 = remote, ...
 
+    public double fitnessGuards = 0;
+    public double fitnessIntruders = 0;
+
     private ArrayList<Double> explorationOverTime = new ArrayList<>();
 
     /**
@@ -124,6 +127,9 @@ public class GameController {
 
             step++;
         }
+
+        controller.fitnessGuards = controller.getFitnessGuards();
+        controller.fitnessIntruders = controller.getFitnessIntruders();
 
         return controller;
     }
