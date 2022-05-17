@@ -49,6 +49,9 @@ public class GameController {
     public static boolean terminalFeedback = false; // Displays information about the simulation in the terminal
     // 0 = random, 1 = remote, ...
 
+    public double fitnessGuards = 0;
+    public double fitnessIntruders = 0;
+
     private ArrayList<Double> explorationOverTime = new ArrayList<>();
 
     /**
@@ -126,6 +129,9 @@ public class GameController {
 
             step++;
         }
+
+        controller.fitnessGuards = controller.getFitnessGuards();
+        controller.fitnessIntruders = controller.getFitnessIntruders();
 
         return controller;
     }
@@ -391,6 +397,8 @@ public class GameController {
         double fitness, fitnessWon, fitnessAvgDistance, fitnessMinDistance;
 
         double mapNormalizationFactor = Vector2D.distance(new Vector2D(0, 0), new Vector2D(map.getSizeX(), map.getSizeY()));
+
+        System.out.println(mapNormalizationFactor);
 
         fitnessAvgDistance = 0;
         fitnessMinDistance = mapNormalizationFactor;
