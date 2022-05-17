@@ -19,7 +19,7 @@ public class RuleBasedGuardAgent extends AbstractAgent{
 
     @Override
     public void changeMovement(ArrayList<MapItem> items) {
-        Entity e = entityInstance;
+        Entity e = this.entityInstance;
         double velocity = 0;
         if (e.isIntruder()) {
             velocity = Entity.baseSpeedIntruder;

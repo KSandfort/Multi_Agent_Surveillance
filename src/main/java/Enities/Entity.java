@@ -4,6 +4,7 @@ import agents.*;
 import lombok.Getter;
 import lombok.Setter;
 import model.*;
+import utils.DefaultValues;
 import java.util.ArrayList;
 
 
@@ -16,15 +17,16 @@ public abstract class Entity extends MapItem {
 
     // Variables
     private EntityKnowledge entityKnowledge;
-    private double fovAngle = 30;
-    private double fovDepth = 20;
+    private double fovAngle = DefaultValues.agentFovAngle;
+    private double fovDepth = DefaultValues.agentFovDepth;
+
     protected Vector2D direction;
-    private boolean isIntruder;
     private boolean isSprinting = false;
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
-
+    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
+    private double distanceWalked = 0;
     protected int ID;
     HitBox hitBox;
     protected AbstractAgent agent;
@@ -33,13 +35,13 @@ public abstract class Entity extends MapItem {
                                         // column 0 = amount, column 1 = avg angle from direction (positive = right)
     public double stamina = maxStamina;
     // Static
-    public static double maxStamina = 100;
-    public static double sprintConsumption = 8;
-    public static double staminaRegeneration = 5;
-    public static double baseSpeedGuard = 0.2;
-    public static double sprintSpeedGuard = 0.4;
-    public static double baseSpeedIntruder = 0.2;
-    public static double sprintSpeedIntruder = 0.4;
+    public static double maxStamina             = DefaultValues.agentMaxStamina;
+    public static double sprintConsumption      = DefaultValues.agentSprintConsumption;
+    public static double staminaRegeneration    = DefaultValues.agentStaminaRegeneration;
+    public static double baseSpeedGuard         = DefaultValues.agentBaseSpeedGuard;
+    public static double sprintSpeedGuard       = DefaultValues.agentSprintSpeedGuard;
+    public static double baseSpeedIntruder      = DefaultValues.agentBaseSpeedIntruder;
+    public static double sprintSpeedIntruder    = DefaultValues.agentSprintSpeedIntruder;
 
     /**
      * Constructor
@@ -49,7 +51,7 @@ public abstract class Entity extends MapItem {
      */
     public Entity(double x, double y, GameMap currentMap) {
         setMap(currentMap);
-        entityKnowledge = new EntityKnowledge(currentMap, !isIntruder);
+        entityKnowledge = new EntityKnowledge(currentMap, !isIntruder());
         this.setPosition(new Vector2D(x,y));
         this.direction = Vector2D.randomVector();
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));
@@ -58,6 +60,7 @@ public abstract class Entity extends MapItem {
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
         entityKnowledge.setPositionOffset(getPosition());
+        markerSensing = new double[5][2];
     }
 
     /**
@@ -76,6 +79,8 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
+
+        distanceWalked += Vector2D.distance(position, previousPos);
 
         if (isSprinting){
             if (stamina <= 0){
@@ -105,7 +110,7 @@ public abstract class Entity extends MapItem {
         markerSensing = new double[5][2];
         for (Marker marker : map.getMarkers()) {
             // check if it is in fov range and of its own team
-            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder == marker.isFromIntruder()) {
+            if (Vector2D.distance(this.getPosition(), marker.getPosition()) <= fovDepth && this.isIntruder() == marker.isFromIntruder()) {
                 // check if it is in fov angel
                 Vector2D markerDir = Vector2D.subtract(marker.getPosition(), this.getPosition());
                 double angle = Vector2D.shortestAngle(this.getDirection(), markerDir); // angle between entity direction and marker
@@ -126,7 +131,7 @@ public abstract class Entity extends MapItem {
                     if (lineIsFree) { // This means that a marker can be seen from the field of view
                         int previousCount = (int) markerSensing[marker.getMarkerType()][0];
                         double previousAngle = markerSensing[marker.getMarkerType()][1];
-                        markerSensing[marker.getMarkerType()][0] = previousCount + 1;
+                        markerSensing[marker.getMarkerType()][0] = previousCount + marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
                         markerSensing[marker.getMarkerType()][1] = previousAngle + (angle / markerSensing[marker.getMarkerType()][0]);
                     }
                 }
@@ -136,7 +141,7 @@ public abstract class Entity extends MapItem {
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
-        return (getCurrentArea(items) == null);
+        return (getCurrentArea(items) != null);
     }
 
     /**
@@ -145,14 +150,50 @@ public abstract class Entity extends MapItem {
      * @return the area that the entity is currently residing in, null if it is not residing in a special srea type
      */
     public Area getCurrentArea(ArrayList<MapItem> items){
+        Area insideArea = null;
+
+        boolean isInSpawn = false;
+
         for(MapItem item : items) {
-            if (((Area) item).isAgentInsideArea(this)){
+            if (item == this)
+                continue;
+
+            // Agent/Agent collision (only if the agent has already left spawn)
+            if (item instanceof Guard || item instanceof Intruder) {
+                if (!leftSpawn)
+                    continue;
+
+                Vector2D[] corners = ((Entity)item).hitBox.getCornerPoints();
+
+                Area tempArea = new Wall(corners[1].getX(), corners[1].getY(), corners[3].getX(), corners[3].getY());
+                if (tempArea.isAgentInsideArea(this)) {
+                    tempArea.onAgentCollision(this);
+                    insideArea = tempArea;
+                }
+            }
+
+            // Agent/Area collision
+            else if (((Area) item).isAgentInsideArea(this)){
+
+                if (item instanceof SpawnArea)
+                    isInSpawn = true;
+
                 Area areaItem = (Area) item;
                 areaItem.onAgentCollision(this);
-                return areaItem;
+                insideArea = areaItem;
             }
         }
-        return null;
+
+        if (!isInSpawn && !leftSpawn)
+            leftSpawn = true;
+
+        return insideArea;
+    }
+
+    public void onAgentCollision(Entity entity)
+    {
+        Vector2D pos = entity.getPosition();
+        entity.setPosition(entity.getPrevPos());
     }
 
     /**
@@ -184,6 +225,16 @@ public abstract class Entity extends MapItem {
                 agent.setEntityInstance(this);
                 break;
             }
+            case 4: { // Ant Agent
+                agent = new AntAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
+            case 5: { // NEAT Agent
+                agent = new NeatAgent();
+                agent.setEntityInstance(this);
+                break;
+            }
             default: {
                 System.out.println("No agent defined!");
             }
@@ -191,10 +242,14 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setFovAngle(30);
+        this.setFovAngle(90);
         this.setFovDepth(20);
     }
 
+    /**
+     * Defines if an entity is an intruder or a guard, if the return value is false.
+     * @return
+     */
     public abstract boolean isIntruder();
 
     public Vector2D [] getCornerPoints(){
@@ -208,7 +263,7 @@ public abstract class Entity extends MapItem {
     public ArrayList<Ray> FOV() {
         ArrayList<Ray> rays = new ArrayList<>();
         // Create all the rays
-        for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 1){
+        for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 3){
             Vector2D direction = new Vector2D(
                     getDirection().getX()*Math.cos(Math.toRadians(i)) - getDirection().getY()*Math.sin(Math.toRadians(i)),
                     getDirection().getX()*Math.sin(Math.toRadians(i)) + getDirection().getY()*Math.cos(Math.toRadians(i))
@@ -218,6 +273,9 @@ public abstract class Entity extends MapItem {
             double minDistance = fovDepth;
             // Scan all fixed items on the map
             for (MapItem item: map.getSolidBodies()) {
+                if (item instanceof Entity) {
+                    continue;
+                }
                 Area area = (Area) item;
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){
@@ -244,7 +302,7 @@ public abstract class Entity extends MapItem {
         double rayLength = Vector2D.length(ray.getDirection());
         int rayLengthInt = (int) Math.floor(rayLength);
         int detailLevel = 2; // Increase to 2 or more, in case there are too many empty spots in the vision
-        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel - detailLevel; i++) {
+        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
             Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
             entityKnowledge.setCell(1, currentTarget);
         }
@@ -259,14 +317,17 @@ public abstract class Entity extends MapItem {
      * @param type
      */
     public void placeMarker(int type) {
-        Marker marker = new Marker(type, this.getPosition(), isIntruder);
+        Marker marker = new Marker(type, this.getPosition(), isIntruder());
         map.addToMap(marker);
     }
 
+    /**
+     * Checks the winning condition for the game
+     * @return
+     */
     public boolean checkWinningCondition(){
         return false;
     }
-
 
     /**
      * entities are audible based on their speed and the proximity to other entities
@@ -275,7 +336,7 @@ public abstract class Entity extends MapItem {
      * @param items list of static items of the current map
      * @return
      */
-    public double calculateAudibleFactor(Entity entity, ArrayList<MapItem> items){
+    public double calculateAudibleFactor(Entity entity, ArrayList<MapItem> items) {
         double dist = Vector2D.distance(this.getPosition(), entity.getPosition());
         double speedVolume = 1; double yellVolume = 1; double areaVolume = 1;
         Area curArea = entity.getCurrentArea(items);
@@ -357,7 +418,7 @@ public abstract class Entity extends MapItem {
 
     @Override
     public boolean isSolidBody() {
-        return false;
+        return true;
     }
 
     @Override

@@ -5,6 +5,7 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import utils.DefaultValues;
 
 import java.util.ArrayList;
 
@@ -17,12 +18,12 @@ public class Door extends Wall {
 
     public Door(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setAreaSpeedFactor(0.7);
+        setAreaSpeedFactor(DefaultValues.areaDoorSpeedFactor);
     }
 
     public Door(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setAreaSpeedFactor(0.7);
+        setAreaSpeedFactor(DefaultValues.areaDoorSpeedFactor);
     }
 
     @Override

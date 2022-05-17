@@ -24,10 +24,33 @@ public class Intruder extends Entity{
     Vector2D targetAreaDirection;
     boolean isDetected = false;
 
+    boolean wasInsideTarget = false;
+    static int intruderTargetCount = 0;
+
+
+
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
+
         intruderCount++;
         this.setID(intruderCount);
+    }
+
+    public Vector2D calculateTargetDirection() {
+        Vector2D targetVector = null;
+
+        TargetArea target = map.getTargetArea();
+
+        if (target != null) {
+
+            double targetCenterX = (target.getCornerPoints()[1].getX() + target.getCornerPoints()[3].getX())/2;
+            double targetCenterY = (target.getCornerPoints()[1].getY() + target.getCornerPoints()[3].getY())/2;
+
+            targetVector = new Vector2D(targetCenterX - getPosition().getX(), targetCenterY - getPosition().getY());
+            targetVector.normalize();
+        }
+
+        return targetVector;
     }
 
 
@@ -91,7 +114,18 @@ public class Intruder extends Entity{
      * @return true if the intruder is alive and in the target area
      */
     public boolean checkWinningCondition(){
-        return isAlive() && isInTargetArea();
+        boolean win = isAlive() && isInTargetArea();
+        if (map.getGameController().isAllIntrudersMode()) {
+            if (win && !wasInsideTarget) {
+                intruderTargetCount++;
+                wasInsideTarget = true;
+            }
+
+            // return true only if all intruders have visited the target area
+            return (win && intruderTargetCount >= intruderCount);
+        } else {
+            return isAlive() && isInTargetArea();
+        }
     }
 
     /**
@@ -102,6 +136,7 @@ public class Intruder extends Entity{
         for (MapItem target : areas){
             if (target instanceof TargetArea){
                 if(((TargetArea) target).isInsideArea(getPosition())){
+                    System.out.println("si");
                     return true;
                 }
             }
