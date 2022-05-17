@@ -29,6 +29,8 @@ public class Guard extends Entity {
     static int guardCount = 0;
     private boolean isYelling = false;
     private double yellingFactor = 10;
+    public static double killDistance = 10;
+    public int killCount = 0;
 
     /**
      * Constructor
@@ -59,6 +61,12 @@ public class Guard extends Entity {
         return detected;
     }
 
+    public void kill(Intruder intruder){
+        if (Vector2D.distance(getPosition(), intruder.getPosition()) < killDistance){
+            intruder.kill();
+            killCount++;
+        }
+    }
     /**
      * @return false if any intruder is still alive, true otherwise
      */

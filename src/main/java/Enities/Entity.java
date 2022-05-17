@@ -412,7 +412,7 @@ public abstract class Entity extends MapItem {
     }
 
     public void setSprinting(boolean sprint){
-        if (sprint && stamina <= 0){
+        if (sprint == true && stamina <= 0){
             isSprinting = false;
         }
         else{
