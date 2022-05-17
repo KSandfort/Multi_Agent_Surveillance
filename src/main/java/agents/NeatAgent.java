@@ -95,17 +95,14 @@ public class NeatAgent extends AbstractAgent {
 
         // Velocity
         double velocity = 0;
-        if (output[0] > (double) 1 / 3) {
-            if (output[0] > (double) 2 / 3) {
-                velocity = Entity.sprintSpeedGuard; //TODO: make dynamic for guard or agent
-            } else {
-                velocity = Entity.baseSpeedGuard;
-            }
+        if (output[0] > 0.5) {
+            velocity = sprintVelocity;
+        } else {
+            velocity = baseVelocity;
         }
 
         // Direction (Turning)
-        double angle = 0;
-        // TODO: implement turning
+        double angle = (output[1] - 0.5) * 2 * maxAngle;
 
         // Marker placing
         double[] markers = Arrays.copyOfRange(output, 2, 6);
