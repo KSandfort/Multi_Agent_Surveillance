@@ -32,6 +32,7 @@ public class NNConnection {
         innovationCount = NNConnection.globalInnovation;
         NNConnection.globalInnovation++;
     }
+
     public int getIn() {
         return in;
     }
