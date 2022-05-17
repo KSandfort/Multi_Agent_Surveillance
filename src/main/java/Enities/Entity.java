@@ -59,7 +59,7 @@ public abstract class Entity extends MapItem {
         Vector2D c4 = Vector2D.add(getPosition(), new Vector2D(radius,radius));
         hitBox = new HitBox(c1,c2,c3,c4);
         entityKnowledge.setPositionOffset(getPosition());
-        markerSensing = new double[5][2];
+        markerSensing = new double[5][3];
     }
 
     /**
@@ -128,20 +128,20 @@ public abstract class Entity extends MapItem {
                     if (lineIsFree) { // This means that a marker can be seen from the field of view
                         int previousCount = (int) markerSensing[marker.getMarkerType()][0];
                         double previousAngle = markerSensing[marker.getMarkerType()][1];
-                        markerSensing[marker.getMarkerType()][0] = previousCount + 1; //marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
+                        markerSensing[marker.getMarkerType()][0] = previousCount + 1;
                         markerSensing[marker.getMarkerType()][1] = previousAngle + angle;
-                        markerSensing[marker.getMarkerType()][2] = markerSensing[marker.getMarkerType()][2] + marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition());
+                        markerSensing[marker.getMarkerType()][2] = markerSensing[marker.getMarkerType()][2] + (marker.getIntensity()/Vector2D.distance(getPosition(), marker.getPosition()));
                     }
                 }
             }
         }
         // calculate average angle and intensity
         for (int i =0; i<markerSensing.length;i++){
-            markerSensing[i][1] = markerSensing[i][1]/markerSensing[i][0];
-            markerSensing[i][2] = markerSensing[i][2]/markerSensing[i][0];
+            if(markerSensing[i][0] != 0){
+                markerSensing[i][1] = markerSensing[i][1]/markerSensing[i][0];
+                markerSensing[i][2] = markerSensing[i][2]/markerSensing[i][0];
+            }
         }
-
-        // System.out.println("Marker: " + markerSensing[0][0] + " " + markerSensing[0][1]);
     }
 
     public boolean isInSpecialArea(ArrayList<MapItem> items){
@@ -246,8 +246,8 @@ public abstract class Entity extends MapItem {
     }
 
     public void resetEntityParam(){
-        this.setFovAngle(90);
-        this.setFovDepth(20);
+        this.setFovAngle(DefaultValues.agentFovAngle);
+        this.setFovDepth(DefaultValues.agentFovDepth);
     }
 
     /**

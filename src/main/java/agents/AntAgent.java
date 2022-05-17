@@ -1,32 +1,14 @@
 package agents;
 
 import Enities.Entity;
-import Enities.Marker;
-import Enities.Ray;
 import model.Area;
 import model.MapItem;
 import model.Vector2D;
 import model.Wall;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * // extent to shich ants prefer nearby points
- // too high and algorithm will be greedy search
- // too low, will probably stagnate
- public double dstPower = 4;
- // how likely each ant is to follow a certain path as previous ants
- // to high and ants will keep walking on the same path
- // too low and it will search too many paths
- public double pheromonePower = 1;
-
- public double pheromoneIntensity = 10; // intensity of trail
-
- public double initPherIntensity = 1; //init pher strength along all paths
- public double pherEvapRate = 0.2; // rate at which phoromones evaporate*/
-import java.util.Random;
 
 public class AntAgent extends AbstractAgent{
     Vector2D pos;
@@ -49,7 +31,7 @@ public class AntAgent extends AbstractAgent{
         double angle = getNewDirection();
 
         e.getDirection().pivot(angle);
-        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 5 == 0) {
+        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 10 == 0) {
             e.placeMarker(0);
         }
 
@@ -70,13 +52,13 @@ public class AntAgent extends AbstractAgent{
                 minAngle = dirSound;
             }
             // directing agent away from the wall
-            else if (dirSound>0){
+            else if (dirSound<0){
                 // agent moves to the left
-                maxAngle = -30;
+                maxAngle = 30;
                 minAngle = entityInstance.getFovAngle()*2 * -explorationFactor;
             }else{
                 maxAngle = entityInstance.getFovAngle()*2 * explorationFactor;
-                minAngle = 30;
+                minAngle = -30;
             }
             angle = (Math.random() * (maxAngle-minAngle)) + minAngle;
         } else if ((angle == 0 && getMaxPheromone(entityInstance.getMarkerSensing()) == 0)) {
@@ -165,12 +147,10 @@ public class AntAgent extends AbstractAgent{
     }
 
     private double getMaxPheromone(double[][] markers){
-        double angle = 0;
         double maxPheromone = 0;
         if(markers != null) {
             for (int i = 0; i < markers.length; i++) {
                 if (markers[i][2] > maxPheromone) {
-                    angle = markers[i][1];
                     maxPheromone = markers[i][2];
                 }
             }
