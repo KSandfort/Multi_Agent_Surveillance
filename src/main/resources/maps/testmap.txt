@@ -1,11 +1,11 @@
 name = test scenario
 gameFile = /Users/joel/Documents/gamefile.txt
-gameMode = 0
+gameMode = 1
 height = 80
 width = 120
 scaling = 0.1
 numGuards = 3
-numIntruders = 0
+numIntruders = 3
 baseSpeedIntruder = 14.0
 sprintSpeedIntruder = 20.0
 baseSpeedGuard = 14.0
