@@ -31,13 +31,23 @@ public class GenePool
         maxFitness = 0;
     }
 
-    public void init()
+    public void init(boolean readFromFile)
     {
+        if(readFromFile)
+            NeuralNetwork.readGlobals("fromPreviousSim.txt");
+
         while(pool.size() < poolSize)
         {
+            NeuralNetwork init;
             //make new child
-            NeuralNetwork init = new NeuralNetwork();
-            init.init();
+            if(!readFromFile) {
+                init = new NeuralNetwork();
+                init.init();
+            }
+            else{
+                init = NeuralNetwork.readNetwork("bestNetwork.txt");
+                init.mutate();
+            }
             pool.add(init);
         }
     }
