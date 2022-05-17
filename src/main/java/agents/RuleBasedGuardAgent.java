@@ -1,6 +1,8 @@
 package agents;
 
 import Enities.Entity;
+import Enities.Guard;
+import Enities.Intruder;
 import model.MapItem;
 import model.Vector2D;
 
@@ -37,6 +39,9 @@ public class RuleBasedGuardAgent extends AbstractAgent{
         else {
             for (Entity otherEntity : detectedEntities) {
                 if (otherEntity.isIntruder()) {
+                    if (e instanceof Guard){
+                        ((Guard) e).kill((Intruder) otherEntity);
+                    }
                     Vector2D intruderDirection = Vector2D.subtract(otherEntity.getPosition(), e.getPosition());
                     e.setDirection(intruderDirection);
                     e.getDirection().normalize();

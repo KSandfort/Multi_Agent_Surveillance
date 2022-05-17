@@ -135,7 +135,16 @@ public class GameController {
      */
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
-
+        ArrayList<Intruder> toKill = new ArrayList<>();
+        for(MapItem item : items) {
+            item.update(map.getStaticItems());
+            if (item instanceof Intruder){
+                if (!((Intruder) item).isAlive()){
+                    toKill.add((Intruder)item);
+                }
+            }
+        }
+        items.removeAll(toKill);
         // use static & dynamic objects when updating
         ArrayList<MapItem> itemsToCheck = map.getStaticItems();
         itemsToCheck.addAll(items);

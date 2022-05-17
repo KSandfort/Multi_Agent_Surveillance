@@ -64,13 +64,6 @@ public class Intruder extends Entity{
     }
 
     public void kill(){
-        GameMap map = this.getMap();
-        for (MapItem mapItem : map.getMovingItems()){
-            Entity e = (Entity) mapItem;
-            if (e.getID() == this.getID()){
-                map.getMovingItems().remove(mapItem);
-            }
-        }
         isAlive = false;
     }
 
@@ -114,7 +107,7 @@ public class Intruder extends Entity{
             components.addAll(hitBox.getComponents());
             return components;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
