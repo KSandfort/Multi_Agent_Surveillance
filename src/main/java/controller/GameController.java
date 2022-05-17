@@ -12,6 +12,9 @@ import model.MapItem;
 import utils.MapReader;
 
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
@@ -26,6 +29,10 @@ public class GameController {
     private GameMap map;
     private SimulationGUI simulationGUI;
     private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
+
+    // whether all intruders need to have visited the target area to win
+    private boolean allIntrudersMode = true;
+
     private boolean[][] coverageMatrix; // 0 = not explored, 1 = explored
     private double maximumCoveragePossible; // how much of the map can actually be explored by the agents
     private double coveragePercent; // Coverage value in percent (from 0 to 1)
@@ -207,39 +214,44 @@ public class GameController {
      * in gameMode 1, the intruders win, if all of them reach the target area
      * the guards win, if they manage to capture the intruders before they win
      */
-    public void updateWinningCondition(){
-        if (simulationGUI != null){
+    public void updateWinningCondition() {
+        if (simulationGUI != null) {
             gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
         }
 
         if (coveragePercent == previousCoveragePercent) {
             noCoverageProgressSince++;
-        }
-        else {
+        } else {
             noCoverageProgressSince = 0;
         }
 
-        if(gameMode == 0) {
-            if (noCoverageProgressSince >= coverageThreshold){
+        if (gameMode == 0) {
+            if (noCoverageProgressSince >= coverageThreshold) {
                 hasWonGame = 1;
             }
-        } else{
+        } else {
             ArrayList<MapItem> entities = map.getMovingItems();
-            for (MapItem entity : entities){
+            for (MapItem entity : entities) {
                 Entity currentEntity = (Entity) entity;
-                if (currentEntity instanceof Guard){
-                    if(currentEntity.checkWinningCondition()){
-                        hasWonGame = 2; return;
+                if (currentEntity instanceof Guard) {
+                    if (currentEntity.checkWinningCondition()) {
+                        hasWonGame = 1;
+                        break;
                     }
-                } if (currentEntity instanceof Intruder){
-                    if(! currentEntity.checkWinningCondition()){
-                        hasWonGame = 0; return;
+                }
+                if (currentEntity instanceof Intruder) {
+                    if (currentEntity.checkWinningCondition()) {
+                        hasWonGame = 2;
+                        break;
                     }
                 }
             }
-            hasWonGame = 1;
         }
-        if (hasWonGame == 1) {
+
+        if (hasWonGame == 0)
+            return;
+
+        if (gameMode == 0) {
             System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
 
             // Write exploration over time to file
@@ -257,13 +269,19 @@ public class GameController {
                     writer.write(i++ + " " + percent + System.lineSeparator());
                 }
                 writer.close();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Write error");
             }
-            if (simulationGUI != null){
-                simulationGUI.pauseSimulation();
-            }
+
+        } else if (gameMode == 1) {
+            String winner = (hasWonGame == 1 ? "Guards" : "Intruders");
+            System.out.println(winner + " won!");
+
+
         }
+
+        if (simulationGUI != null)
+            simulationGUI.pauseSimulation();
     }
 
     /**
@@ -307,7 +325,6 @@ public class GameController {
             changingNodes.getChildren().addAll(m.getComponents());
         }
     }
-
 
     public static void main(String [] args){
         // Pass Integer.MAX_VALUE as the "steps" parameter for indefinite simulation (terminates upon game over)

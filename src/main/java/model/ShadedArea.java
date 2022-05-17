@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import utils.DefaultValues;
 
 import java.util.ArrayList;
 
@@ -17,20 +18,20 @@ public class ShadedArea extends Area{
 
     public ShadedArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setAreaFovAngle(getAreaFovAngle() * 0.5);
-        setAreaFovDepth(getAreaFovDepth() * 0.5);
+        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
+        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
     }
 
     public ShadedArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setAreaFovAngle(getAreaFovAngle() * 0.5);
-        setAreaFovDepth(getAreaFovDepth() * 0.5);
+        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
+        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
     }
 
     public ShadedArea(Vector2D[] pos) throws Exception {
         super(pos);
-        setAreaFovAngle(getAreaFovAngle() * 0.5);
-        setAreaFovDepth(getAreaFovDepth() * 0.5);
+        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
+        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
     }
 
     public void onAgentCollision(Entity entity) {
