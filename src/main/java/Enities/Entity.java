@@ -302,7 +302,7 @@ public abstract class Entity extends MapItem {
         double rayLength = Vector2D.length(ray.getDirection());
         int rayLengthInt = (int) Math.floor(rayLength);
         int detailLevel = 2; // Increase to 2 or more, in case there are too many empty spots in the vision
-        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel - detailLevel; i++) {
+        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
             Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
             entityKnowledge.setCell(1, currentTarget);
         }
