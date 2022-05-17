@@ -39,8 +39,8 @@ public class RuleBasedGuardAgent extends AbstractAgent{
         else {
             for (Entity otherEntity : detectedEntities) {
                 if (otherEntity.isIntruder()) {
-                    if (Vector2D.distance(e.getPosition(),otherEntity.getPosition()) < Guard.killDistance){
-                        ((Intruder) otherEntity).kill();
+                    if (e instanceof Guard){
+                        ((Guard) e).kill((Intruder) otherEntity);
                     }
                     Vector2D intruderDirection = Vector2D.subtract(otherEntity.getPosition(), e.getPosition());
                     e.setDirection(intruderDirection);

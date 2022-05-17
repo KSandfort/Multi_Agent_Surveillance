@@ -41,7 +41,6 @@ public class Intruder extends Entity{
     }
 
     public void kill(){
-        GameMap map = this.getMap();
         isAlive = false;
     }
 
