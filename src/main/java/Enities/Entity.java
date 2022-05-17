@@ -26,6 +26,7 @@ public abstract class Entity extends MapItem {
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
     private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
+    private double distanceWalked = 0;
     protected int ID;
     HitBox hitBox;
     protected AbstractAgent agent;
@@ -77,6 +78,8 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
+
+        distanceWalked += Vector2D.distance(position, previousPos);
 
         if (isSprinting){
             if (stamina <= 0){

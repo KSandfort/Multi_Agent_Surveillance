@@ -89,6 +89,9 @@ public class GameMap {
      * @param item item to put on the map
      */
     public void addToMap(MapItem item){
+        if (item instanceof TargetArea)
+            targetArea = (TargetArea) item;
+
         if (item instanceof Marker) {
             markers.add((Marker) item);
         }

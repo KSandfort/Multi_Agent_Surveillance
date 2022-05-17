@@ -68,6 +68,7 @@ public class StartLayout extends BorderPane {
             FXCollections.observableArrayList(
                     "Random Agent",
                     "Remote Agent",
+                    "Bug Agent",
                     "Ant Agent",
                     "NEAT Agent"
             );
@@ -240,6 +241,9 @@ public class StartLayout extends BorderPane {
             }
             if (intruderAgentBox.getValue().equals("Remote Agent")) {
                 GameController.intruderAgentType = 1;
+            }
+            if (intruderAgentBox.getValue().equals("Bug Agent")) {
+                GameController.intruderAgentType = 2;
             }
             if (intruderAgentBox.getValue().equals("Ant Agent")) {
                 GameController.intruderAgentType = 4;

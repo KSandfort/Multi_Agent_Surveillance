@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import model.GameMap;
 import model.MapItem;
+import model.Vector2D;
 import utils.MapReader;
 
 import java.io.FileWriter;
@@ -28,7 +29,7 @@ public class GameController {
     // Variables
     private GameMap map;
     private SimulationGUI simulationGUI;
-    private int hasWonGame = 0; // 0 for game is not won, 1 for Intruders have won, 2 for guards have won
+    private int hasWonGame = 0; // 0 for game is not won, 1 for Guards have won, 2 for Intruders have won
 
     // whether all intruders need to have visited the target area to win
     private boolean allIntrudersMode = true;
@@ -280,6 +281,11 @@ public class GameController {
 
         }
 
+
+        System.out.println(getFitnessGuards());
+        System.out.println(getFitnessIntruders());
+
+
         if (simulationGUI != null)
             simulationGUI.pauseSimulation();
     }
@@ -310,6 +316,100 @@ public class GameController {
         layout.getCanvas().getChildren().add(changingNodes);
     }
 
+
+    /**
+     * Computes the fitness for training guard agents with the following factors:
+     *
+     *  - Exploration coverage
+     *  - Distance paced by the guards
+     *  - Number of intruders caught
+     *  - Game won
+     *
+     *  All these attributes are condensed into a [0, 1] fitness score.
+     *
+     * @return [0, 1] value for the fitness
+     */
+    public double getFitnessGuards() {
+        double fitness;
+
+        double fitnessDistanceWalked = 0;
+        for (MapItem item : map.getMovingItems()) {
+            if (item instanceof Guard) {
+                fitnessDistanceWalked += ((Guard) item).getDistanceWalked();
+            }
+        }
+        // get average distance paced
+        fitnessDistanceWalked /= amountOfGuards;
+        fitnessDistanceWalked /= map.getSizeX() + map.getSizeY();
+
+        fitnessDistanceWalked = Math.max(fitnessDistanceWalked, 1);
+
+        double fitnessWon = (hasWonGame == 1 ? 1 : 0);
+
+        // Add & normalize the fitness attributes
+        fitness = (
+            getCoveragePercent() +
+            fitnessDistanceWalked +
+            fitnessWon
+        ) / 3;
+
+        return fitness;
+    }
+
+
+    /**
+     * Computes the fitness for training intruder agents with the following factors:
+     *
+     *  - Average distance (of all intruders) to the target
+     *  - Minimum distance to the target (whichever intruder is closest)
+     *  - Game won
+     *
+     *  All these attributes are condensed into a [0, 1] fitness score.
+     *
+     * @return [0, 1] value for the fitness
+     */
+    public double getFitnessIntruders() {
+        double fitness, fitnessWon, fitnessAvgDistance, fitnessMinDistance;
+
+        double mapNormalizationFactor = Vector2D.distance(new Vector2D(0, 0), new Vector2D(map.getSizeX(), map.getSizeY()));
+
+        fitnessAvgDistance = 0;
+        fitnessMinDistance = mapNormalizationFactor;
+
+        for (MapItem item : map.getMovingItems()) {
+            if (item instanceof Intruder) {
+                double distance = Vector2D.distance(item.getPosition(),map.getTargetArea().getPosition());
+                fitnessMinDistance = Math.min(fitnessMinDistance, distance);
+
+                fitnessAvgDistance += distance;
+            }
+        }
+        fitnessAvgDistance /= amountOfIntruders;
+
+        fitnessAvgDistance = 1 - (fitnessAvgDistance /mapNormalizationFactor);
+        fitnessMinDistance = 1 - (fitnessMinDistance / mapNormalizationFactor);
+
+        fitnessWon = (hasWonGame == 2 ? 1 : 0);
+
+        // Add & normalize the fitness attributes
+        fitness = (
+            fitnessAvgDistance +
+            fitnessMinDistance +
+            fitnessWon
+        ) / 3;
+
+        return fitness;
+    }
+
+
+    public double getFitness(int agent_type) {
+        if (agent_type == 0)    // guard
+            return getFitnessGuards();
+        if (agent_type == 1)
+            return getFitnessIntruders();
+        return 0;
+    }
+
     /**
      * Draws all the moving items of the map.
      * @param layout
@@ -325,6 +425,8 @@ public class GameController {
             changingNodes.getChildren().addAll(m.getComponents());
         }
     }
+
+
 
     public static void main(String [] args){
         // Pass Integer.MAX_VALUE as the "steps" parameter for indefinite simulation (terminates upon game over)
