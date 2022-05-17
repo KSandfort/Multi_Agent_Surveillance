@@ -76,6 +76,7 @@ public abstract class Entity extends MapItem {
      */
     public void update(ArrayList<MapItem> items) {
         Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
+
         if (this.agent != null) {
             agent.changeMovement(items);
         }
@@ -93,6 +94,7 @@ public abstract class Entity extends MapItem {
         else if (!isSprinting && stamina < maxStamina){
             stamina += staminaRegeneration;
         }
+
 
         // Check collision detection
         if(!isInSpecialArea(items)){
@@ -194,6 +196,13 @@ public abstract class Entity extends MapItem {
     {
         Vector2D pos = entity.getPosition();
         entity.setPosition(entity.getPrevPos());
+    }
+
+
+    public void setPosition(Vector2D pos) {
+        if (getPosition() != null)
+            prevPos = new Vector2D(getPosition().getX(), getPosition().getY());
+        position = new Vector2D(pos.getX(), pos.getY());
     }
 
     /**
