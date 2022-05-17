@@ -66,6 +66,7 @@ public class GameMap {
         addToMap(new WallWithWindow(40, 20, 10, 40, true));
         addToMap(new Teleport(30, 60, 40, 50, 90, 40, 5,50));
         addToMap(new ShadedArea(75,10,90,50));
+        addToMap(new TargetArea(40,70,70,80));
     }
 
     /**
