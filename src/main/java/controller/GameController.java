@@ -77,6 +77,11 @@ public class GameController {
                 MapGenerator mapGenerator = new MapGenerator(map);
                 mapGenerator.generateMap();
             }
+            case 3: { // Direct map file
+                map = MapReader.readMapFromFile(SimulationGUI.bypassPath, this);
+
+                break;
+            }
             default: {
                 System.out.println("ERROR! No map generated!");
                 System.exit(1);
@@ -215,7 +220,12 @@ public class GameController {
      */
     public void updateWinningCondition() {
         if (simulationGUI != null) {
-            gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
+            if (simulationGUI.getStartLayout() != null) {
+                gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
+            }
+            else {
+                gameMode = 1;
+            }
         }
 
         if (coveragePercent == previousCoveragePercent) {

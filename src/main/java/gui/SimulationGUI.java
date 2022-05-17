@@ -34,6 +34,9 @@ public class SimulationGUI extends Application {
 
     public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
     public static double SCALING_FACTOR = 10;
+    public static boolean bypassMenu = false;
+    public static String bypassPath;
+    public static boolean autoStart = false; // Starts automatically if true
 
     public void launchGUI() {
         String[] args = new String[0];
@@ -42,7 +45,12 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        startTitleScreenGUI(primaryStage);
+        if (!bypassMenu) {
+            startTitleScreenGUI(primaryStage);
+        }
+        else {
+            startBypass(primaryStage);
+        }
     }
 
     /**
@@ -56,6 +64,10 @@ public class SimulationGUI extends Application {
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
+    }
+
+    public void startBypass(Stage primaryStage) {
+        startSimulationGUI(primaryStage, 5, 5, 3);
     }
 
     /**
@@ -83,6 +95,9 @@ public class SimulationGUI extends Application {
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
+        if (autoStart) {
+            this.startSimulation();
+        }
         primaryStage.show();
     }
 
