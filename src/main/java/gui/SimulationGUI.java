@@ -78,19 +78,12 @@ public class SimulationGUI extends Application {
         this.controller.drawFixedItems(mainLayout);
 
         // Timeline Animation
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
-    }
-
-    /**
-     * Updates the simulation.
-     */
-    public void update() {
-        updateGUI1step();
     }
 
     /**
@@ -107,6 +100,8 @@ public class SimulationGUI extends Application {
      * Starts the simulation.
      */
     public void startSimulation() {
+        if (GameController.terminalFeedback)
+            System.out.println("Simulation is starting!");
         this.timeline.play();
     }
 
@@ -114,6 +109,8 @@ public class SimulationGUI extends Application {
      * Stops the simulation.
      */
     public void stopSimulation() {
+        if (GameController.terminalFeedback)
+            System.out.println("Simulation ended at step: " + getCurrentStep());
         this.timeline.stop();
     }
 

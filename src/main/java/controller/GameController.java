@@ -11,11 +11,7 @@ import model.GameMap;
 import model.MapItem;
 import model.Vector2D;
 import utils.MapReader;
-
 import java.io.FileWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
@@ -33,7 +29,6 @@ public class GameController {
 
     // whether all intruders need to have visited the target area to win
     private boolean allIntrudersMode = true;
-
     private boolean[][] coverageMatrix; // 0 = not explored, 1 = explored
     private double maximumCoveragePossible; // how much of the map can actually be explored by the agents
     private double coveragePercent; // Coverage value in percent (from 0 to 1)
@@ -45,11 +40,13 @@ public class GameController {
     private Group notChangingNodes; // Walls etc.
     private Group changingNodes; // Entities, markers, etc.
     private int gameMode;
+
     // Static
     public static int amountOfGuards;
     public static int amountOfIntruders;
     public static int guardAgentType = 0;
     public static int intruderAgentType = 0;
+    public static boolean terminalFeedback = false; // Displays information about the simulation in the terminal
     // 0 = random, 1 = remote, ...
 
     public double fitnessGuards = 0;
@@ -153,7 +150,7 @@ public class GameController {
             // TODO update marker intensity
                 if(marker.getIntensity() < 0.0001){
                     toRemove.add(marker);
-                }else{
+                } else {
                     marker.setIntensity(marker.getIntensity() * 0.95);
                 }
         }
@@ -164,10 +161,11 @@ public class GameController {
         explorationOverTime.add(coveragePercent);
 
         previousCoveragePercent = coveragePercent;
-    }
 
-    public void updateAgentTargetDirection(){
-
+        // Print to terminal if wanted
+        if (terminalFeedback && simulationGUI.getCurrentStep() % 100 == 0) {
+            System.out.println("Simulation is running at step: " + simulationGUI.getCurrentStep());
+        }
     }
 
     /**
@@ -259,7 +257,8 @@ public class GameController {
             return;
 
         if (gameMode == 0) {
-            System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
+            if (terminalFeedback)
+                System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
 
             // Write exploration over time to file
             try {
@@ -287,13 +286,14 @@ public class GameController {
 
         }
 
-
-        System.out.println(getFitnessGuards());
-        System.out.println(getFitnessIntruders());
+        if (terminalFeedback) {
+            System.out.println("Fitness Guards:    " + getFitnessGuards());
+            System.out.println("Fitness Intruders: " + getFitnessIntruders());
+        }
 
 
         if (simulationGUI != null)
-            simulationGUI.pauseSimulation();
+            simulationGUI.stopSimulation();
     }
 
     /**
@@ -392,7 +392,7 @@ public class GameController {
         }
         fitnessAvgDistance /= amountOfIntruders;
 
-        fitnessAvgDistance = 1 - (fitnessAvgDistance /mapNormalizationFactor);
+        fitnessAvgDistance = 1 - (fitnessAvgDistance / mapNormalizationFactor);
         fitnessMinDistance = 1 - (fitnessMinDistance / mapNormalizationFactor);
 
         fitnessWon = (hasWonGame == 2 ? 1 : 0);
