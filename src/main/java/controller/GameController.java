@@ -124,10 +124,16 @@ public class GameController {
      */
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
-
+        ArrayList<Intruder> toKill = new ArrayList<>();
         for(MapItem item : items) {
             item.update(map.getStaticItems());
+            if (item instanceof Intruder){
+                if (!((Intruder) item).isAlive()){
+                    toKill.add((Intruder)item);
+                }
+            }
         }
+        items.removeAll(toKill);
         updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
 
         explorationOverTime.add(coveragePercent);

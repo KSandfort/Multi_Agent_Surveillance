@@ -49,8 +49,8 @@ public class RuleBasedGuardAgent extends AbstractAgent{
                     if (e.isSprinting()){
                         velocity = Entity.sprintSpeedGuard;
                     }
-                    e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
                 }
+                e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
             }
         }
     }
