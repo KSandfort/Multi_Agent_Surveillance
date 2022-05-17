@@ -379,6 +379,8 @@ public class GameController {
 
         double mapNormalizationFactor = Vector2D.distance(new Vector2D(0, 0), new Vector2D(map.getSizeX(), map.getSizeY()));
 
+        System.out.println(mapNormalizationFactor);
+
         fitnessAvgDistance = 0;
         fitnessMinDistance = mapNormalizationFactor;
 

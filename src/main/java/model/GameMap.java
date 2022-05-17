@@ -251,7 +251,7 @@ public class GameMap {
 
                     boolean emptySpace = true;
                     for(MapItem item : itemsHere) {
-                        if (item.isSolidBody())
+                        if (!(item instanceof Door) && item.isSolidBody())
                             emptySpace = false;
                     }
 
