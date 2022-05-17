@@ -34,6 +34,9 @@ public class SimulationGUI extends Application {
 
     public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
     public static double SCALING_FACTOR = 10;
+    public static boolean bypassMenu = false;
+    public static String bypassPath;
+    public static boolean autoStart = false; // Starts automatically if true
 
     public void launchGUI() {
         String[] args = new String[0];
@@ -42,7 +45,12 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        startTitleScreenGUI(primaryStage);
+        if (!bypassMenu) {
+            startTitleScreenGUI(primaryStage);
+        }
+        else {
+            startBypass(primaryStage);
+        }
     }
 
     /**
@@ -56,6 +64,10 @@ public class SimulationGUI extends Application {
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
         primaryStage.show();
+    }
+
+    public void startBypass(Stage primaryStage) {
+        startSimulationGUI(primaryStage, 5, 5, 3);
     }
 
     /**
@@ -78,19 +90,15 @@ public class SimulationGUI extends Application {
         this.controller.drawFixedItems(mainLayout);
 
         // Timeline Animation
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
+        if (autoStart) {
+            this.startSimulation();
+        }
         primaryStage.show();
-    }
-
-    /**
-     * Updates the simulation.
-     */
-    public void update() {
-        updateGUI1step();
     }
 
     /**
@@ -107,6 +115,8 @@ public class SimulationGUI extends Application {
      * Starts the simulation.
      */
     public void startSimulation() {
+        if (GameController.terminalFeedback)
+            System.out.println("Simulation is starting!");
         this.timeline.play();
     }
 
@@ -114,6 +124,8 @@ public class SimulationGUI extends Application {
      * Stops the simulation.
      */
     public void stopSimulation() {
+        if (GameController.terminalFeedback)
+            System.out.println("Simulation ended at step: " + getCurrentStep());
         this.timeline.stop();
     }
 
