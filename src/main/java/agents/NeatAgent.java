@@ -14,15 +14,22 @@ import java.util.ArrayList;
 public class NeatAgent extends AbstractAgent {
 
     // Variables
-    NeuralNetwork nn;
+    static NeuralNetwork nn = null;
 
     /**
      * Constructor
      */
     public NeatAgent() {
         super();
-        nn = new NeuralNetwork();
-        nn.init();
+        if(nn == null){
+            nn = new NeuralNetwork();
+            nn.init();
+        }
+
+    }
+
+    public static void setNn(NeuralNetwork nn) {
+        NeatAgent.nn = nn;
     }
 
     @Override
@@ -113,7 +120,7 @@ public class NeatAgent extends AbstractAgent {
             }
         }
 
-        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 20 == 0) {
+        if (e.getMap().getGameController().getCurrentStep() % 20 == 0) {
             e.placeMarker(markerPriority);
         }
 
