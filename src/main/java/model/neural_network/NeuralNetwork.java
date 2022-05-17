@@ -13,20 +13,20 @@ public class NeuralNetwork {
     final static double c3 =1;
 
     //mutation probabilities
-    final static double disabledChance = 0.75;//chance that a disabled gene is inherited
-    final double wMutationSelectionP = 0.25;//chance a network is selected to mutate the weights
-    final double wMutationP = 0.8;//chance for each weight to be changed
-    final double wResetP = 0.9;//chance that the value of a weight is reset instead of just changed
-    final double wActivationP = 0.25;//chance that the value of a weight is reset instead of just changed
-    final double addNodeP = 0.03;//chance that a node is added to the network
-    final double addConnP = 1.0;//chance that a connection is added to the network
+    final static double disabledChance = 0.75;  // Chance that a disabled gene is inherited
+    final double wMutationSelectionP = 0.25;    // Chance a network is selected to mutate the weights
+    final double wMutationP = 0.8;              // Chance for each weight to be changed
+    final double wResetP = 0.9;                 // Chance that the value of a weight is reset instead of just changed
+    final double wActivationP = 0.25;           // Chance that the value of a weight is reset instead of just changed
+    final double addNodeP = 0.03;               // Chance that a node is added to the network
+    final double addConnP = 1.0;                // Chance that a connection is added to the network
     final double maxTryCount = 10;
     private List<NNConnection> connections;
     double fitness;
 
     //hardcode these variables because its easier this way
-    public static int inputNum = 2 + 1;//including bias node
-    public static int outputNum = 1;//number of outputs
+    public static int inputNum = 17 + 1; //including bias node
+    public static int outputNum = 7; //number of outputs
     public static int maxNeurons = inputNum + outputNum + 1;//total possible number of neurons
 
     private static List<NNConnection> newConnections = new ArrayList<>();//the new connections of the new generation
