@@ -10,25 +10,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-/**
- * // extent to shich ants prefer nearby points
- // too high and algorithm will be greedy search
- // too low, will probably stagnate
- public double dstPower = 4;
- // how likely each ant is to follow a certain path as previous ants
- // to high and ants will keep walking on the same path
- // too low and it will search too many paths
- public double pheromonePower = 1;
-
- public double pheromoneIntensity = 10; // intensity of trail
-
- public double initPherIntensity = 1; //init pher strength along all paths
- public double pherEvapRate = 0.2; // rate at which phoromones evaporate*/
 public class AntAgent extends AbstractAgent{
     Vector2D pos;
     Vector2D prevPos;
     Vector2D dir;
-    double explorationFactor = 0.2;
     double velocity;
     double explorationFactor = 0.1;
     double timeStuck = 0;
@@ -45,28 +30,6 @@ public class AntAgent extends AbstractAgent{
 
         double angle = getNewDirection();
 
-        double angle;
-        angle = 0;
-
-        // Define random angle
-        double randomDir = (new Random().nextDouble()*180 - 90)*explorationFactor;
-        // Get avg pheromone angle
-        double pheromoneDir;
-        if (e.getMarkerSensing() == null) {
-            pheromoneDir = 0;
-        }
-        else {
-            pheromoneDir = e.getMarkerSensing()[0][1];
-        }
-        // Combine angles in a weighted sum
-        double randomness = 0.4;
-        if (pheromoneDir != 0) {
-            angle = (randomDir * randomness) + (pheromoneDir * (1 - randomness));
-        }
-        else {
-            angle = randomDir;
-        }
-      
         e.getDirection().pivot(angle);
         if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 10 == 0) {
             e.placeMarker(0);
@@ -123,12 +86,6 @@ public class AntAgent extends AbstractAgent{
             timeStuck = 0;
         }
         return timeStuck>3;
-
-    private void dropPheromone() {
-        //use formula 3
-        entityInstance.placeMarker(0);
-        // TODO implement evaporation
-        //pher(i, j) = (1 - pherEvapRateLocal) * pher(i, j)
     }
 
     private boolean stuckAtWall(){
