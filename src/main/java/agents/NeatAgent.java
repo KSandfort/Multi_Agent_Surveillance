@@ -74,7 +74,7 @@ public class NeatAgent extends AbstractAgent {
         // --- Step 1: Define inputs ---
         double[] input = new double[17];
         double[] entitySensing = entitySensing();
-        double[] wallSensing = wallSensing();
+        double[] wallSensing = wallSensing();//this boi is a problem
 
         input[0] = e.getMarkerSensing()[0][0];
         input[1] = e.getMarkerSensing()[1][0];
@@ -93,7 +93,7 @@ public class NeatAgent extends AbstractAgent {
         input[14] = entitySensing[1];
         input[15] = entitySensing[3];
 
-        input[16] = Vector2D.shortestAngle(e.getDirection(), e.getListeningDirection(e.getMap().getMovingItems(), e.getMap().getStaticItems()));
+        input[16] = Vector2D.shortestAngle(e.getDirection(), e.getListeningDirection(e.getMap().getMovingItems(), e.getMap().getStaticItems()));//this one is a problem sometimes
 
         // --- Step 2: Do the NN magic ---
         double[] output = nn.evaluate(input);

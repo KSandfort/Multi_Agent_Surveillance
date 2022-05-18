@@ -233,8 +233,8 @@ public class  GenePool
     private double runSim(NeuralNetwork nn)
     {
         NeatAgent.setNn(nn);//set neural network to be used by the agent
-        GameController.guardAgentType = 5;//use the neat agent
-        GameController.intruderAgentType = 0;
+        GameController.guardAgentType = NNTraining.guardType;//use the neat agent
+        GameController.intruderAgentType = NNTraining.intruderType;
         GameController.terminalFeedback = false;
         SimulationGUI.bypassPath = "src/main/resources/maps/testmap.txt";
         GameController result = GameController.simulate(maxSteps,3,3,3,1);
