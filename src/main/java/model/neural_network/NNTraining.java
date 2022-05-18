@@ -7,6 +7,7 @@ public class NNTraining {
     final static int generations = 1000;
     final static public int guardType = 5;
     final static public int intruderType = 0;
+    final static boolean trainGuard = true;
 
     public static void main(String[] args) {
         NNTraining nnt = new NNTraining();
