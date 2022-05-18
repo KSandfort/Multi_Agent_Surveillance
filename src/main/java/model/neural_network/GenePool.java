@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class GenePool
+public class  GenePool
 {
     final double distanceThreshold = 2.0;
     final double crossoverChance = 0.75;

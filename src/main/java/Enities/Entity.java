@@ -26,6 +26,7 @@ public abstract class Entity extends MapItem {
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
     private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
+    private double distanceWalked = 0;
     protected int ID;
     HitBox hitBox;
     protected AbstractAgent agent;
@@ -78,6 +79,8 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
+
+        distanceWalked += Vector2D.distance(position, previousPos);
 
         if (isSprinting){
             if (stamina <= 0){
@@ -306,7 +309,7 @@ public abstract class Entity extends MapItem {
         double rayLength = Vector2D.length(ray.getDirection());
         int rayLengthInt = (int) Math.floor(rayLength);
         int detailLevel = 2; // Increase to 2 or more, in case there are too many empty spots in the vision
-        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel - detailLevel; i++) {
+        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
             Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
             entityKnowledge.setCell(1, currentTarget);
         }
@@ -411,7 +414,7 @@ public abstract class Entity extends MapItem {
     }
 
     public void setSprinting(boolean sprint){
-        if (sprint && stamina <= 0){
+        if (sprint == true && stamina <= 0){
             isSprinting = false;
         }
         else{

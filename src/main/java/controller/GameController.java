@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import model.GameMap;
 import model.MapItem;
+import model.Vector2D;
 import utils.MapReader;
-
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,7 +32,6 @@ public class GameController {
 
     // whether all intruders need to have visited the target area to win
     private boolean allIntrudersMode = true;
-
     private boolean[][] coverageMatrix; // 0 = not explored, 1 = explored
     private double maximumCoveragePossible; // how much of the map can actually be explored by the agents
     private double coveragePercent; // Coverage value in percent (from 0 to 1)
@@ -44,12 +43,17 @@ public class GameController {
     private Group notChangingNodes; // Walls etc.
     private Group changingNodes; // Entities, markers, etc.
     private int gameMode;
+
     // Static
     public static int amountOfGuards;
     public static int amountOfIntruders;
     public static int guardAgentType = 0;
     public static int intruderAgentType = 0;
+    public static boolean terminalFeedback = false; // Displays information about the simulation in the terminal
     // 0 = random, 1 = remote, ...
+
+    public double fitnessGuards = 0;
+    public double fitnessIntruders = 0;
 
     private ArrayList<Double> explorationOverTime = new ArrayList<>();
 
@@ -78,6 +82,11 @@ public class GameController {
                 map.setSizeY(80);
                 MapGenerator mapGenerator = new MapGenerator(map);
                 mapGenerator.generateMap();
+            }
+            case 3: { // Direct map file
+                map = MapReader.readMapFromFile(SimulationGUI.bypassPath, this);
+
+                break;
             }
             default: {
                 System.out.println("ERROR! No map generated!");
@@ -124,6 +133,9 @@ public class GameController {
             step++;
         }
 
+        controller.fitnessGuards = controller.getFitnessGuards();
+        controller.fitnessIntruders = controller.getFitnessIntruders();
+
         return controller;
     }
 
@@ -132,7 +144,16 @@ public class GameController {
      */
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
-
+        ArrayList<Intruder> toKill = new ArrayList<>();
+        for(MapItem item : items) {
+            item.update(map.getStaticItems());
+            if (item instanceof Intruder){
+                if (!((Intruder) item).isAlive()){
+                    toKill.add((Intruder)item);
+                }
+            }
+        }
+        items.removeAll(toKill);
         // use static & dynamic objects when updating
         ArrayList<MapItem> itemsToCheck = map.getStaticItems();
         itemsToCheck.addAll(items);
@@ -146,7 +167,7 @@ public class GameController {
             // TODO update marker intensity
                 if(marker.getIntensity() < 0.0001){
                     toRemove.add(marker);
-                }else{
+                } else {
                     marker.setIntensity(marker.getIntensity() * 0.95);
                 }
         }
@@ -157,10 +178,11 @@ public class GameController {
         explorationOverTime.add(coveragePercent);
 
         previousCoveragePercent = coveragePercent;
-    }
 
-    public void updateAgentTargetDirection(){
-
+        // Print to terminal if wanted
+        if (terminalFeedback && simulationGUI.getCurrentStep() % 100 == 0) {
+            System.out.println("Simulation is running at step: " + simulationGUI.getCurrentStep());
+        }
     }
 
     /**
@@ -216,7 +238,12 @@ public class GameController {
      */
     public void updateWinningCondition() {
         if (simulationGUI != null) {
-            gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
+            if (simulationGUI.getStartLayout() != null) {
+                gameMode = simulationGUI.getStartLayout().getGameMode(); // 0 = exploration, 1 = guards vs intruders
+            }
+            else {
+                gameMode = 1;
+            }
         }
 
         if (coveragePercent == previousCoveragePercent) {
@@ -252,7 +279,9 @@ public class GameController {
             return;
 
         if (gameMode == 0) {
-            System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
+
+            if (terminalFeedback)
+                System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
 
             // Write exploration over time to file
             try {
@@ -280,8 +309,14 @@ public class GameController {
 
         }
 
+        if (terminalFeedback) {
+            System.out.println("Fitness Guards:    " + getFitnessGuards());
+            System.out.println("Fitness Intruders: " + getFitnessIntruders());
+        }
+
+
         if (simulationGUI != null)
-            simulationGUI.pauseSimulation();
+            simulationGUI.stopSimulation();
     }
 
     /**
@@ -308,6 +343,102 @@ public class GameController {
         }
         layout.getCanvas().getChildren().add(notChangingNodes);
         layout.getCanvas().getChildren().add(changingNodes);
+    }
+
+
+    /**
+     * Computes the fitness for training guard agents with the following factors:
+     *
+     *  - Exploration coverage
+     *  - Distance paced by the guards
+     *  - Number of intruders caught
+     *  - Game won
+     *
+     *  All these attributes are condensed into a [0, 1] fitness score.
+     *
+     * @return [0, 1] value for the fitness
+     */
+    public double getFitnessGuards() {
+        double fitness;
+
+        double fitnessDistanceWalked = 0;
+        for (MapItem item : map.getMovingItems()) {
+            if (item instanceof Guard) {
+                fitnessDistanceWalked += ((Guard) item).getDistanceWalked();
+            }
+        }
+        // get average distance paced
+        fitnessDistanceWalked /= amountOfGuards;
+        fitnessDistanceWalked /= map.getSizeX() + map.getSizeY();
+
+        fitnessDistanceWalked = Math.max(fitnessDistanceWalked, 1);
+
+        double fitnessWon = (hasWonGame == 1 ? 1 : 0);
+
+        // Add & normalize the fitness attributes
+        fitness = (
+            getCoveragePercent() +
+            fitnessDistanceWalked +
+            fitnessWon
+        ) / 3;
+
+        return fitness;
+    }
+
+
+    /**
+     * Computes the fitness for training intruder agents with the following factors:
+     *
+     *  - Average distance (of all intruders) to the target
+     *  - Minimum distance to the target (whichever intruder is closest)
+     *  - Game won
+     *
+     *  All these attributes are condensed into a [0, 1] fitness score.
+     *
+     * @return [0, 1] value for the fitness
+     */
+    public double getFitnessIntruders() {
+        double fitness, fitnessWon, fitnessAvgDistance, fitnessMinDistance;
+
+        double mapNormalizationFactor = Vector2D.distance(new Vector2D(0, 0), new Vector2D(map.getSizeX(), map.getSizeY()));
+
+        System.out.println(mapNormalizationFactor);
+
+        fitnessAvgDistance = 0;
+        fitnessMinDistance = mapNormalizationFactor;
+
+        for (MapItem item : map.getMovingItems()) {
+            if (item instanceof Intruder) {
+                double distance = Vector2D.distance(item.getPosition(),map.getTargetArea().getPosition());
+                fitnessMinDistance = Math.min(fitnessMinDistance, distance);
+
+                fitnessAvgDistance += distance;
+            }
+        }
+        fitnessAvgDistance /= amountOfIntruders;
+
+        fitnessAvgDistance = 1 - (fitnessAvgDistance / mapNormalizationFactor);
+        fitnessMinDistance = 1 - (fitnessMinDistance / mapNormalizationFactor);
+
+        fitnessWon = (hasWonGame == 2 ? 1 : 0);
+
+        // Add & normalize the fitness attributes
+        fitness = (
+            fitnessAvgDistance +
+            fitnessMinDistance +
+            fitnessWon
+        ) / 3;
+
+        return fitness;
+    }
+
+
+    public double getFitness(int agent_type) {
+        if (agent_type == 0)    // guard
+            return getFitnessGuards();
+        if (agent_type == 1)
+            return getFitnessIntruders();
+        return 0;
     }
 
     /**

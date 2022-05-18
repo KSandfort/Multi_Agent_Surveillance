@@ -31,8 +31,26 @@ public class Intruder extends Entity{
 
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
+
         intruderCount++;
         this.setID(intruderCount);
+    }
+
+    public Vector2D calculateTargetDirection() {
+        Vector2D targetVector = null;
+
+        TargetArea target = map.getTargetArea();
+
+        if (target != null) {
+
+            double targetCenterX = (target.getCornerPoints()[1].getX() + target.getCornerPoints()[3].getX())/2;
+            double targetCenterY = (target.getCornerPoints()[1].getY() + target.getCornerPoints()[3].getY())/2;
+
+            targetVector = new Vector2D(targetCenterX - getPosition().getX(), targetCenterY - getPosition().getY());
+            targetVector.normalize();
+        }
+
+        return targetVector;
     }
 
 
@@ -46,13 +64,6 @@ public class Intruder extends Entity{
     }
 
     public void kill(){
-        GameMap map = this.getMap();
-        for (MapItem mapItem : map.getMovingItems()){
-            Entity e = (Entity) mapItem;
-            if (e.getID() == this.getID()){
-                map.getMovingItems().remove(mapItem);
-            }
-        }
         isAlive = false;
     }
 
@@ -96,7 +107,7 @@ public class Intruder extends Entity{
             components.addAll(hitBox.getComponents());
             return components;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
