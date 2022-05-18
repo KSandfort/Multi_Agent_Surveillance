@@ -65,6 +65,7 @@ public class Intruder extends Entity{
 
     public void kill(){
         isAlive = false;
+        intruderCount--;
     }
 
     @Override
@@ -100,6 +101,7 @@ public class Intruder extends Entity{
             line.setStroke(Color.web("#000099", 1));
             components.add(text);
             components.add(circle);
+
             ArrayList<Ray> rays = FOV();
             for (Ray ray : rays){
                 components.add(ray.getComponent());

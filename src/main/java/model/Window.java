@@ -66,4 +66,9 @@ public class Window extends Wall{
         }
         return components;
     }
+
+
+    public boolean isTransparentObject() {
+        return true;
+    }
 }

@@ -76,6 +76,7 @@ public abstract class Entity extends MapItem {
      * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
+
         Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
 
         if (this.agent != null) {
@@ -163,7 +164,7 @@ public abstract class Entity extends MapItem {
 
             // Agent/Agent collision (only if the agent has already left spawn)
             if (item instanceof Guard || item instanceof Intruder) {
-                if (!leftSpawn)
+                if (!leftSpawn || (item instanceof Intruder && !((Intruder)item).isAlive()))
                     continue;
 
                 Vector2D[] corners = ((Entity)item).hitBox.getCornerPoints();
@@ -283,7 +284,7 @@ public abstract class Entity extends MapItem {
             double minDistance = fovDepth;
             // Scan all fixed items on the map
             for (MapItem item: map.getSolidBodies()) {
-                if (item instanceof Entity) {
+                if (item instanceof Entity || item.isTransparentObject()) {
                     continue;
                 }
                 Area area = (Area) item;
