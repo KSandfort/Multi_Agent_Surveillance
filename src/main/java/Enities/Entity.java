@@ -34,6 +34,8 @@ public abstract class Entity extends MapItem {
     protected double[][] markerSensing; // row = marker type [0, ..., 4],
                                         // column 0 = amount, column 1 = avg angle from direction (positive = right)
     public double stamina = maxStamina;
+
+    public ArrayList<MapItem> vision;
     // Static
     public static double maxStamina             = DefaultValues.agentMaxStamina;
     public static double sprintConsumption      = DefaultValues.agentSprintConsumption;
@@ -76,6 +78,11 @@ public abstract class Entity extends MapItem {
      */
     public void update(ArrayList<MapItem> items) {
         Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
+
+        for (MapItem item : getMap().getAllItems()){
+            ArrayList<Ray> fov = FOV();
+        }
+
         if (this.agent != null) {
             agent.changeMovement(items);
         }
@@ -392,17 +399,13 @@ public abstract class Entity extends MapItem {
         ArrayList<MapItem> entities = this.getMap().getMovingItems();
         ArrayList<Ray> fov = FOV();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
-        for (MapItem mapItem :entities){
-            Entity entity = (Entity) mapItem;
             for (Ray ray : fov) {
                 for (Entity e: ray.getDetectedEntities(this)){
                     if (!Ray.contains(detectedEntities, e)){
                         detectedEntities.add(e);
                     }
                 }
-
             }
-        }
         return detectedEntities;
     }
 

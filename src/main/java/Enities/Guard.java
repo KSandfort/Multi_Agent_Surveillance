@@ -21,6 +21,7 @@ import java.util.ArrayList;
 /**
  * This class represents a guard on the board.
  */
+
 @Getter
 @Setter
 public class Guard extends Entity {
