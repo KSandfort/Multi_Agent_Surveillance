@@ -143,8 +143,12 @@ public class GameController {
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
         ArrayList<Intruder> toKill = new ArrayList<>();
+
+
         for(MapItem item : items) {
-            item.update(map.getStaticItems());
+            item.update(map.getSolidBodies());
+
+            // kill intruder
             if (item instanceof Intruder){
                 if (!((Intruder) item).isAlive()){
                     toKill.add((Intruder)item);
@@ -152,13 +156,6 @@ public class GameController {
             }
         }
         items.removeAll(toKill);
-        // use static & dynamic objects when updating
-        ArrayList<MapItem> itemsToCheck = map.getStaticItems();
-        itemsToCheck.addAll(items);
-
-        for(MapItem item : items) {
-            item.update(itemsToCheck);
-        }
 
         ArrayList<Marker> toRemove = new ArrayList<>();
         for(Marker marker : map.getMarkers()){
@@ -178,8 +175,9 @@ public class GameController {
         previousCoveragePercent = coveragePercent;
 
         // Print to terminal if wanted
-        if (terminalFeedback && getCurrentStep() % 1 == 0) {
-            System.out.println("Simulation is running at step: " + getCurrentStep());
+        if (terminalFeedback && getCurrentStep() % 60 == 0) {
+            System.out.println("Simulation is running at step: " + getCurrentStep() + " (" + getCurrentStep()/60 + ")");
+            System.out.println(map.getMarkers().size() + " markers");
         }
 
         currentStep++;
@@ -401,8 +399,6 @@ public class GameController {
 
         double mapNormalizationFactor = Vector2D.distance(new Vector2D(0, 0), new Vector2D(map.getSizeX(), map.getSizeY()));
 
-        System.out.println(mapNormalizationFactor);
-
         fitnessAvgDistance = 0;
         fitnessMinDistance = mapNormalizationFactor;
 
@@ -460,6 +456,6 @@ public class GameController {
 
     public static void main(String [] args){
         // Pass Integer.MAX_VALUE as the "steps" parameter for indefinite simulation (terminates upon game over)
-        GameController.simulate(Integer.MAX_VALUE,3,2,0,0);
+        GameController.simulate(2000,3,2,0,1);
     }
 }

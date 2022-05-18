@@ -235,9 +235,10 @@ public class  GenePool
         NeatAgent.setNn(nn);//set neural network to be used by the agent
         GameController.guardAgentType = 5;//use the neat agent
         GameController.intruderAgentType = 0;
-        GameController.terminalFeedback = true;
+        GameController.terminalFeedback = false;
         SimulationGUI.bypassPath = "src/main/resources/maps/testmap.txt";
         GameController result = GameController.simulate(maxSteps,3,3,3,1);
+
         return result.getFitnessGuards();
     }
 

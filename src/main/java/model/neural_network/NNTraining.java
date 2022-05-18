@@ -2,11 +2,12 @@ package model.neural_network;
 
 public class NNTraining
 {
+    final static int generations = 8;
+
     public static void main(String[] args) {
         NNTraining nnt = new NNTraining();
-        nnt.train(1,false);
+        nnt.train(generations,false);
     }
-
 
     public void train(int n,boolean startFromFile)
     {
