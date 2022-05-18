@@ -4,7 +4,7 @@ public class NNTraining
 {
     public static void main(String[] args) {
         NNTraining nnt = new NNTraining();
-        nnt.train(1,false);
+        nnt.train(500,false);
     }
 
 

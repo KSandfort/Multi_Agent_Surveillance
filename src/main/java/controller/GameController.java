@@ -179,7 +179,7 @@ public class GameController {
 
         // Print to terminal if wanted
         if (terminalFeedback && getCurrentStep() % 1 == 0) {
-            System.out.println("Simulation is running at step: " + getCurrentStep());
+            //System.out.println("Simulation is running at step: " + getCurrentStep());
         }
 
         currentStep++;

@@ -236,7 +236,7 @@ public class  GenePool
         GameController.guardAgentType = 5;//use the neat agent
         GameController.intruderAgentType = 0;
         GameController.terminalFeedback = true;
-        SimulationGUI.bypassPath = "src/main/resources/maps/testmap.txt";
+        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_1.txt";
         GameController result = GameController.simulate(maxSteps,3,3,3,1);
         return result.getFitnessGuards();
     }
