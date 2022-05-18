@@ -1,5 +1,10 @@
 package model.neural_network;
 
+import agents.NeatAgent;
+import controller.GameController;
+import gui.SimulationGUI;
+import utils.RunSimulation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +15,9 @@ public class  GenePool
     final double distanceThreshold = 2.0;
     final double crossoverChance = 0.75;
     final int maxStaleness = 20;
-    final int poolSize = 200;//population size. eg how many genomes in a generation
+    final int poolSize = 100;//population size. eg how many genomes in a generation
+    final int maxSteps = 2000;//maximum amount of steps to run the simulation for
+
 
     int input;
     int output;
@@ -219,22 +226,20 @@ public class  GenePool
     {
         for(NeuralNetwork nn : pool)
         {
-            double[] expected = {0,1,1,0};
-            double res1 = nn.evaluate(new double[]{0, 0})[0];
-            double res2 = nn.evaluate(new double[]{1, 0})[0];
-            double res3 = nn.evaluate(new double[]{0, 1})[0];
-            double res4 = nn.evaluate(new double[]{1, 1})[0];
-            double[] result = {res1,res2,res3,res4};
-
-            double error = 0;
-            for (int i = 0; i < expected.length; i++) {
-                error += (expected[i] - result[i])*(expected[i] - result[i]);//squared error
-            }
-            error = 4 - error;//make lowest error highest fitness
-            error *= error;//square error to make difference bigger
-
-            nn.setFitness(error);
+            nn.setFitness(runSim(nn));
         }
+    }
+
+    private double runSim(NeuralNetwork nn)
+    {
+        NeatAgent.setNn(nn);//set neural network to be used by the agent
+        GameController.guardAgentType = NNTraining.guardType;//use the neat agent
+        GameController.intruderAgentType = NNTraining.intruderType;
+        GameController.terminalFeedback = false;
+        SimulationGUI.bypassPath = "src/main/resources/maps/testmap.txt";
+        GameController result = GameController.simulate(maxSteps,3,3,3,1);
+
+        return result.getFitnessGuards();
     }
 
     //adds a new child to the correct species, based on distance measure

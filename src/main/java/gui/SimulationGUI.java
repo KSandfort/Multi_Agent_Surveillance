@@ -136,4 +136,8 @@ public class SimulationGUI extends Application {
         this.timeline.pause();
     }
 
+
+    public int getCurrentStep() {
+        return controller.getCurrentStep();
+    }
 }

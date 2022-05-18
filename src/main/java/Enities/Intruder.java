@@ -136,7 +136,6 @@ public class Intruder extends Entity{
         for (MapItem target : areas){
             if (target instanceof TargetArea){
                 if(((TargetArea) target).isInsideArea(getPosition())){
-                    System.out.println("si");
                     return true;
                 }
             }

@@ -53,6 +53,7 @@ public abstract class Entity extends MapItem {
         setMap(currentMap);
         entityKnowledge = new EntityKnowledge(currentMap, !isIntruder());
         this.setPosition(new Vector2D(x,y));
+        prevPos = new Vector2D(x,y);
         this.direction = Vector2D.randomVector();
         Vector2D c1 = Vector2D.add(getPosition(), new Vector2D(-radius,-radius));
         Vector2D c2 = Vector2D.add(getPosition(), new Vector2D(radius,-radius));
@@ -76,6 +77,7 @@ public abstract class Entity extends MapItem {
      */
     public void update(ArrayList<MapItem> items) {
         Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
+
         if (this.agent != null) {
             agent.changeMovement(items);
         }
@@ -93,6 +95,7 @@ public abstract class Entity extends MapItem {
         else if (!isSprinting && stamina < maxStamina){
             stamina += staminaRegeneration;
         }
+
 
         // Check collision detection
         if(!isInSpecialArea(items)){
@@ -194,6 +197,13 @@ public abstract class Entity extends MapItem {
     {
         Vector2D pos = entity.getPosition();
         entity.setPosition(entity.getPrevPos());
+    }
+
+
+    public void setPosition(Vector2D pos) {
+        if (getPosition() != null)
+            prevPos = new Vector2D(getPosition().getX(), getPosition().getY());
+        position = new Vector2D(pos.getX(), pos.getY());
     }
 
     /**
@@ -392,15 +402,11 @@ public abstract class Entity extends MapItem {
         ArrayList<MapItem> entities = this.getMap().getMovingItems();
         ArrayList<Ray> fov = FOV();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
-        for (MapItem mapItem :entities){
-            Entity entity = (Entity) mapItem;
-            for (Ray ray : fov) {
-                for (Entity e: ray.getDetectedEntities(this)){
-                    if (!Ray.contains(detectedEntities, e)){
-                        detectedEntities.add(e);
-                    }
+        for (Ray ray : fov) {
+            for (Entity e: ray.getDetectedEntities(this)){
+                if (!Ray.contains(detectedEntities, e)){
+                    detectedEntities.add(e);
                 }
-
             }
         }
         return detectedEntities;

@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class MapReader {
 
     // Variables
-    public static final boolean MAP_READER_DEBUG = true;
+    public static final boolean MAP_READER_DEBUG = false;
 
     /**
      * Returns a new map based on the properties given by a .txt file
