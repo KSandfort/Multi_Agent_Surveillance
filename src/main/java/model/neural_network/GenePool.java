@@ -232,7 +232,10 @@ public class  GenePool
 
     private double runSim(NeuralNetwork nn)
     {
-        NeatAgent.setNn(nn);//set neural network to be used by the agent
+        if(NNTraining.trainGuard)
+            NeatAgent.setNn(nn);//set neural network to be used by the agent
+        else
+            //guard agent
         GameController.guardAgentType = NNTraining.guardType;//use the neat agent
         GameController.intruderAgentType = NNTraining.intruderType;
         GameController.terminalFeedback = false;
