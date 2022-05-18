@@ -142,7 +142,16 @@ public class GameController {
      */
     public void update() {
         ArrayList<MapItem> items = map.getMovingItems();
-
+        ArrayList<Intruder> toKill = new ArrayList<>();
+        for(MapItem item : items) {
+            item.update(map.getStaticItems());
+            if (item instanceof Intruder){
+                if (!((Intruder) item).isAlive()){
+                    toKill.add((Intruder)item);
+                }
+            }
+        }
+        items.removeAll(toKill);
         // use static & dynamic objects when updating
         ArrayList<MapItem> itemsToCheck = map.getStaticItems();
         itemsToCheck.addAll(items);
@@ -391,6 +400,8 @@ public class GameController {
         double fitness, fitnessWon, fitnessAvgDistance, fitnessMinDistance;
 
         double mapNormalizationFactor = Vector2D.distance(new Vector2D(0, 0), new Vector2D(map.getSizeX(), map.getSizeY()));
+
+        System.out.println(mapNormalizationFactor);
 
         fitnessAvgDistance = 0;
         fitnessMinDistance = mapNormalizationFactor;
