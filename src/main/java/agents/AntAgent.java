@@ -44,6 +44,9 @@ public class AntAgent extends AbstractAgent{
 
         if (isStuck()){
             double dirSound = Vector2D.shortestAngle(entityInstance.getDirection(), entityInstance.getListeningDirection(entityInstance.getMap().getMovingItems(), entityInstance.getMap().getStaticItems()));
+            while(Math.abs(dirSound) > entityInstance.getFovAngle()){
+                dirSound = dirSound/2;
+            }
             double maxAngle;
             double minAngle;
             // if agent stays stuck, move towards direction without sound
@@ -56,11 +59,13 @@ public class AntAgent extends AbstractAgent{
                 // agent moves to the left
                 maxAngle = 30;
                 minAngle = entityInstance.getFovAngle()*2 * -explorationFactor;
+
             }else{
                 maxAngle = entityInstance.getFovAngle()*2 * explorationFactor;
                 minAngle = -30;
             }
             angle = (Math.random() * (maxAngle-minAngle)) + minAngle;
+
         } else if ((angle == 0 && getMaxPheromone(entityInstance.getMarkerSensing()) == 0)) {
             double maxAngle = entityInstance.getFovAngle() * explorationFactor;
             double minAngle = entityInstance.getFovAngle() * -explorationFactor;
