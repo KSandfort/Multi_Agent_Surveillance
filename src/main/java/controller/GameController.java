@@ -358,24 +358,20 @@ public class GameController {
     public double getFitnessGuards() {
         double fitness;
 
-        double fitnessDistanceWalked = 0;
+        int fitnessIntrudersKilled = 0;
         for (MapItem item : map.getMovingItems()) {
             if (item instanceof Guard) {
-                fitnessDistanceWalked += ((Guard) item).getDistanceWalked();
+                fitnessIntrudersKilled += ((Guard) item).getKillCount();
             }
         }
-        // get average distance paced
-        fitnessDistanceWalked /= amountOfGuards;
-        fitnessDistanceWalked /= map.getSizeX() + map.getSizeY();
-
-        fitnessDistanceWalked = Math.max(fitnessDistanceWalked, 1);
+        fitnessIntrudersKilled /= amountOfIntruders;
 
         double fitnessWon = (hasWonGame == 1 ? 1 : 0);
 
         // Add & normalize the fitness attributes
         fitness = (
             getCoveragePercent() +
-            fitnessDistanceWalked +
+            fitnessIntrudersKilled +
             fitnessWon
         ) / 3;
 
@@ -402,6 +398,8 @@ public class GameController {
         fitnessAvgDistance = 0;
         fitnessMinDistance = mapNormalizationFactor;
 
+        double fitnessIntrudersKilled = 0;
+
         for (MapItem item : map.getMovingItems()) {
             if (item instanceof Intruder) {
                 double distance = Vector2D.distance(item.getPosition(),map.getTargetArea().getPosition());
@@ -409,8 +407,14 @@ public class GameController {
 
                 fitnessAvgDistance += distance;
             }
+
+            if (item instanceof Guard) {
+                fitnessIntrudersKilled += ((Guard) item).getKillCount();
+            }
         }
         fitnessAvgDistance /= amountOfIntruders;
+
+        fitnessIntrudersKilled = 1 - fitnessIntrudersKilled/amountOfIntruders;
 
         fitnessAvgDistance = 1 - (fitnessAvgDistance / mapNormalizationFactor);
         fitnessMinDistance = 1 - (fitnessMinDistance / mapNormalizationFactor);
@@ -421,8 +425,9 @@ public class GameController {
         fitness = (
             fitnessAvgDistance +
             fitnessMinDistance +
+            fitnessIntrudersKilled +
             fitnessWon
-        ) / 3;
+        ) / 4;
 
         return fitness;
     }

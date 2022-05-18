@@ -2,7 +2,7 @@ package model.neural_network;
 
 public class NNTraining
 {
-    final static int generations = 8;
+    final static int generations = 1000;
 
     public static void main(String[] args) {
         NNTraining nnt = new NNTraining();
