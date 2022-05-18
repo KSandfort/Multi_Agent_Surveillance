@@ -18,7 +18,7 @@ public class DefaultValues {
     public static double agentStaminaRegeneration = 5;
 
     // Initial FOV values for each agent
-    public static double agentFovAngle = 90;
+    public static double agentFovAngle = 60;
     public static double agentFovDepth = 20;
 
     //////////////
