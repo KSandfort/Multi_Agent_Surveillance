@@ -34,6 +34,6 @@ public class RunSimulation {
 
 
     public static void main(String[] args) {
-        run(true, true, "src/main/resources/maps/phase2_1.txt", 5, 0);
+        run(true, true, "src/main/resources/maps/phase2_1.txt", 0, 5);
     }
 }

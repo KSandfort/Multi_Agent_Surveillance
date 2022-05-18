@@ -232,17 +232,14 @@ public class  GenePool
 
     private double runSim(NeuralNetwork nn)
     {
-        if(NNTraining.trainGuard)
-            NeatAgent.setNn(nn);//set neural network to be used by the agent
-        else
-            //guard agent
+        NeatAgent.setNn(nn);//set neural network to be used by the agent
         GameController.guardAgentType = NNTraining.guardType;//use the neat agent
         GameController.intruderAgentType = NNTraining.intruderType;
         GameController.terminalFeedback = false;
-        SimulationGUI.bypassPath = "src/main/resources/maps/testmap.txt";
+        SimulationGUI.bypassPath = NNTraining.mapPath;
         GameController result = GameController.simulate(maxSteps,3,3,3,1);
 
-        return result.getFitnessGuards();
+        return NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
     }
 
     //adds a new child to the correct species, based on distance measure
