@@ -238,6 +238,13 @@ public class  GenePool
         GameController.intruderAgentType = NNTraining.intruderType;
         GameController.terminalFeedback = false;
 
+        if(!NNTraining.trainOn3Maps)
+        {
+            SimulationGUI.bypassPath = NNTraining.mapPath;
+            GameController result = GameController.simulate(maxSteps,3,3,3,1);
+            return NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+        }
+
         SimulationGUI.bypassPath = "src/main/resources/maps/phase2_1.txt";
         GameController result = GameController.simulate(maxSteps,3,3,3,1);
         fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
