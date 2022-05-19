@@ -232,14 +232,25 @@ public class  GenePool
 
     private double runSim(NeuralNetwork nn)
     {
+        double fitness = 0;
         NeatAgent.setNn(nn);//set neural network to be used by the agent
         GameController.guardAgentType = NNTraining.guardType;//use the neat agent
         GameController.intruderAgentType = NNTraining.intruderType;
         GameController.terminalFeedback = false;
-        SimulationGUI.bypassPath = NNTraining.mapPath;
-        GameController result = GameController.simulate(maxSteps,3,3,3,1);
 
-        return NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_1.txt";
+        GameController result = GameController.simulate(maxSteps,3,3,3,1);
+        fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+
+        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_2.txt";
+        result = GameController.simulate(maxSteps,3,3,3,1);
+        fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+
+        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_3.txt";
+        result = GameController.simulate(maxSteps,3,3,3,1);
+        fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+
+        return fitness;
     }
 
     //adds a new child to the correct species, based on distance measure
