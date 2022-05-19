@@ -1,9 +1,11 @@
 package utils;
 
+import agents.NeatAgent;
 import controller.GameController;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import model.GameMap;
+import model.neural_network.NeuralNetwork;
 
 /**
  * Runs a simulation with given parameters
@@ -22,6 +24,8 @@ public class RunSimulation {
         SimulationGUI.bypassPath = path;
         GameController.guardAgentType = guardType;
         GameController.intruderAgentType = intruderType;
+        NeuralNetwork.readGlobals("fromPreviousSim.txt");
+        NeatAgent.setNn(NeuralNetwork.readNetwork("bestNetwork.txt"));
         SimulationGUI.autoStart = true;
         if (gui) {
             SimulationGUI sim = new SimulationGUI();
