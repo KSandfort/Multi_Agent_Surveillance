@@ -1,6 +1,7 @@
 package agents;
 
 import Enities.Entity;
+import Enities.Intruder;
 import Enities.Ray;
 import model.MapItem;
 import model.Vector2D;
@@ -59,6 +60,7 @@ public class NeatAgent extends AbstractAgent {
                 14: enemy vision count
                 15: enemy vision angle
                 16: sound volume
+                17: target direction (intruders only)
 
             Output array:
                 0: speed (0 to 1/3: stand, 1/3 to 2/3: walk, 2/3 to 1: sprint)
@@ -73,7 +75,7 @@ public class NeatAgent extends AbstractAgent {
         Entity e = entityInstance;
 
         // --- Step 1: Define inputs ---
-        double[] input = new double[17];
+        double[] input = new double[18];
         double[] entitySensing = entitySensing();
         double[] wallSensing = wallSensing();//this boi is a problem
 
@@ -95,6 +97,12 @@ public class NeatAgent extends AbstractAgent {
         input[15] = entitySensing[3];
 
         input[16] = Vector2D.shortestAngle(e.getDirection(), e.getListeningDirection(e.getMap().getMovingItems(), e.getMap().getStaticItems()));//this one is a problem sometimes
+
+        if (e instanceof Intruder) {
+            Vector2D targetDir = ((Intruder) e).calculateTargetDirection();
+            input[17] = Math.atan2(targetDir.getY(),targetDir.getX());
+        } else
+            input[17] = 1;
 
         // --- Step 2: Do the NN magic ---
         double[] output = nn.evaluate(input);

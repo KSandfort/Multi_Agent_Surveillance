@@ -10,7 +10,7 @@ public class NeuralNetwork {
     //coefficients for compatibility distance calculation
     final static double c1 =1.3;
     final static double c2 =1.3;
-    final static double c3 =1;
+    final static double c3 =4.0;
 
     //mutation probabilities
     final static double disabledChance = 0.75;  // Chance that a disabled gene is inherited
@@ -25,7 +25,7 @@ public class NeuralNetwork {
     double fitness;
 
     //hardcode these variables because its easier this way
-    public static int inputNum = 17 + 1; //including bias node
+    public static int inputNum = 18 + 1; //including bias node
     public static int outputNum = 7; //number of outputs
     public static int maxNeurons = inputNum + outputNum + 1;//total possible number of neurons
 
@@ -303,7 +303,7 @@ public class NeuralNetwork {
             }
         }
 
-        return c1*D/n + c2*W/w;
+        return c1*D/n + c3*W/w;
     }
 
     //function to mutate the weights of the network connections

@@ -144,9 +144,11 @@ public class GameController {
         ArrayList<MapItem> items = map.getMovingItems();
         ArrayList<Intruder> toKill = new ArrayList<>();
 
+        ArrayList<MapItem> itemsToCheck = (ArrayList<MapItem>) map.getStaticItems().clone();
+        itemsToCheck.addAll(map.getSolidBodies());
 
         for(MapItem item : items) {
-            item.update(map.getSolidBodies());
+            item.update(itemsToCheck);
 
             // kill intruder
             if (item instanceof Intruder){

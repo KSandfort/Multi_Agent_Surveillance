@@ -71,6 +71,7 @@ public class Guard extends Entity {
      * @return false if any intruder is still alive, true otherwise
      */
     public boolean checkWinningCondition(){
+        boolean won = true;
         ArrayList<MapItem> entities = map.getMovingItems();
         for (MapItem entity : entities){
             if (entity instanceof Intruder){
@@ -78,11 +79,11 @@ public class Guard extends Entity {
                     kill((Intruder) entity);
 
                 if(((Intruder) entity).isAlive){
-                    return false;
+                    won = false;
                 }
             }
         }
-        return true;
+        return won;
     }
 
     public void chase(Vector2D position){
