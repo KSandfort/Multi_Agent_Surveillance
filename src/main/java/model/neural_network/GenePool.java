@@ -41,7 +41,7 @@ public class  GenePool
     public void init(boolean readFromFile)
     {
         if(readFromFile)
-            NeuralNetwork.readGlobals("fromPreviousSim.txt");
+            NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
 
         while(pool.size() < poolSize)
         {
@@ -52,7 +52,7 @@ public class  GenePool
                 init.init();
             }
             else{
-                init = NeuralNetwork.readNetwork("bestNetwork.txt");
+                init = NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt");
                 init.mutate();
             }
             pool.add(init);
@@ -237,6 +237,13 @@ public class  GenePool
         GameController.guardAgentType = NNTraining.guardType;//use the neat agent
         GameController.intruderAgentType = NNTraining.intruderType;
         GameController.terminalFeedback = false;
+
+        if(!NNTraining.trainOn3Maps)
+        {
+            SimulationGUI.bypassPath = NNTraining.mapPath;
+            GameController result = GameController.simulate(maxSteps,3,3,3,1);
+            return NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+        }
 
         SimulationGUI.bypassPath = "src/main/resources/maps/phase2_1.txt";
         GameController result = GameController.simulate(maxSteps,3,3,3,1);
