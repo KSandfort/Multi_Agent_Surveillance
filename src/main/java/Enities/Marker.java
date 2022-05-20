@@ -42,21 +42,22 @@ public class Marker extends MapItem {
     }
 
     public Color getColor() {
+        double opacity = Math.pow(intensity * 0.1, (double) 1/3);
         switch (markerType) {
             case 0: {
-                return Color.RED;
+                return Color.rgb(255, 0, 0, opacity);
             }
             case 1: {
-                return Color.GREEN;
+                return Color.rgb(0, 255, 0, opacity);
             }
             case 2: {
-                return Color.BLUE;
+                return Color.rgb(0, 0, 255, opacity);
             }
             case 3: {
-                return Color.YELLOW;
+                return Color.rgb(255, 255, 0, opacity);
             }
             case 4: {
-                return Color.PURPLE;
+                return Color.rgb(255, 0, 255, opacity);
             }
         }
         return Color.GRAY; // Error
