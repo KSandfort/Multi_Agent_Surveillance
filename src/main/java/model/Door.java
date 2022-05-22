@@ -52,4 +52,8 @@ public class Door extends Wall {
         entity.setFovDepth(getAreaFovDepth());
         //TODO add hearing
     }
+
+    public boolean isTransparentObject() {
+        return true;
+    }
 }
