@@ -28,12 +28,15 @@ public class SimulationGUI extends Application {
     private int simulationDelay;
     private Timeline timeline;
     private GameController controller;
-    private final int FPS = 50;
-    private final int WIDTH = 1200;
+    private final int FPS = 20;
+    private final int WIDTH = 1520;
     private final int HEIGHT = 800;
 
-    public static final int CANVAS_OFFSET = 50; // Pushes the map a bit in the middle of the canvas (x and y).
-    public static double SCALING_FACTOR = 10;
+    public static final int CANVAS_OFFSET = 30; // Pushes the map a bit in the middle of the canvas (x and y).
+    public static double SCALING_FACTOR = 8;
+    public static boolean bypassMenu = false;
+    public static String bypassPath;
+    public static boolean autoStart = false; // Starts automatically if true
 
     public void launchGUI() {
         String[] args = new String[0];
@@ -42,7 +45,12 @@ public class SimulationGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        startTitleScreenGUI(primaryStage);
+        if (!bypassMenu) {
+            startTitleScreenGUI(primaryStage);
+        }
+        else {
+            startBypass(primaryStage);
+        }
     }
 
     /**
@@ -58,6 +66,10 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
+    public void startBypass(Stage primaryStage) {
+        startSimulationGUI(primaryStage, 5, 5, 3);
+    }
+
     /**
      * Launches the actual game GUI (with guard and intruder amount from the start screen)
      * @param primaryStage
@@ -69,7 +81,7 @@ public class SimulationGUI extends Application {
         simulationDelay = 0;
         mainLayout = new MainLayout(primaryStage);
         mainLayout.setSimulationGUI(this);
-        mainScene = new Scene(mainLayout, 1800, 1000);
+        mainScene = new Scene(mainLayout, WIDTH, HEIGHT);
 
         GameController.amountOfGuards = guardAmount;
         GameController.amountOfIntruders = intruderAmount;
@@ -78,19 +90,15 @@ public class SimulationGUI extends Application {
         this.controller.drawFixedItems(mainLayout);
 
         // Timeline Animation
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> update()));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(1000/FPS), actionEvent -> updateGUI1step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
         // Display Window
         primaryStage.setTitle("Multi-Agent Simulation");
         primaryStage.setScene(mainScene);
+        if (autoStart) {
+            this.startSimulation();
+        }
         primaryStage.show();
-    }
-
-    /**
-     * Updates the simulation.
-     */
-    public void update() {
-        updateGUI1step();
     }
 
     /**
@@ -107,6 +115,8 @@ public class SimulationGUI extends Application {
      * Starts the simulation.
      */
     public void startSimulation() {
+        if (GameController.terminalFeedback)
+            System.out.println("Simulation is starting!");
         this.timeline.play();
     }
 
@@ -114,6 +124,8 @@ public class SimulationGUI extends Application {
      * Stops the simulation.
      */
     public void stopSimulation() {
+        if (GameController.terminalFeedback)
+            System.out.println("Simulation ended at step: " + getCurrentStep());
         this.timeline.stop();
     }
 
@@ -124,4 +136,8 @@ public class SimulationGUI extends Application {
         this.timeline.pause();
     }
 
+
+    public int getCurrentStep() {
+        return controller.getCurrentStep();
+    }
 }

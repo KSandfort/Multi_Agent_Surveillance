@@ -43,6 +43,30 @@ public class RemoteAgent extends AbstractAgent {
                 entityInstance.getDirection().pivot(5);
                 entityInstance.getDirection().normalize();
             }
+            if(key.getCode()== KeyCode.Q) {
+                entityInstance.setSprinting(true);
+            }
+            if(key.getCode()== KeyCode.P) {
+                System.out.println("Detected Entities: " + entityInstance.getDetectedEntities().size());
+            }
+            if(key.getCode()== KeyCode.DIGIT1) {
+                entityInstance.placeMarker(0);
+            }
+            if(key.getCode()== KeyCode.DIGIT2) {
+                entityInstance.placeMarker(1);
+            }
+            if(key.getCode()== KeyCode.DIGIT3) {
+                entityInstance.placeMarker(2);
+            }
+            if(key.getCode()== KeyCode.DIGIT4) {
+                entityInstance.placeMarker(3);
+            }
+            if(key.getCode()== KeyCode.DIGIT5) {
+                entityInstance.placeMarker(4);
+            }
+            if(key.getCode()== KeyCode.Q) {
+                entityInstance.setSprinting(true);
+            }
         });
     }
 
@@ -53,10 +77,17 @@ public class RemoteAgent extends AbstractAgent {
         e.setPrevPos(prevPos);
         double velocity = 0;
         if (e.isIntruder()) {
+
             velocity = Entity.baseSpeedIntruder;
+            if (e.isSprinting()){
+                velocity = Entity.sprintSpeedIntruder;
+            }
         }
         else {
             velocity = Entity.baseSpeedGuard;
+            if (e.isSprinting()){
+                velocity = Entity.sprintSpeedGuard;
+            }
         }
         if (moving) {
             e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));

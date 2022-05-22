@@ -1,5 +1,6 @@
 package model;
 
+import Enities.Entity;
 import javafx.scene.Node;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public abstract class MapItem {
 
     // Variables
-    Vector2D position;
+    protected Vector2D position;
     protected GameMap map;
 
     public void update(ArrayList<MapItem> items) {
@@ -22,6 +23,8 @@ public abstract class MapItem {
     };
 
     public abstract ArrayList<Node> getComponents();
+
+    public abstract void onAgentCollision(Entity entity);
 
     public Vector2D [] getCornerPoints(){
         return new Vector2D[]{position};

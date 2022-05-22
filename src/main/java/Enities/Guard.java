@@ -29,6 +29,8 @@ public class Guard extends Entity {
     static int guardCount = 0;
     private boolean isYelling = false;
     private double yellingFactor = 10;
+    public static double killDistance = 3;
+    public int killCount = 0;
 
     /**
      * Constructor
@@ -59,19 +61,29 @@ public class Guard extends Entity {
         return detected;
     }
 
+    public void kill(Intruder intruder){
+        if (Vector2D.distance(getPosition(), intruder.getPosition()) < killDistance){
+            intruder.kill();
+            killCount++;
+        }
+    }
     /**
      * @return false if any intruder is still alive, true otherwise
      */
     public boolean checkWinningCondition(){
+        boolean won = true;
         ArrayList<MapItem> entities = map.getMovingItems();
         for (MapItem entity : entities){
             if (entity instanceof Intruder){
+                if (Vector2D.distance(position, entity.getPosition()) < killDistance)
+                    kill((Intruder) entity);
+
                 if(((Intruder) entity).isAlive){
-                    return false;
+                    won = false;
                 }
             }
         }
-        return true;
+        return won;
     }
 
     public void chase(Vector2D position){

@@ -2,6 +2,7 @@ package agents;
 
 import Enities.Entity;
 import Enities.Guard;
+import Enities.Intruder;
 import Enities.Ray;
 import model.MapItem;
 import model.Vector2D;
@@ -47,7 +48,7 @@ public class ExplorerBugAgent extends AbstractAgent {
     double wallPivotWeight = 3.0;
 
     // If the bug's wallCloseness percentage goes above this threshold, it'll enter wall crawl mode.
-    double wallClosenessConditionPercentage = 0.25;
+    double wallClosenessConditionPercentage = 0.3;
 
 
     @Override
@@ -122,6 +123,13 @@ public class ExplorerBugAgent extends AbstractAgent {
         // Set the bug's state
         crawlingAlongWall = (wallCloseness > wallClosenessConditionPercentage);
 
+        // Calculate general goal direction for intruder
+        if (entityInstance instanceof Intruder) {
+            Vector2D targetDir = ((Intruder) entityInstance).calculateTargetDirection();
+            if (targetDir != null)
+                goalDirection = Math.atan2(targetDir.getY(),targetDir.getX());
+        }
+
 
         double theta = Math.atan2(dir.getY(),dir.getX());
         double angleDifference = goalDirection - theta;
@@ -130,10 +138,11 @@ public class ExplorerBugAgent extends AbstractAgent {
         double pivotToGoal =  goalPivotWeight * (1-wallCloseness) * angleDifference;
         double pivotFromWall = wallPivotWeight * wallCloseness * wallRotationPreference;
 
-        if (crawlingAlongWall)
-            dir.pivot(pivotFromWall);
-        else
-            dir.pivot(pivotToGoal);
+          if (crawlingAlongWall)
+              dir.pivot(pivotFromWall);
+          else
+              dir.pivot(pivotToGoal);
+
 
         // Everything to do with the bug getting stuck somewhere
         // stuckTimer calculates how long the distance between the bug's current & previous position has been < 0.05.

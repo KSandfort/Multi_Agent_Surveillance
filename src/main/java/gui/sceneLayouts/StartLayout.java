@@ -57,14 +57,20 @@ public class StartLayout extends BorderPane {
             FXCollections.observableArrayList(
                     "Random Agent",
                     "Remote Agent",
-                    "Bug Agent"
+                    "Bug Agent",
+                    "Intruder Destroyer",
+                    "Ant Agent",
+                    "NEAT Agent"
             );
     private ComboBox guardAgentBox;
 
     private ObservableList<String> intruderAgent =
             FXCollections.observableArrayList(
                     "Random Agent",
-                    "Remote Agent"
+                    "Remote Agent",
+                    "Bug Agent",
+                    "Ant Agent",
+                    "NEAT Agent"
             );
     private ComboBox intruderAgentBox;
 
@@ -219,12 +225,31 @@ public class StartLayout extends BorderPane {
             if (guardAgentBox.getValue().equals("Bug Agent")) {
                 GameController.guardAgentType = 2;
             }
+            if (guardAgentBox.getValue().equals("Intruder Destroyer")) {
+                GameController.guardAgentType = 3;
+            }
+            if (guardAgentBox.getValue().equals("Ant Agent")) {
+                GameController.guardAgentType = 4;
+            }
+            if (guardAgentBox.getValue().equals("NEAT Agent")) {
+                GameController.guardAgentType = 5;
+            }
+
             // Determine agent type - Intruder
             if (intruderAgentBox.getValue().equals("Random Agent")) {
                 GameController.intruderAgentType = 0;
             }
             if (intruderAgentBox.getValue().equals("Remote Agent")) {
                 GameController.intruderAgentType = 1;
+            }
+            if (intruderAgentBox.getValue().equals("Bug Agent")) {
+                GameController.intruderAgentType = 2;
+            }
+            if (intruderAgentBox.getValue().equals("Ant Agent")) {
+                GameController.intruderAgentType = 4;
+            }
+            if (intruderAgentBox.getValue().equals("NEAT Agent")) {
+                GameController.intruderAgentType = 5;
             }
             simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });

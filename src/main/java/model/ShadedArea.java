@@ -1,9 +1,12 @@
 package model;
 
+import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import utils.DefaultValues;
 
 import java.util.ArrayList;
 
@@ -15,20 +18,25 @@ public class ShadedArea extends Area{
 
     public ShadedArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setAreaFovAngle(getAreaFovAngle()*0.5);
-        setAreaFovDepth(getAreaFovDepth()*0.5);
+        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
+        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
     }
 
     public ShadedArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
-        setAreaFovAngle(getAreaFovAngle()*0.5);
-        setAreaFovDepth(getAreaFovDepth()*0.5);
+        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
+        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
     }
 
     public ShadedArea(Vector2D[] pos) throws Exception {
         super(pos);
-        setAreaFovAngle(getAreaFovAngle()*0.5);
-        setAreaFovDepth(getAreaFovDepth()*0.5);
+        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
+        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
+    }
+
+    public void onAgentCollision(Entity entity) {
+        entity.setFovAngle(getAreaFovAngle());
+        entity.setFovDepth(getAreaFovDepth());
     }
 
     @Override
@@ -37,16 +45,31 @@ public class ShadedArea extends Area{
         int offset = SimulationGUI.CANVAS_OFFSET;
         double sf = SimulationGUI.SCALING_FACTOR;
 
-        for (int i = 0; i < cornerPoints.length; i++) {
-            Line line = new Line(
-                    (cornerPoints[i].getX() * sf) + offset,
-                    (cornerPoints[i].getY() * sf) + offset,
-                    (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
-                    (cornerPoints[(i + 1) % 4].getY() * sf) + offset);
-            line.setStroke(Color.web("#00FFBB", 0.2));
-            line.setStrokeWidth(4);
-            components.add(line);
+        double originX = Double.MAX_VALUE;
+        double originY = Double.MAX_VALUE;
+        double targetX = Double.MIN_VALUE;
+        double targetY = Double.MIN_VALUE;
+
+        for (Vector2D cornerPoint : cornerPoints) {
+            if (cornerPoint.getX() < originX)
+                originX = cornerPoint.getX();
+            if (cornerPoint.getX() > targetX)
+                targetX = cornerPoint.getX();
+            if (cornerPoint.getY() < originY)
+                originY = cornerPoint.getY();
+            if (cornerPoint.getY() > targetY)
+                targetY = cornerPoint.getY();
         }
+        Rectangle rectangle = new Rectangle(
+                (originX * sf) + offset,
+                (originY * sf) + offset,
+                Math.abs(targetX - originX) * sf,
+                Math.abs(targetY - originY) * sf);
+
+        rectangle.setFill(Color.web("#000000"));
+        rectangle.setOpacity(.5);
+        components.add(rectangle);
+
         return components;
     }
 }

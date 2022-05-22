@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 import model.GameMap;
 import model.MapItem;
 import model.TargetArea;
+import model.Vector2D;
 
 
 import java.util.ArrayList;
@@ -20,12 +21,38 @@ public class Intruder extends Entity{
     boolean isAlive = true;
     AbstractAgent agent;
     static int intruderCount = 0;
+    Vector2D targetAreaDirection;
+    boolean isDetected = false;
+
+    boolean wasInsideTarget = false;
+    static int intruderTargetCount = 0;
+
+
 
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
+
         intruderCount++;
         this.setID(intruderCount);
     }
+
+    public Vector2D calculateTargetDirection() {
+        Vector2D targetVector = null;
+
+        TargetArea target = map.getTargetArea();
+
+        if (target != null) {
+
+            double targetCenterX = (target.getCornerPoints()[1].getX() + target.getCornerPoints()[3].getX())/2;
+            double targetCenterY = (target.getCornerPoints()[1].getY() + target.getCornerPoints()[3].getY())/2;
+
+            targetVector = new Vector2D(targetCenterX - getPosition().getX(), targetCenterY - getPosition().getY());
+            targetVector.normalize();
+        }
+
+        return targetVector;
+    }
+
 
     @Override
     public boolean isIntruder() {
@@ -38,6 +65,17 @@ public class Intruder extends Entity{
 
     public void kill(){
         isAlive = false;
+        intruderCount--;
+    }
+
+    @Override
+    public void update(ArrayList<MapItem> mapItems){
+        super.update(mapItems);
+        //updates intruder knowledge on target area direction
+        if (getMap().getTargetArea() != null){
+            Vector2D targetPosition = getMap().getTargetArea().getPosition();
+            this.targetAreaDirection = Vector2D.normalize(Vector2D.subtract(targetPosition, getPosition()));
+        }
     }
 
     @Override
@@ -63,6 +101,7 @@ public class Intruder extends Entity{
             line.setStroke(Color.web("#000099", 1));
             components.add(text);
             components.add(circle);
+
             ArrayList<Ray> rays = FOV();
             for (Ray ray : rays){
                 components.add(ray.getComponent());
@@ -70,14 +109,25 @@ public class Intruder extends Entity{
             components.addAll(hitBox.getComponents());
             return components;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
      * @return true if the intruder is alive and in the target area
      */
     public boolean checkWinningCondition(){
-        return isAlive() && isInTargetArea();
+        boolean win = isAlive() && isInTargetArea();
+        if (map.getGameController().isAllIntrudersMode()) {
+            if (win && !wasInsideTarget) {
+                intruderTargetCount++;
+                wasInsideTarget = true;
+            }
+
+            // return true only if all intruders have visited the target area
+            return (win && intruderTargetCount >= intruderCount);
+        } else {
+            return isAlive() && isInTargetArea();
+        }
     }
 
     /**

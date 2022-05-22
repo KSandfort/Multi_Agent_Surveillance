@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class MapReader {
 
     // Variables
-    public static final boolean MAP_READER_DEBUG = true;
+    public static final boolean MAP_READER_DEBUG = false;
 
     /**
      * Returns a new map based on the properties given by a .txt file
@@ -83,6 +83,30 @@ public class MapReader {
                     }
                     case "wall": {
                         gameMap.addToMap(new Wall(
+                                Double.parseDouble(words[2]),
+                                Double.parseDouble(words[3]),
+                                Double.parseDouble(words[4]),
+                                Double.parseDouble(words[5])));
+                        break;
+                    }
+                    case "door": {
+                        gameMap.addToMap(new Door(
+                                Double.parseDouble(words[2]),
+                                Double.parseDouble(words[3]),
+                                Double.parseDouble(words[4]),
+                                Double.parseDouble(words[5])));
+                        break;
+                    }
+                    case "window": {
+                        gameMap.addToMap(new Window(
+                                Double.parseDouble(words[2]),
+                                Double.parseDouble(words[3]),
+                                Double.parseDouble(words[4]),
+                                Double.parseDouble(words[5])));
+                        break;
+                    }
+                    case "target": {
+                        gameMap.addToMap(new TargetArea(
                                 Double.parseDouble(words[2]),
                                 Double.parseDouble(words[3]),
                                 Double.parseDouble(words[4]),

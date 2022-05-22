@@ -101,12 +101,17 @@ public class Wall extends Area {
     }
 
     public Vector2D getAgentCollisionDirection(Entity agent){
+
+
         Vector2D pos = agent.getPosition();
+
+
 
         Vector2D dir = null;
         for (int i = 0; i < cornerPoints.length; i++) {
             Vector2D c1 = cornerPoints[i];
             Vector2D c2 = cornerPoints[(i + 1)%4];
+
 
             //calculate closest point on edge using vector projection
             //following the math on https://en.wikipedia.org/wiki/Vector_projection
@@ -149,15 +154,20 @@ public class Wall extends Area {
     {
         Vector2D pos = entity.getPosition();
         Vector2D dir = getAgentCollisionDirection(entity);
+
+
         if (dir == null) return;
         if(dir.getX() == 0 && dir.getY() == 0)
         {
             entity.setPosition(entity.getPrevPos());
+
         }else {
             double length = Vector2D.length(dir);
             double diff = entity.getRadius() - length;
             Vector2D push = Vector2D.scalar(dir, diff / length);
+
             entity.setPosition(Vector2D.add(pos, push));
+
         }
     }
 
