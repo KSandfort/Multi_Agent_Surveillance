@@ -69,8 +69,7 @@ public class StartLayout extends BorderPane {
                     "Random Agent",
                     "Remote Agent",
                     "Bug Agent",
-                    "Ant Agent",
-                    "NEAT Agent"
+                    "Ant Agent"
             );
     private ComboBox intruderAgentBox;
 
