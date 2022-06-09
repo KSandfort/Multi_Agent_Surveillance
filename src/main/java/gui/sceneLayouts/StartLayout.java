@@ -33,6 +33,7 @@ public class StartLayout extends BorderPane {
     private SimulationGUI simulationGUI;
     private Label projectLabel;
     private Button startButton;
+    private Button trainButton;
     private TextField guardAmount;
     private TextField intruderAmount;
     private Stage primaryStage;
@@ -201,7 +202,7 @@ public class StartLayout extends BorderPane {
         HBox controlsBox = new HBox();
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.setPadding(new Insets(10, 10, 10, 10));
-        startButton = new Button("Start");
+        startButton = new Button("Start\n(GUI)");
         startButton.setPrefHeight(90);
         startButton.setPrefWidth(120);
         startButton.setOnAction(e -> {
@@ -252,7 +253,18 @@ public class StartLayout extends BorderPane {
             }
             simulationGUI.startSimulationGUI(primaryStage, amountGuards, amountIntruders, mapCode);
         });
-        controlsBox.getChildren().add(startButton);
+
+        Pane spacer = new Pane();
+        spacer.setPrefSize(100, 50);
+
+        trainButton = new Button("Train NEAT\n(without GUI)");
+        trainButton.setPrefHeight(90);
+        trainButton.setPrefWidth(120);
+        trainButton.setOnAction(e -> {
+            simulationGUI.startTrainingInterface(primaryStage);
+        });
+
+        controlsBox.getChildren().addAll(startButton, spacer, trainButton);
         this.setBottom(controlsBox);
     }
 }

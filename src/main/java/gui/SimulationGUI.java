@@ -3,6 +3,7 @@ package gui;
 import controller.GameController;
 import gui.sceneLayouts.MainLayout;
 import gui.sceneLayouts.StartLayout;
+import gui.sceneLayouts.TrainLayout;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -98,6 +99,19 @@ public class SimulationGUI extends Application {
         if (autoStart) {
             this.startSimulation();
         }
+        primaryStage.show();
+    }
+
+    /**
+     * Sets the training scene.
+     * @param primaryStage
+     */
+    public void startTrainingInterface(Stage primaryStage) {
+        TrainLayout trainLayout = new TrainLayout();
+
+        primaryStage.setTitle("NEAT Training");
+        Scene trainScene = new Scene(trainLayout, 500, 500);
+        primaryStage.setScene(trainScene);
         primaryStage.show();
     }
 
