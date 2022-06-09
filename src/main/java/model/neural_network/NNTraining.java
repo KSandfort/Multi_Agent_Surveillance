@@ -1,9 +1,21 @@
 package model.neural_network;
 
+import gui.sceneLayouts.TrainLayout;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Class that executes training for the NEAT agent.
+ */
+@Getter
+@Setter
 public class NNTraining {
+
+    // Variables
+    private TrainLayout trainLayout;
     final static int generations = 200;//number of generations to train
     final static int guardType = 0;
     final static int intruderType = 5;

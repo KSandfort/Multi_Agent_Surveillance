@@ -25,6 +25,7 @@ public class SimulationGUI extends Application {
     private int currentStep;
     private StartLayout startLayout;
     private MainLayout mainLayout;
+    private TrainLayout trainLayout;
     private Scene mainScene;
     private int simulationDelay;
     private Timeline timeline;
@@ -107,8 +108,8 @@ public class SimulationGUI extends Application {
      * @param primaryStage
      */
     public void startTrainingInterface(Stage primaryStage) {
-        TrainLayout trainLayout = new TrainLayout();
-
+        trainLayout = new TrainLayout();
+        TrainLayout.active = true;
         primaryStage.setTitle("NEAT Training");
         Scene trainScene = new Scene(trainLayout, 500, 500);
         primaryStage.setScene(trainScene);

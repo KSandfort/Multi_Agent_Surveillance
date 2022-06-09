@@ -122,7 +122,6 @@ public class NeatAgent extends AbstractAgent {
 
         // Marker placing
         double[] markers = Arrays.copyOfRange(output, 2, 6);
-        System.out.println(Arrays.toString(markers));
         int maxValue = 0;
         int markerPriority = 0;
         for (int i = 0; i < markers.length; i++) {

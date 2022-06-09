@@ -3,6 +3,7 @@ package controller;
 import Enities.*;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
+import gui.sceneLayouts.TrainLayout;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import lombok.Getter;
@@ -180,6 +181,10 @@ public class GameController {
         if (terminalFeedback && getCurrentStep() % 60 == 0) {
             System.out.println("Simulation is running at step: " + getCurrentStep() + " (" + getCurrentStep()/60 + ")");
             System.out.println(map.getMarkers().size() + " markers");
+        }
+
+        if (TrainLayout.active) {
+            TrainLayout.currentStep.setValue((double) currentStep);
         }
 
         currentStep++;
