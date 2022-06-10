@@ -26,7 +26,7 @@ public abstract class Entity extends MapItem {
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
-    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
+    private boolean leftSpawn = true; // has the agent left spawn already? used for guard on guard collision
     private double distanceWalked = 0;
     protected int ID;
     HitBox hitBox;
@@ -253,8 +253,13 @@ public abstract class Entity extends MapItem {
                 agent = new NeatAgent();
                 agent.setEntityInstance(this);
 
+                // change this
                 NeuralNetwork.readGlobals("src/main/resources/NN/fromPreviousSim.txt");
                 NeatAgent.setNn(NeuralNetwork.readNetwork("src/main/resources/NN/bestNetwork.txt"));
+
+                // to this
+                NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
+                NeatAgent.setNn(NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt"));
                 break;
             }
             default: {
@@ -283,6 +288,36 @@ public abstract class Entity extends MapItem {
      * @return
      */
     public ArrayList<Ray> FOV() {
+        // First, make list of all objects that are within visible distance.
+        // Only these are used in the actual FOV calculations (because it makes no sense to check FOV collision for
+        // a map item that is on the complete other side of the map).
+        // Hope this makes things faster, ended up writing a whole mathematical proof lol
+
+        ArrayList<Area> potentialVisibleItems = new ArrayList<>();
+
+        double circleRadius = fovDepth;
+        double circleRadiusSquared = fovDepth * fovDepth;
+
+        for (MapItem item: map.getSolidBodies()) {
+            if (item instanceof Entity || item.isTransparentObject()) {
+                continue;
+            }
+            Area area = (Area) item;
+
+            Vector2D topLeft = area.getCornerPoints()[1];
+            Vector2D bottomRight = area.getCornerPoints()[3];
+
+            double x = this.position.getX();
+            double y = this.position.getY();
+
+            double deltaX = x - Math.max(topLeft.getX(), Math.min(x, bottomRight.getX()));
+            double deltaY = y - Math.max(topLeft.getY(), Math.min(y, bottomRight.getY()));
+
+            if (deltaX * deltaX + deltaY * deltaY < circleRadiusSquared) {
+                potentialVisibleItems.add(area);
+            }
+        }
+
         ArrayList<Ray> rays = new ArrayList<>();
         // Create all the rays
         for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 3){
@@ -294,11 +329,8 @@ public abstract class Entity extends MapItem {
             GameMap map = this.map;
             double minDistance = fovDepth;
             // Scan all fixed items on the map
-            for (MapItem item: map.getSolidBodies()) {
-                if (item instanceof Entity || item.isTransparentObject()) {
-                    continue;
-                }
-                Area area = (Area) item;
+            for (Area area: potentialVisibleItems) {
+
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){
                     double currentDistance = Vector2D.distance(ray.getOrigin(), ray.getPoint(), area.getCornerPoints()[j], area.getCornerPoints()[(j + 1) % 4]);

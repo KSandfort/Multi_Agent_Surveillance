@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class NNTraining {
     final static int generations = 200;//number of generations to train
-    final static int guardType = 0;
-    final static int intruderType = 5;
+    final static int guardType = 5;
+    final static int intruderType = 0;
     final static boolean trainGuard = false;//set to true if your training a guard, for intruder set to false
     final static boolean trainOn3Maps = false;//set to true if you want to train using all 3 maps of this phase
     final static int generationBetweenSave = 20;
