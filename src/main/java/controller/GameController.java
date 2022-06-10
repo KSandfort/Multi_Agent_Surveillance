@@ -132,6 +132,8 @@ public class GameController {
             step++;
         }
 
+        TrainLayout.gameCount++;
+
         controller.fitnessGuards = controller.getFitnessGuards();
         controller.fitnessIntruders = controller.getFitnessIntruders();
 

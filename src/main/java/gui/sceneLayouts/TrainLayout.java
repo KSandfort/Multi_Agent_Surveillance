@@ -69,12 +69,14 @@ public class TrainLayout extends BorderPane {
         trainToggle = new ToggleGroup();
         loadExisting = new RadioButton("Load training from file");
         loadExisting.setToggleGroup(trainToggle);
+        loadExisting.setSelected(true);
         trainNew = new RadioButton("New training");
         trainNew.setToggleGroup(trainToggle);
 
         agentToggle = new ToggleGroup();
         guardTraining = new RadioButton("Train Guards");
         guardTraining.setToggleGroup(agentToggle);
+        guardTraining.setSelected(true);
         intruderTraining = new RadioButton("Train Intruders");
         intruderTraining.setToggleGroup(agentToggle);
 
@@ -143,7 +145,8 @@ public class TrainLayout extends BorderPane {
         table.getItems().addAll(
                 totalGenerations,
                 generationCount,
-                currentStep
+                currentStep,
+                totalGamesPlayed
         );
 
         Thread trainingThread = new Thread(() -> {
