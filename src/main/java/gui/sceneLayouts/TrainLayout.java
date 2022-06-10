@@ -5,11 +5,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +26,15 @@ public class TrainLayout extends BorderPane {
 
     // Variables
     TableView table;
+
+    ToggleGroup trainToggle;
+    RadioButton loadExisting;
+    RadioButton trainNew;
+
+    ToggleGroup agentToggle;
+    RadioButton guardTraining;
+    RadioButton intruderTraining;
+
     Button startTrainingButton;
 
     // Static
@@ -54,6 +65,32 @@ public class TrainLayout extends BorderPane {
      * Inits all components on this layout.
      */
     private void initComponents() {
+        // Radio buttons
+        trainToggle = new ToggleGroup();
+        loadExisting = new RadioButton("Load training from file");
+        loadExisting.setToggleGroup(trainToggle);
+        trainNew = new RadioButton("New training");
+        trainNew.setToggleGroup(trainToggle);
+
+        agentToggle = new ToggleGroup();
+        guardTraining = new RadioButton("Train Guards");
+        guardTraining.setToggleGroup(agentToggle);
+        intruderTraining = new RadioButton("Train Intruders");
+        intruderTraining.setToggleGroup(agentToggle);
+
+        VBox radioButtonBox = new VBox();
+        radioButtonBox.setSpacing(5);
+        radioButtonBox.setPadding(new Insets(5, 5, 5, 5));
+        radioButtonBox.getChildren().addAll(
+                new Label("Start of the training:"),
+                loadExisting,
+                trainNew,
+                new Label("Train the following side (team):"),
+                guardTraining,
+                intruderTraining);
+
+        this.setTop(radioButtonBox);
+
 
         // Create data table
         table = new TableView();
@@ -67,18 +104,12 @@ public class TrainLayout extends BorderPane {
 
         table.getColumns().addAll(col1, col2);
 
-        // Add entries
+        // Add table data
         trainingInfo = new TableDataModel("GUARD/INTRUDER", 10.0); //TODO: get correct information
         totalGenerations = new TableDataModel("Total Generations", 1000.0);
         generationCount = new TableDataModel("Current Generation", 0.0);
         currentStep = new TableDataModel("Game Tick", 0.0);
         totalGamesPlayed = new TableDataModel("Games Played (total)", (double) gameCount);
-
-        table.getItems().addAll(
-                totalGenerations,
-                generationCount,
-                currentStep
-        );
 
         this.setCenter(table);
 
@@ -89,8 +120,11 @@ public class TrainLayout extends BorderPane {
         startTrainingButton.setOnAction(e -> {
             startTraining();
         });
-
-        this.setBottom(startTrainingButton);
+        VBox bottomBox = new VBox();
+        bottomBox.setAlignment(Pos.CENTER);
+        bottomBox.setPadding(new Insets(5, 5, 5, 5));
+        bottomBox.getChildren().add(startTrainingButton);
+        this.setBottom(bottomBox);
 
         Timeline refreshTimer = new Timeline(
                 new KeyFrame(Duration.seconds(0.1),
@@ -105,10 +139,18 @@ public class TrainLayout extends BorderPane {
     }
 
     public void startTraining() {
+        // Add entries
+        table.getItems().addAll(
+                totalGenerations,
+                generationCount,
+                currentStep
+        );
+
         Thread trainingThread = new Thread(() -> {
             NNTraining nnTraining = new NNTraining();
             nnTraining.train(1000, false);
         });
         trainingThread.start();
+
     }
 }
