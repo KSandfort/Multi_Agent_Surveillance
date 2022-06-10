@@ -291,13 +291,12 @@ public abstract class Entity extends MapItem {
         // First, make list of all objects that are within visible distance.
         // Only these are used in the actual FOV calculations (because it makes no sense to check FOV collision for
         // a map item that is on the complete other side of the map).
-        // Hope this makes things faster, ended up writing a whole mathematical proof lol
 
         ArrayList<Area> potentialVisibleItems = new ArrayList<>();
 
-        double circleRadius = fovDepth;
         double circleRadiusSquared = fovDepth * fovDepth;
 
+        // Circle-rectangle collision: https://yal.cc/rectangle-circle-intersection-test/
         for (MapItem item: map.getSolidBodies()) {
             if (item instanceof Entity || item.isTransparentObject()) {
                 continue;
