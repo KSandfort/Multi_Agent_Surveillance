@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class NNTraining {
-    final static int generations = 200;//number of generations to train
+    final static int generations = 1;//number of generations to train
     final static int guardType = 0;
     final static int intruderType = 5;
     final static boolean trainGuard = false;//set to true if your training a guard, for intruder set to false

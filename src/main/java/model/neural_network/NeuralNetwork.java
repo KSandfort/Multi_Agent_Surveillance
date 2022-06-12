@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.*;
 
 public class NeuralNetwork {
+
+    //is the initial network empty (true) or fully connected (false)
+    final boolean START_FROM_NOTHING = true;
+
     //coefficients for compatibility distance calculation
     final static double c1 =1.3;
     final static double c2 =1.3;
@@ -47,11 +51,13 @@ public class NeuralNetwork {
     //it only connects the input nodes with a connection to each output node, no hidden inputs are created
     public void init()
     {
-        for(int i = 0; i < inputNum;i++)
-        {
-            for(int o = inputNum; o < inputNum + outputNum;o++)
+        if(!START_FROM_NOTHING){
+            for(int i = 0; i < inputNum;i++)
             {
-                addConnection(i,o,null,0);
+                for(int o = inputNum; o < inputNum + outputNum;o++)
+                {
+                    addConnection(i,o,null,0);
+                }
             }
         }
         mutate();
@@ -575,6 +581,7 @@ public class NeuralNetwork {
             FileWriter fw = new FileWriter(file);
             String text = "\nmn=" + maxNeurons;//first line is maxNeurons
             //print stored connections
+            System.out.println("connections : " + newConnections.size());
             for(NNConnection c : newConnections)
             {
                 text += "\nnc=" + c.toString();
