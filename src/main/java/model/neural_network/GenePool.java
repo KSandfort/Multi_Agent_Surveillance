@@ -224,8 +224,7 @@ public class  GenePool
     //evaluate the fitness of the genomes, this method will have to change if you want to change the use of the network
     private void simulate()
     {
-        for(NeuralNetwork nn : pool)
-        {
+        for(NeuralNetwork nn : pool) {
             nn.setFitness(runSim(nn));
         }
     }
@@ -245,17 +244,31 @@ public class  GenePool
             return NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
         }
 
-        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_1.txt";
-        GameController result = GameController.simulate(maxSteps,3,3,3,1);
-        fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+        /* Training on 3 maps:
+            - Start new MapTraining instance for each thread
+            - Run threads
+            - Wait for threads to finish
+            - Sum fitness
+         */
 
-        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_2.txt";
-        result = GameController.simulate(maxSteps,3,3,3,1);
-        fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+        MapTrainingThread mapThread1 = new MapTrainingThread("src/main/resources/maps/phase2_1.txt");
+        MapTrainingThread mapThread2 = new MapTrainingThread("src/main/resources/maps/phase2_2.txt");
+        MapTrainingThread mapThread3 = new MapTrainingThread("src/main/resources/maps/phase2_3.txt");
 
-        SimulationGUI.bypassPath = "src/main/resources/maps/phase2_3.txt";
-        result = GameController.simulate(maxSteps,3,3,3,1);
-        fitness += NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
+        mapThread1.start();
+        mapThread2.start();
+        mapThread3.start();
+
+        try {
+            mapThread1.join();
+            mapThread2.join();
+            mapThread3.join();
+        } catch (InterruptedException exception) {
+            exception.printStackTrace();
+        }
+
+        fitness = (mapThread1.fitness + mapThread2.fitness + mapThread3.fitness)/3;
+
 
         return fitness;
     }
@@ -394,5 +407,23 @@ public class  GenePool
         child.mutate();
 
         return child;
+    }
+}
+
+
+class MapTrainingThread extends Thread {
+    String map = "";
+    double fitness = 0;
+    int maxSteps = 2000;
+
+    public MapTrainingThread(String map) {
+        this.map = map;
+    }
+
+    public void run() {
+        // System.out.println("Began thread " + map);
+        SimulationGUI.bypassPath = map;
+        GameController result = GameController.simulate(maxSteps,3,3,3,1);
+        fitness = NNTraining.trainGuard ? result.getFitnessGuards() : result.getFitnessIntruders();
     }
 }
