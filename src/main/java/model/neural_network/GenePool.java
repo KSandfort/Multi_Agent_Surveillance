@@ -224,11 +224,7 @@ public class  GenePool
     //evaluate the fitness of the genomes, this method will have to change if you want to change the use of the network
     private void simulate()
     {
-        int i = 0;
-        for(NeuralNetwork nn : pool)
-        {
-            i++;
-            System.out.print("|".repeat(i) + ".".repeat(poolSize - i) + "\r");
+        for(NeuralNetwork nn : pool) {
             nn.setFitness(runSim(nn));
         }
     }

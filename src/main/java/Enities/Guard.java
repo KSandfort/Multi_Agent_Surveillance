@@ -127,7 +127,7 @@ public class Guard extends Entity {
         components.add(text);
         components.add(circle);
 
-        ArrayList<Ray> rays = this.FOV();
+        ArrayList<Ray> rays = this.getFov();
         for (Ray ray : rays){
             components.add(ray.getComponent());
         }

@@ -102,7 +102,7 @@ public class Intruder extends Entity{
             components.add(text);
             components.add(circle);
 
-            ArrayList<Ray> rays = FOV();
+            ArrayList<Ray> rays = this.getFov();
             for (Ray ray : rays){
                 components.add(ray.getComponent());
             }
