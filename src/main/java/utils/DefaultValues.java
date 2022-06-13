@@ -20,7 +20,7 @@ public class DefaultValues {
     // Initial FOV values for each agent
     public static double agentFovAngle = 60;
     public static double agentFovDepth = 20;
-
+    public static double agentFovNumber = 20;
     //////////////
     // AREA FOV //
     //////////////
