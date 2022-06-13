@@ -277,7 +277,7 @@ public abstract class Entity extends MapItem {
         ArrayList<Ray> rays = new ArrayList<>();
         // Create all the rays
         for (double i = 0; i < DefaultValues.agentFovNumber;i++){
-            double angle = (int) ((-0.5 * fovAngle) + (i * fovAngle/DefaultValues.agentFovNumber));
+            double angle = (-0.5 * fovAngle) + (i * fovAngle/DefaultValues.agentFovNumber);
             Vector2D direction = new Vector2D(
                     getDirection().getX()*Math.cos(Math.toRadians(angle)) - getDirection().getY()*Math.sin(Math.toRadians(angle)),
                     getDirection().getX()*Math.sin(Math.toRadians(angle)) + getDirection().getY()*Math.cos(Math.toRadians(angle))
