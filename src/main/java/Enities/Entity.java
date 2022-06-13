@@ -26,7 +26,7 @@ public abstract class Entity extends MapItem {
     private ArrayList<Ray> fov;
     private double turnSpeed; //rotation in degrees/sec
     private double radius = 1; //width of the entity
-    private boolean leftSpawn = false; // has the agent left spawn already? used for guard on guard collision
+    private boolean leftSpawn = true; // has the agent left spawn already? used for guard on guard collision
     private double distanceWalked = 0;
     protected int ID;
     HitBox hitBox;
@@ -77,6 +77,7 @@ public abstract class Entity extends MapItem {
      * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
+        this.fov = FOV();
 
         Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
 
@@ -94,7 +95,7 @@ public abstract class Entity extends MapItem {
                 stamina -= sprintConsumption;
             }
         }
-        else if (!isSprinting && stamina < maxStamina){
+        else if (stamina < maxStamina){
             stamina += staminaRegeneration;
         }
 
@@ -152,6 +153,39 @@ public abstract class Entity extends MapItem {
         }
     }
 
+    /**
+     * Calculates which map objects are within the distance given by fovDepth.
+     * Mainly used by the FOV method to reduce unnecessary computations.
+     */
+    public ArrayList<MapItem> getNearbySolidAreas() {
+        double circleRadiusSquared = fovDepth * fovDepth;
+
+        ArrayList<MapItem> nearbyMapItems = new ArrayList<>();
+
+        // Circle-rectangle collision: https://yal.cc/rectangle-circle-intersection-test/
+        for (MapItem item: map.getSolidBodies()) {
+            if (item instanceof Entity || item.isTransparentObject()) {
+                continue;
+            }
+
+            Vector2D topLeft = item.getCornerPoints()[1];
+            Vector2D bottomRight = item.getCornerPoints()[3];
+
+            double x = this.position.getX();
+            double y = this.position.getY();
+
+            double deltaX = x - Math.max(topLeft.getX(), Math.min(x, bottomRight.getX()));
+            double deltaY = y - Math.max(topLeft.getY(), Math.min(y, bottomRight.getY()));
+
+            if (deltaX * deltaX + deltaY * deltaY < circleRadiusSquared) {
+                nearbyMapItems.add(item);
+            }
+        }
+
+        return nearbyMapItems;
+    }
+
+
     public boolean isInSpecialArea(ArrayList<MapItem> items){
         return (getCurrentArea(items) != null);
     }
@@ -204,7 +238,6 @@ public abstract class Entity extends MapItem {
 
     public void onAgentCollision(Entity entity)
     {
-        Vector2D pos = entity.getPosition();
         entity.setPosition(entity.getPrevPos());
     }
 
@@ -214,55 +247,7 @@ public abstract class Entity extends MapItem {
             prevPos = new Vector2D(getPosition().getX(), getPosition().getY());
         position = new Vector2D(pos.getX(), pos.getY());
     }
-
-    /**
-     * Sets the agent of a guard.
-     * 0 = random agent
-     * 1 = remote agent
-     * @param type
-     */
-    public void setAgent(int type) {
-        switch (type) {
-            case 0: { // Random Agent
-                agent = new RandomAgent();
-                agent.setEntityInstance(this);
-                break;
-            }
-            case 1: { // Remote Agent
-                agent = new RemoteAgent();
-                agent.setEntityInstance(this);
-                agent.addControls();
-                break;
-            }
-            case 2: { // Bug Agent
-                agent = new ExplorerBugAgent();
-                agent.setEntityInstance(this);
-                break;
-            }
-            case 3: { // Intruder Destroyer
-                agent = new RuleBasedGuardAgent();
-                agent.setEntityInstance(this);
-                break;
-            }
-            case 4: { // Ant Agent
-                agent = new AntAgent();
-                agent.setEntityInstance(this);
-                break;
-            }
-            case 5: { // NEAT Agent
-                agent = new NeatAgent();
-                agent.setEntityInstance(this);
-
-                NeuralNetwork.readGlobals("src/main/resources/NN/fromPreviousSim.txt");
-                NeatAgent.setNn(NeuralNetwork.readNetwork("src/main/resources/NN/bestNetwork.txt"));
-                break;
-            }
-            default: {
-                System.out.println("No agent defined!");
-            }
-        }
-    }
-
+  
     public void resetEntityParam(){
         this.setFovAngle(DefaultValues.agentFovAngle);
         this.setFovDepth(DefaultValues.agentFovDepth);
@@ -283,6 +268,12 @@ public abstract class Entity extends MapItem {
      * @return
      */
     public ArrayList<Ray> FOV() {
+        // First, make list of all objects that are within visible distance.
+        // Only these are used in the actual FOV calculations (because it makes no sense to check FOV collision for
+        // a map item that is on the complete other side of the map).
+
+        ArrayList<MapItem> potentialVisibleItems = getNearbySolidAreas();
+
         ArrayList<Ray> rays = new ArrayList<>();
         // Create all the rays
         for (double i = -0.5 * fovAngle; i <= 0.5 * fovAngle; i+= 3){
@@ -291,14 +282,10 @@ public abstract class Entity extends MapItem {
                     getDirection().getX()*Math.sin(Math.toRadians(i)) + getDirection().getY()*Math.cos(Math.toRadians(i))
             );
             Ray ray = new Ray(getPosition(), Vector2D.resize(direction, fovDepth));
-            GameMap map = this.map;
             double minDistance = fovDepth;
             // Scan all fixed items on the map
-            for (MapItem item: map.getSolidBodies()) {
-                if (item instanceof Entity || item.isTransparentObject()) {
-                    continue;
-                }
-                Area area = (Area) item;
+            for (MapItem area: potentialVisibleItems) {
+
                 // Find the closest object to avoid "seeing through walls"
                 for (int j = 0; j < area.getCornerPoints().length; j++){
                     double currentDistance = Vector2D.distance(ray.getOrigin(), ray.getPoint(), area.getCornerPoints()[j], area.getCornerPoints()[(j + 1) % 4]);
@@ -324,8 +311,8 @@ public abstract class Entity extends MapItem {
         double rayLength = Vector2D.length(ray.getDirection());
         int rayLengthInt = (int) Math.floor(rayLength);
         int detailLevel = 2; // Increase to 2 or more, in case there are too many empty spots in the vision
-        for (int i = 1*detailLevel; i < rayLengthInt*detailLevel; i++) {
-            Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/detailLevel));
+        for (int i = detailLevel; i < rayLengthInt*detailLevel; i++) {
+            Vector2D currentTarget = Vector2D.add(ray.origin, Vector2D.resize(ray.direction, i/ detailLevel));
             entityKnowledge.setCell(1, currentTarget);
         }
         double epsilon = 0.01; // Since the distance correction has some round-off errors, add a small buffer
@@ -411,7 +398,6 @@ public abstract class Entity extends MapItem {
     }
 
     public ArrayList <Entity> getDetectedEntities(){
-        ArrayList<MapItem> entities = this.getMap().getMovingItems();
         ArrayList<Ray> fov = FOV();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
         for (Ray ray : fov) {
@@ -425,11 +411,53 @@ public abstract class Entity extends MapItem {
     }
 
     public void setSprinting(boolean sprint){
-        if (sprint == true && stamina <= 0){
+        if (sprint && stamina <= 0){
             isSprinting = false;
         }
         else{
             isSprinting = sprint;
+        }
+    }
+
+    /**
+     * Sets the agent of a guard.
+     * 0 = random agent
+     * 1 = remote agent
+     * @param type
+     */
+    public void setAgent(int type) {
+        switch (type) {
+            case 0 -> { // Random Agent
+                agent = new RandomAgent();
+                agent.setEntityInstance(this);
+            }
+            case 1 -> { // Remote Agent
+                agent = new RemoteAgent();
+                agent.setEntityInstance(this);
+                agent.addControls();
+            }
+            case 2 -> { // Bug Agent
+                agent = new ExplorerBugAgent();
+                agent.setEntityInstance(this);
+            }
+            case 3 -> { // Intruder Destroyer
+                agent = new RuleBasedGuardAgent();
+                agent.setEntityInstance(this);
+            }
+            case 4 -> { // Ant Agent
+                agent = new AntAgent();
+                agent.setEntityInstance(this);
+            }
+            case 5 -> { // NEAT Agent
+                agent = new NeatAgent();
+                agent.setEntityInstance(this);
+
+//                NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
+//                NeatAgent.setNn(NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt"));
+            }
+            default -> {
+                System.out.println("No agent defined!");
+            }
         }
     }
 

@@ -122,9 +122,10 @@ public class NeatAgent extends AbstractAgent {
 
         // Marker placing
         double[] markers = Arrays.copyOfRange(output, 2, 6);
+        int maxValue = 0;
         int markerPriority = 0;
         for (int i = 0; i < markers.length; i++) {
-            if (i > markerPriority) {
+            if (markers[i] > maxValue) {
                 markerPriority = i;
             }
         }
@@ -143,7 +144,7 @@ public class NeatAgent extends AbstractAgent {
      * @return
      */
     private double[] wallSensing() {
-        ArrayList<Ray> vision = this.entityInstance.FOV();
+        ArrayList<Ray> vision = this.entityInstance.getFov();
 
         double averageDistance = 0;
         // Average distance to the left of the bug, average distance to the right of the bug

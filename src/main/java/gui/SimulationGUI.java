@@ -3,6 +3,7 @@ package gui;
 import controller.GameController;
 import gui.sceneLayouts.MainLayout;
 import gui.sceneLayouts.StartLayout;
+import gui.sceneLayouts.TrainLayout;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -24,6 +25,7 @@ public class SimulationGUI extends Application {
     private int currentStep;
     private StartLayout startLayout;
     private MainLayout mainLayout;
+    private TrainLayout trainLayout;
     private Scene mainScene;
     private int simulationDelay;
     private Timeline timeline;
@@ -102,6 +104,19 @@ public class SimulationGUI extends Application {
     }
 
     /**
+     * Sets the training scene.
+     * @param primaryStage
+     */
+    public void startTrainingInterface(Stage primaryStage) {
+        trainLayout = new TrainLayout();
+        TrainLayout.active = true;
+        primaryStage.setTitle("NEAT Training");
+        Scene trainScene = new Scene(trainLayout, 500, 500);
+        primaryStage.setScene(trainScene);
+        primaryStage.show();
+    }
+
+    /**
      * Updates the GUI one simulation step.
      */
     public void updateGUI1step() {
@@ -136,7 +151,10 @@ public class SimulationGUI extends Application {
         this.timeline.pause();
     }
 
-
+    /**
+     * Returns the current step of the game (discrete time).
+     * @return
+     */
     public int getCurrentStep() {
         return controller.getCurrentStep();
     }
