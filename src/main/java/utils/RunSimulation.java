@@ -24,8 +24,8 @@ public class RunSimulation {
         SimulationGUI.bypassPath = path;
         GameController.guardAgentType = guardType;
         GameController.intruderAgentType = intruderType;
-        NeuralNetwork.readGlobals("fromPreviousSim.txt");
-        NeatAgent.setNn(NeuralNetwork.readNetwork("bestNetwork.txt"));
+        NeuralNetwork.readGlobals("fromPreviousSim2.txt");
+        NeatAgent.setNn(NeuralNetwork.readNetwork("bestNetwork2.txt"));
         SimulationGUI.autoStart = true;
         if (gui) {
             SimulationGUI sim = new SimulationGUI();
