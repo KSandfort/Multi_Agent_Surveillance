@@ -25,7 +25,8 @@ public class NeatAgent extends AbstractAgent {
         if(nn == null){
             nn = new NeuralNetwork();
             nn.init();
-            nn.readNetwork("bestNetwork.txt");
+            nn = nn.readNetwork("bestNetwork.txt");
+            NeuralNetwork.readGlobals("fromPreviousSim.txt");
         }
 
     }

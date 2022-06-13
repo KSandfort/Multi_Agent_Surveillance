@@ -318,7 +318,7 @@ public class GameController {
 
         } else if (gameMode == 1) {
             String winner = (hasWonGame == 1 ? "Guards" : "Intruders");
-            System.out.println(winner + " won!");
+            // System.out.println(winner + " won!");
 
 
         }
