@@ -46,7 +46,7 @@ public class NNTraining {
 
     private void saveNetwork(GenePool g) {
         NeuralNetwork nn = g.bestNetwork;
-        if(g.generation - 1 % generationBetweenSave == 0)
+        if ((g.generation - 1) % generationBetweenSave == 0)
         {
             nn.saveNetwork("output/Neat results/bestNetwork" + g.generation + ".txt");
             nn.saveGlobals("output/Neat results/fromPreviousSim" + g.generation +".txt");
