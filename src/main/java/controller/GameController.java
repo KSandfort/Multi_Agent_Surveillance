@@ -49,8 +49,8 @@ public class GameController {
     public static int guardAgentType = 0;
     public static int intruderAgentType = 0;
     public static boolean terminalFeedback = false; // Displays information about the simulation in the terminal
-    // 0 = random, 1 = remote, ...
 
+    // Public
     public double fitnessGuards = 0;
     public double fitnessIntruders = 0;
 
@@ -122,7 +122,7 @@ public class GameController {
         boolean finished = false;
         int step = 0;
 
-        while (!finished){
+        while (!finished) {
             controller.update();
 
             // Abort simulation upon win

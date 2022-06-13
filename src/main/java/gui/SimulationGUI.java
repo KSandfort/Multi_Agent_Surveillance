@@ -151,7 +151,10 @@ public class SimulationGUI extends Application {
         this.timeline.pause();
     }
 
-
+    /**
+     * Returns the current step of the game (discrete time).
+     * @return
+     */
     public int getCurrentStep() {
         return controller.getCurrentStep();
     }

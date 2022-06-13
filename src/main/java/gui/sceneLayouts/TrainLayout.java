@@ -1,8 +1,11 @@
 package gui.sceneLayouts;
 
+import controller.GameController;
 import gui.TableDataModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,13 +30,32 @@ public class TrainLayout extends BorderPane {
     // Variables
     TableView table;
 
-    ToggleGroup trainToggle;
-    RadioButton loadExisting;
-    RadioButton trainNew;
+    private ToggleGroup trainToggle;
+    private RadioButton loadExisting;
+    private RadioButton trainNew;
 
-    ToggleGroup agentToggle;
-    RadioButton guardTraining;
-    RadioButton intruderTraining;
+    private ToggleGroup agentToggle;
+    private RadioButton guardTraining;
+    private RadioButton intruderTraining;
+
+    private ComboBox enemyAgentBox;
+    private ObservableList<String> enemyAgent =
+            FXCollections.observableArrayList(
+                    "Random Agent",
+                    "Remote Agent",
+                    "Bug Agent",
+                    "Intruder Destroyer",
+                    "Ant Agent",
+                    "NEAT Agent"
+            );
+
+    private ComboBox mapChoiceBox;
+    private ObservableList<String> mapChoice =
+            FXCollections.observableArrayList(
+                    "1",
+                    "2",
+                    "3"
+            );
 
     Button startTrainingButton;
 
@@ -80,6 +102,9 @@ public class TrainLayout extends BorderPane {
         intruderTraining = new RadioButton("Train Intruders");
         intruderTraining.setToggleGroup(agentToggle);
 
+        enemyAgentBox = new ComboBox(enemyAgent);
+        enemyAgentBox.getSelectionModel().selectFirst();
+
         VBox radioButtonBox = new VBox();
         radioButtonBox.setSpacing(5);
         radioButtonBox.setPadding(new Insets(5, 5, 5, 5));
@@ -89,7 +114,10 @@ public class TrainLayout extends BorderPane {
                 trainNew,
                 new Label("Train the following side (team):"),
                 guardTraining,
-                intruderTraining);
+                intruderTraining,
+                new Label("Enemy Agent"),
+                enemyAgentBox
+        );
 
         this.setTop(radioButtonBox);
 
@@ -140,7 +168,43 @@ public class TrainLayout extends BorderPane {
 
     }
 
+    /**
+     * Method to start the training once the start-button is clicked.
+     */
     public void startTraining() {
+        // Set NN variables
+        int enemyAgentType = 0;
+        if (enemyAgentBox.getValue().equals("Random Agent")) {
+            enemyAgentType = 0;
+        }
+        if (enemyAgentBox.getValue().equals("Remote Agent")) {
+            enemyAgentType = 1;
+        }
+        if (enemyAgentBox.getValue().equals("Bug Agent")) {
+            enemyAgentType = 2;
+        }
+        if (enemyAgentBox.getValue().equals("Intruder Destroyer")) {
+            enemyAgentType = 3;
+        }
+        if (enemyAgentBox.getValue().equals("Ant Agent")) {
+            enemyAgentType = 4;
+        }
+        if (enemyAgentBox.getValue().equals("NEAT Agent")) {
+            enemyAgentType = 5;
+        }
+        if (guardTraining.isSelected()) {
+            NNTraining.trainGuard = true;
+            NNTraining.guardType = 5;
+            NNTraining.intruderType = enemyAgentType;
+        }
+        else {
+            NNTraining.trainGuard = false;
+            NNTraining.guardType = enemyAgentType;
+            NNTraining.intruderType = 5;
+        }
+        String mapPath = "src/main/resources/maps/phase2_" + mapChoiceBox.getValue() + ".txt";
+        NNTraining.mapPath = mapPath;
+
         // Add entries
         table.getItems().addAll(
                 totalGenerations,
@@ -148,6 +212,7 @@ public class TrainLayout extends BorderPane {
                 currentStep,
                 totalGamesPlayed
         );
+
 
         Thread trainingThread = new Thread(() -> {
             NNTraining nnTraining = new NNTraining();
