@@ -1,19 +1,15 @@
 package gui.sceneLayouts;
 
-import controller.GameController;
 import gui.TableDataModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -144,7 +140,7 @@ public class TrainLayout extends BorderPane {
         table.getColumns().addAll(col1, col2);
 
         // Add table data
-        trainingInfo = new TableDataModel("GUARD/INTRUDER", 10.0); //TODO: get correct information
+        trainingInfo = new TableDataModel("GUARD/INTRUDER", 0.0);
         totalGenerations = new TableDataModel("Total Generations", 1000.0);
         generationCount = new TableDataModel("Current Generation", 0.0);
         currentStep = new TableDataModel("Game Tick", 0.0);
@@ -215,17 +211,20 @@ public class TrainLayout extends BorderPane {
             NNTraining.trainGuard = true;
             NNTraining.guardType = 5;
             NNTraining.intruderType = enemyAgentType;
+            trainingInfo.setName("Guard Training");
         }
         else {
             NNTraining.trainGuard = false;
             NNTraining.guardType = enemyAgentType;
             NNTraining.intruderType = 5;
+            trainingInfo.setName("Intruder Training");
         }
         String mapPath = "src/main/resources/maps/phase2_" + mapChoiceBox.getValue() + ".txt";
         NNTraining.mapPath = mapPath;
 
         // Add entries
         table.getItems().addAll(
+                trainingInfo,
                 totalGenerations,
                 generationCount,
                 currentStep,
