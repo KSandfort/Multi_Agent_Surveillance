@@ -12,12 +12,12 @@ import java.io.IOException;
 @Getter
 @Setter
 public class NNTraining {
-    final static int generations = 500;//number of generations to train
-    final static int guardType = 0;
-    final static int intruderType = 5;
-    final static boolean trainGuard = false;//set to true if your training a guard, for intruder set to false
-    final static boolean trainOn3Maps = false;//set to true if you want to train using all 3 maps of this phase
-    final static boolean startFromNothing = false;//set this to true if you want to start with a fully connected network
+    final static int generations = 1000; // Number of generations to train
+    public static int guardType = 0;
+    public static int intruderType = 5;
+    public static boolean trainGuard = false; // Set to true if you're training a guard, for intruder set to false
+    final static boolean trainOn3Maps = true; // Set to true if you want to train using all 3 maps of this phase
+    public static boolean startFromNothing = false; // Set this to true if you want to start with a fully connected network
     final static int generationThreads = 4; // Splits the gene pool into equally-sized partitions for faster training
     final static int generationBetweenSave = 20;
   
