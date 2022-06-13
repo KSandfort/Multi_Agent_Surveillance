@@ -33,6 +33,7 @@ public class TrainLayout extends BorderPane {
     private ToggleGroup trainToggle;
     private RadioButton loadExisting;
     private RadioButton trainNew;
+    private boolean startFromFile = true;
 
     private ToggleGroup agentToggle;
     private RadioButton guardTraining;
@@ -68,11 +69,14 @@ public class TrainLayout extends BorderPane {
     public static TableDataModel totalGamesPlayed;
     public static TableDataModel totalWinsGuards;
     public static TableDataModel totalWinsIntruders;
+    public static TableDataModel totalDraws;
     public static TableDataModel totalWinRatio;
     public static TableDataModel bestFitness;
 
     public static int gameCount = 0;
-
+    public static int guardWins = 0;
+    public static int intruderWins = 0;
+    public static int draws = 0;
 
     /**
      * Constructor
@@ -105,6 +109,9 @@ public class TrainLayout extends BorderPane {
         enemyAgentBox = new ComboBox(enemyAgent);
         enemyAgentBox.getSelectionModel().selectFirst();
 
+        mapChoiceBox = new ComboBox(mapChoice);
+        mapChoiceBox.getSelectionModel().selectFirst();
+
         VBox radioButtonBox = new VBox();
         radioButtonBox.setSpacing(5);
         radioButtonBox.setPadding(new Insets(5, 5, 5, 5));
@@ -116,7 +123,9 @@ public class TrainLayout extends BorderPane {
                 guardTraining,
                 intruderTraining,
                 new Label("Enemy Agent"),
-                enemyAgentBox
+                enemyAgentBox,
+                new Label("Map Selection"),
+                mapChoiceBox
         );
 
         this.setTop(radioButtonBox);
@@ -140,6 +149,9 @@ public class TrainLayout extends BorderPane {
         generationCount = new TableDataModel("Current Generation", 0.0);
         currentStep = new TableDataModel("Game Tick", 0.0);
         totalGamesPlayed = new TableDataModel("Games Played (total)", (double) gameCount);
+        totalWinsGuards = new TableDataModel("Guard wins", 0.0);
+        totalWinsIntruders = new TableDataModel("Intruder wins", 0.0);
+        totalDraws = new TableDataModel("Draws", 0.0);
 
         this.setCenter(table);
 
@@ -161,6 +173,9 @@ public class TrainLayout extends BorderPane {
                         e -> {
                             table.refresh();
                             totalGamesPlayed.setValue((double) gameCount);
+                            totalWinsGuards.setValue((double) guardWins);
+                            totalWinsIntruders.setValue((double) intruderWins);
+                            totalDraws.setValue((double) draws);
                         })
         );
         refreshTimer.setCycleCount(Timeline.INDEFINITE);
@@ -173,6 +188,10 @@ public class TrainLayout extends BorderPane {
      */
     public void startTraining() {
         // Set NN variables
+        if (loadExisting.isSelected()) {
+            startFromFile = true;
+        }
+
         int enemyAgentType = 0;
         if (enemyAgentBox.getValue().equals("Random Agent")) {
             enemyAgentType = 0;
@@ -210,13 +229,16 @@ public class TrainLayout extends BorderPane {
                 totalGenerations,
                 generationCount,
                 currentStep,
-                totalGamesPlayed
+                totalGamesPlayed,
+                totalWinsGuards,
+                totalWinsIntruders,
+                totalDraws
         );
 
 
         Thread trainingThread = new Thread(() -> {
             NNTraining nnTraining = new NNTraining();
-            nnTraining.train(1000, false);
+            nnTraining.train(1000, startFromFile);
         });
         trainingThread.start();
 

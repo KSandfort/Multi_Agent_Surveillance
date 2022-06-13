@@ -252,9 +252,8 @@ public abstract class Entity extends MapItem {
             case 5: { // NEAT Agent
                 agent = new NeatAgent();
                 agent.setEntityInstance(this);
-
-                NeuralNetwork.readGlobals("src/main/resources/NN/fromPreviousSim.txt");
-                NeatAgent.setNn(NeuralNetwork.readNetwork("src/main/resources/NN/bestNetwork.txt"));
+                // NeuralNetwork.readGlobals("src/main/resources/NN/fromPreviousSim.txt");
+                // NeatAgent.setNn(NeuralNetwork.readNetwork("src/main/resources/NN/bestNetwork.txt"));
                 break;
             }
             default: {

@@ -126,10 +126,18 @@ public class GameController {
             controller.update();
 
             // Abort simulation upon win
-            if (controller.hasWonGame > 0 || step > steps)
+            if (controller.hasWonGame > 0 || step > steps) {
                 finished = true;
-
+                if (controller.hasWonGame == 1) {
+                    TrainLayout.guardWins++;
+                } else if (controller.hasWonGame == 2) {
+                    TrainLayout.intruderWins++;
+                } else {
+                    TrainLayout.draws++;
+                }
+            }
             step++;
+
         }
 
         TrainLayout.gameCount++;

@@ -24,6 +24,10 @@ public class NNTraining {
     final static int generationBetweenSave = 20;
     public static String mapPath = "src/main/resources/maps/phase2_1.txt"; // Map to be used if you're not training on all 3 maps
 
+    /**
+     * Execute to run training.
+     * @param args
+     */
     public static void main(String[] args) {
         NNTraining nnt = new NNTraining();
         nnt.train(generations, false);
