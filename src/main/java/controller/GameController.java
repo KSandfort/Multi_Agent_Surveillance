@@ -428,7 +428,7 @@ public class GameController {
             fitnessAvgDistance +
             fitnessMinDistance +
             fitnessIntrudersKilled +
-            fitnessWon
+            fitnessWon + getCoveragePercent()
         ) / 4;
 
         return fitness;
