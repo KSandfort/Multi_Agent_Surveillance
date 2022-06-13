@@ -14,13 +14,13 @@ import java.io.IOException;
 @Setter
 public class NNTraining {
 
-    // Variables
-    private TrainLayout trainLayout;
-    final static int generations = 200; // Number of generations to train
-    public static int guardType = 0;
-    public static int intruderType = 5;
-    public static boolean trainGuard = false; // Set to true if you're training a guard, for intruder set to false
-    final static boolean trainOn3Maps = false; // Set to true if you want to train using all 3 maps of this phase
+    final static int generations = 200;//number of generations to train
+    final static int guardType = 5;
+    final static int intruderType = 0;
+    final static int generationThreads = 4; // splits the gene pool into equally-sized partitions for faster training
+    final static boolean trainGuard = true;//set to true if your training a guard, for intruder set to false
+    final static boolean trainOn3Maps = false;//set to true if you want to train using all 3 maps of this phase
+
     final static int generationBetweenSave = 20;
     public static String mapPath = "src/main/resources/maps/phase2_1.txt"; // Map to be used if you're not training on all 3 maps
 

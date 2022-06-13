@@ -144,7 +144,7 @@ public class NeatAgent extends AbstractAgent {
      * @return
      */
     private double[] wallSensing() {
-        ArrayList<Ray> vision = this.entityInstance.FOV();
+        ArrayList<Ray> vision = this.entityInstance.getFov();
 
         double averageDistance = 0;
         // Average distance to the left of the bug, average distance to the right of the bug
