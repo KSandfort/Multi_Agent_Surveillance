@@ -247,7 +247,7 @@ public abstract class Entity extends MapItem {
             prevPos = new Vector2D(getPosition().getX(), getPosition().getY());
         position = new Vector2D(pos.getX(), pos.getY());
     }
-
+  
     public void resetEntityParam(){
         this.setFovAngle(DefaultValues.agentFovAngle);
         this.setFovDepth(DefaultValues.agentFovDepth);
