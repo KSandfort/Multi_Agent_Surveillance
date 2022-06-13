@@ -224,6 +224,7 @@ public class  GenePool
     //evaluate the fitness of the genomes, this method will have to change if you want to change the use of the network
     private void simulate()
     {
+
         final int threadPools = NNTraining.generationThreads;
 
         class SimulationThread extends Thread {

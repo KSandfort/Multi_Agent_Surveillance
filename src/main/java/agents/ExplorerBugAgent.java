@@ -79,7 +79,7 @@ public class ExplorerBugAgent extends AbstractAgent {
             initializationStep = 2;
         }
 
-        ArrayList<Ray> vision = e.FOV();
+        ArrayList<Ray> vision = e.getFov();
 
         // Average distance from the closest wall
         double averageDistance = 0;

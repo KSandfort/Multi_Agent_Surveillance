@@ -77,6 +77,7 @@ public abstract class Entity extends MapItem {
      * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
+        this.fov = FOV();
 
         Vector2D previousPos = new Vector2D(getPosition().getX(), getPosition().getY());
 
@@ -451,13 +452,8 @@ public abstract class Entity extends MapItem {
                 agent = new NeatAgent();
                 agent.setEntityInstance(this);
 
-                // change this
-                NeuralNetwork.readGlobals("src/main/resources/NN/fromPreviousSim.txt");
-                NeatAgent.setNn(NeuralNetwork.readNetwork("src/main/resources/NN/bestNetwork.txt"));
-
-                // to this
-                NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
-                NeatAgent.setNn(NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt"));
+//                NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
+//                NeatAgent.setNn(NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt"));
             }
             default -> {
                 System.out.println("No agent defined!");
