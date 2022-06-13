@@ -184,10 +184,10 @@ public class GameMap {
         c3 = new Vector2D(sizeX, sizeY);
         c4 = new Vector2D(0, sizeY);
 
-        addToMap(new Wall(new Vector2D(c1.getX(), c1.getY() - 2), new Vector2D(c2.getX(), c2.getY() - 2), c2, c1)); // Top wall
-        addToMap(new Wall(c2, new Vector2D(c2.getX() + 2, c2.getY()), new Vector2D(c3.getX() + 2, c3.getY()), c3)); // Right wall
-        addToMap(new Wall(c4, c3, new Vector2D(c3.getX(), c3.getY() + 2), new Vector2D(c4.getX(), c4.getY() + 2))); // Bottom wall
-        addToMap(new Wall(new Vector2D(c1.getX() - 2, c1.getY()), c1, c4, new Vector2D(c4.getX() - 2, c4.getY()))); // Left wall
+        addToMap(new Wall(0, -2, sizeX, 0)); // Top wall
+        addToMap(new Wall(sizeX, 0, sizeX + 2, sizeY)); // Right wall
+        addToMap(new Wall(0, sizeY, sizeX, sizeY + 2)); // Bottom wall
+        addToMap(new Wall(-2, 0, 0, sizeY)); // Left wall
     }
 
     public void setSpawnAreaGuards(SpawnArea spawnAreaGuards) {
