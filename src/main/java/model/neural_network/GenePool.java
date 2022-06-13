@@ -224,8 +224,41 @@ public class  GenePool
     //evaluate the fitness of the genomes, this method will have to change if you want to change the use of the network
     private void simulate()
     {
-        for(NeuralNetwork nn : pool) {
-            nn.setFitness(runSim(nn));
+
+        final int threadPools = NNTraining.generationThreads;
+
+        class SimulationThread extends Thread {
+            final List<NeuralNetwork> threadPool;
+
+            public SimulationThread(List<NeuralNetwork> nns) {
+                this.threadPool = nns;
+            }
+
+            public void run() {
+                for(NeuralNetwork nn : threadPool) {
+                    nn.setFitness(runSim(nn));
+                }
+            }
+        }
+
+        SimulationThread[] threads = new SimulationThread[threadPools];
+
+        for(int i = 0; i < threadPools; i++) {
+            // from & to of the sublist of this thread
+            int from = (int)(((double)i)/threadPools * poolSize);
+            int to = (int)(((double)(i+1))/threadPools * poolSize) - 1;
+
+            threads[i] = new SimulationThread(pool.subList(from, to));
+            threads[i].start();
+        }
+
+
+        for(int i = 0; i < threadPools; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
