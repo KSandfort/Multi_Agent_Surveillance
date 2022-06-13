@@ -3,6 +3,7 @@ package model.neural_network;
 import agents.NeatAgent;
 import controller.GameController;
 import gui.SimulationGUI;
+import gui.sceneLayouts.TrainLayout;
 import utils.RunSimulation;
 
 import java.util.ArrayList;
@@ -60,11 +61,18 @@ public class  GenePool
     }
 
     //TODO: speciation is probably not 100% optimal, this is pretty much copied from another project and deviates a bit from the papers
-    //make new generation
+
+    /**
+     * Creates a new generation.
+     */
     public void newGeneration()
     {
         //more debugging statements on lines: 186, 216, 252
+
         System.out.println("\nGeneration " + generation);
+        if (TrainLayout.active) {
+            TrainLayout.generationCount.setValue((double) generation);
+        }
 
         //simulate and calculate fitness
         simulate();
@@ -94,6 +102,11 @@ public class  GenePool
         generation++;
     }
 
+    /**
+     * Creates a new gene.
+     * @param fromPrevious
+     * @param surviving
+     */
     private void createNewGen(List<NeuralNetwork> fromPrevious, List<NeuralNetwork> surviving) {
         pool.clear();
         pool.addAll(fromPrevious);
@@ -117,6 +130,11 @@ public class  GenePool
         }
     }
 
+    /**
+     * Creates a new parent.
+     * @param oldPool
+     * @return
+     */
     private NeuralNetwork newParent(NeuralNetwork[] oldPool)
     {
         double totalFitness = totalFitness(oldPool);
@@ -343,7 +361,7 @@ public class  GenePool
             if(amount >= 1)
             {
                 survivingSpecies.add(s);
-            }else
+            } else
             {
                 //System.out.println("Removed weak species:" + counter);
             }

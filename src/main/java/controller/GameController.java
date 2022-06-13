@@ -3,6 +3,7 @@ package controller;
 import Enities.*;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
+import gui.sceneLayouts.TrainLayout;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import lombok.Getter;
@@ -48,8 +49,8 @@ public class GameController {
     public static int guardAgentType = 0;
     public static int intruderAgentType = 0;
     public static boolean terminalFeedback = false; // Displays information about the simulation in the terminal
-    // 0 = random, 1 = remote, ...
 
+    // Public
     public double fitnessGuards = 0;
     public double fitnessIntruders = 0;
 
@@ -121,15 +122,25 @@ public class GameController {
         boolean finished = false;
         int step = 0;
 
-        while (!finished){
+        while (!finished) {
             controller.update();
 
             // Abort simulation upon win
-            if (controller.hasWonGame > 0 || step > steps)
+            if (controller.hasWonGame > 0 || step > steps) {
                 finished = true;
-
+                if (controller.hasWonGame == 1) {
+                    TrainLayout.guardWins++;
+                } else if (controller.hasWonGame == 2) {
+                    TrainLayout.intruderWins++;
+                } else {
+                    TrainLayout.draws++;
+                }
+            }
             step++;
+
         }
+
+        TrainLayout.gameCount++;
 
         controller.fitnessGuards = controller.getFitnessGuards();
         controller.fitnessIntruders = controller.getFitnessIntruders();
@@ -180,6 +191,10 @@ public class GameController {
         if (terminalFeedback && getCurrentStep() % 60 == 0) {
             System.out.println("Simulation is running at step: " + getCurrentStep() + " (" + getCurrentStep()/60 + ")");
             System.out.println(map.getMarkers().size() + " markers");
+        }
+
+        if (TrainLayout.active) {
+            TrainLayout.currentStep.setValue((double) currentStep);
         }
 
         currentStep++;
