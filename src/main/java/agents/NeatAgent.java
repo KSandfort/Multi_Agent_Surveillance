@@ -6,6 +6,8 @@ import Enities.Ray;
 import model.MapItem;
 import model.Vector2D;
 import model.neural_network.NeuralNetwork;
+import utils.DefaultValues;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -142,6 +144,20 @@ public class NeatAgent extends AbstractAgent {
      *
      * @return
      */
+    private double[] wallDistance() {
+        ArrayList<Ray> vision = this.entityInstance.getFov();
+        double[] dist = new double[vision.size()];
+        int index = 0;
+
+        for (Ray r : vision)
+        {
+            double length = Vector2D.length(r.getDirection()) / DefaultValues.agentFovDepth;//normalize based on max distance
+            dist[index++] = length;
+        }
+
+        return dist;
+    }
+
     private double[] wallSensing() {
         ArrayList<Ray> vision = this.entityInstance.getFov();
 

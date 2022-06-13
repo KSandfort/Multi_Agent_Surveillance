@@ -47,11 +47,11 @@ public class NeuralNetwork {
     //it only connects the input nodes with a connection to each output node, no hidden inputs are created
     public void init()
     {
-        for(int i = 0; i < inputNum;i++)
-        {
-            for(int o = inputNum; o < inputNum + outputNum;o++)
-            {
-                addConnection(i,o,null,0);
+        if(!NNTraining.startFromNothing) {
+            for (int i = 0; i < inputNum; i++) {
+                for (int o = inputNum; o < inputNum + outputNum; o++) {
+                    addConnection(i, o, null, 0);
+                }
             }
         }
         mutate();
