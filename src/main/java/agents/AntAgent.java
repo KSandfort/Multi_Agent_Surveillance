@@ -31,7 +31,7 @@ public class AntAgent extends AbstractAgent{
         double angle = getNewDirection();
 
         e.getDirection().pivot(angle);
-        if (e.getMap().getGameController().getSimulationGUI().getCurrentStep() % 10 == 0) {
+        if (e.getMap().getGameController().getCurrentStep() % 10 == 0) {
             e.placeMarker(0);
         }
 

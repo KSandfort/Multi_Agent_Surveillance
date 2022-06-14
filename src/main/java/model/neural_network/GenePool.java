@@ -42,7 +42,7 @@ public class  GenePool
     public void init(boolean readFromFile)
     {
         if(readFromFile)
-            NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
+            NeuralNetwork.readGlobals(NNTraining.simulationVarsFilePath);
 
         while(pool.size() < poolSize)
         {
@@ -53,7 +53,7 @@ public class  GenePool
                 init.init();
             }
             else{
-                init = NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt");
+                init = NeuralNetwork.readNetwork(NNTraining.networkFilePath);
                 init.mutate();
             }
             pool.add(init);
