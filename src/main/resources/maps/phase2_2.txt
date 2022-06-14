@@ -12,5 +12,5 @@ wall = 65 9 67 30
 wall = 51 9 65 11
 door = 51 28 65 30
 spawnAreaGuards = 105 32 117 50
-spawnAreaIntruders = 1 9 13 18
+spawnAreaIntruders = 3 9 11 18
 target = 53 14 63 26

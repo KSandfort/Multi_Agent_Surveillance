@@ -381,16 +381,15 @@ public class GameController {
                 fitnessIntrudersKilled += ((Guard) item).getKillCount();
             }
         }
-        fitnessIntrudersKilled /= amountOfIntruders;
 
         double fitnessWon = (hasWonGame == 1 ? 1 : 0);
 
-        // Add & normalize the fitness attributes
+        // Sum the fitness attributes
         fitness = (
             getCoveragePercent() +
             fitnessIntrudersKilled +
             fitnessWon
-        ) / 3;
+        );
 
         return fitness;
     }
