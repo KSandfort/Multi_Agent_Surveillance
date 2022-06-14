@@ -17,10 +17,12 @@ public class NNTraining {
     public static int intruderType = 5;
     public static boolean trainGuard = false; // Set to true if you're training a guard, for intruder set to false
     final static boolean trainOn3Maps = true; // Set to true if you want to train using all 3 maps of this phase
-    public static boolean startFromNothing = false; // Set this to true if you want to start with a fully connected network
+    public static boolean startFromNothing = true; // Set this to false if you want to start with a fully connected network
     final static int generationThreads = 4; // Splits the gene pool into equally-sized partitions for faster training
     final static int generationBetweenSave = 20;
-  
+    public static String networkFilePath = "output/Neat results/bestNetwork.txt";//file path to save network to
+    public static String simulationVarsFilePath = "output/Neat results/fromPreviousSim.txt";//file path to save simulation variables to
+    public static String fitnessFilePath = "output/Neat results/fitness.txt";//file path to save fitness score
     public static String mapPath = "src/main/resources/maps/phase2_1.txt"; // Map to be used if you're not training on all 3 maps
 
     /**
@@ -45,19 +47,23 @@ public class NNTraining {
     }
 
     private void saveNetwork(GenePool g) {
+
         NeuralNetwork nn = g.bestNetwork;
         if ((g.generation - 1) % generationBetweenSave == 0)
         {
-            nn.saveNetwork("output/Neat results/bestNetwork" + g.generation + ".txt");
-            nn.saveGlobals("output/Neat results/fromPreviousSim" + g.generation +".txt");
+            String[] networkStrings = networkFilePath.split("\\.");
+            String[] simStrings = simulationVarsFilePath.split("\\.");
+
+            nn.saveNetwork(networkStrings[0] + g.generation + "." + networkStrings[1]);
+            nn.saveGlobals(simStrings[0] + g.generation + "." + simStrings[1]);
         }
-        nn.saveNetwork("output/Neat results/bestNetwork.txt");
-        nn.saveGlobals("output/Neat results/fromPreviousSim.txt");
+        nn.saveNetwork(networkFilePath);
+        nn.saveGlobals(simulationVarsFilePath);
     }
 
     private void saveFitness(GenePool g) {
         try {
-            FileWriter fw = new FileWriter("output/Neat results/fitness.txt",true);
+            FileWriter fw = new FileWriter(fitnessFilePath,true);
             fw.write("\n" + g.generation + ";" + g.bestNetwork.getFitness());
             fw.flush();
             fw.close();

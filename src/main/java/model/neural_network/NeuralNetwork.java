@@ -1,9 +1,6 @@
 package model.neural_network;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class NeuralNetwork {
@@ -546,10 +543,13 @@ public class NeuralNetwork {
         return outputNum;
     }
 
-    public void saveNetwork(String file)
+    public void saveNetwork(String filePath)
     {
         try
         {
+            File file = new File(filePath);
+            file.createNewFile();//ensure the file is created if it does not yet exist, will do nothing if it does not exist
+
             FileWriter fw = new FileWriter(file);
             String text = "f=" + fitness;//first line is fitness
             //next print connections
@@ -568,10 +568,13 @@ public class NeuralNetwork {
         }
     }
 
-    public void saveGlobals(String file)
+    public void saveGlobals(String filePath)
     {
         try
         {
+            File file = new File(filePath);
+            file.createNewFile();//ensure the file is created if it does not yet exist, will do nothing if it does not exist
+
             FileWriter fw = new FileWriter(file);
             String text = "\nmn=" + maxNeurons;//first line is maxNeurons
             //print stored connections
