@@ -464,7 +464,7 @@ public abstract class Entity extends MapItem {
 
     @Override
     public boolean isSolidBody() {
-        return true;
+        return false;
     }
 
     @Override
