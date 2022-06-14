@@ -5,6 +5,7 @@ import controller.GameController;
 import gui.SimulationGUI;
 import gui.sceneLayouts.MainLayout;
 import model.GameMap;
+import model.neural_network.NNTraining;
 import model.neural_network.NeuralNetwork;
 
 /**
@@ -24,8 +25,8 @@ public class RunSimulation {
         SimulationGUI.bypassPath = path;
         GameController.guardAgentType = guardType;
         GameController.intruderAgentType = intruderType;
-        NeuralNetwork.readGlobals("fromPreviousSim2.txt");
-        NeatAgent.setNn(NeuralNetwork.readNetwork("bestNetwork2.txt"));
+        NeuralNetwork.readGlobals(NNTraining.simulationVarsFilePath);
+        NeatAgent.setNn(NeuralNetwork.readNetwork(NNTraining.networkFilePath));
         SimulationGUI.autoStart = true;
         if (gui) {
             SimulationGUI sim = new SimulationGUI();
