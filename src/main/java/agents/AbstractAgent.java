@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public abstract class AbstractAgent {
 
+    // Variables
     protected Entity entityInstance;
     protected double baseVelocity = 0;
     protected double sprintVelocity = 0;
