@@ -5,6 +5,7 @@ import Enities.Intruder;
 import Enities.Ray;
 import model.MapItem;
 import model.Vector2D;
+import model.neural_network.NNTraining;
 import model.neural_network.NeuralNetwork;
 import utils.DefaultValues;
 
@@ -27,8 +28,10 @@ public class NeatAgent extends AbstractAgent {
         if(nn == null){
             nn = new NeuralNetwork();
             nn.init();
-            nn = nn.readNetwork("bestNetwork.txt");
-            NeuralNetwork.readGlobals("fromPreviousSim.txt");
+
+            NeuralNetwork.readGlobals(NNTraining.simulationVarsFilePath);
+            nn = NeuralNetwork.readNetwork(NNTraining.networkFilePath);
+
         }
 
     }
