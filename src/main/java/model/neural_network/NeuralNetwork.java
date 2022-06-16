@@ -17,7 +17,7 @@ public class NeuralNetwork {
     final double wActivationP = 0.25;           // Chance that the value of a weight is reset instead of just changed
     final double addNodeP = 0.03;               // Chance that a node is added to the network
     final double addConnP = 1.0;                // Chance that a connection is added to the network
-    final double maxTryCount = 10;
+    final int maxTryCount = 1;
     private List<NNConnection> connections;
     double fitness;
 
@@ -244,8 +244,11 @@ public class NeuralNetwork {
                 k++;
             }
         }
-
-        nn.setConnections(newConnections);
+        for(NNConnection c : newConnections)
+        {
+            nn.addConnection(c.getIn(),c.getOut(),c.getWeight(),nn.maxTryCount);
+        }
+        //nn.setConnections(newConnections);
         return nn;
     }
 
