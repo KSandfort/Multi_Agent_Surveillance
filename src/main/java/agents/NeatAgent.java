@@ -33,46 +33,50 @@ public class NeatAgent extends AbstractAgent {
 
     }
 
+    /**
+     * Sets a neural network manually
+     * @param nn
+     */
     public static void setNn(NeuralNetwork nn) {
         NeatAgent.nn = nn;
     }
 
     @Override
     public void addControls() {
-
+        // Does nothing because no controls are involved.
     }
 
     @Override
     public void changeMovement(ArrayList<MapItem> items) {
         /*
-            Input array:
-                0: marker type 1 count
-                1: marker type 2 count
-                2: marker type 3 count
-                3: marker type 4 count
-                4: marker type 5 count
-                5: marker type 1 angle
-                6: marker type 2 angle
-                7: marker type 3 angle
-                8: marker type 4 angle
-                9: marker type 5 angle
-                10: wall side (avg)
-                11: wall distance (avg)
-                12: team-mate vision count
-                13: team-mate vision angle
-                14: enemy vision count
-                15: enemy vision angle
-                16: sound volume
-                17: target direction (intruders only)
+        Input array:
+            0: marker type 1 count
+            1: marker type 2 count
+            2: marker type 3 count
+            3: marker type 4 count
+            4: marker type 5 count
+            5: marker type 1 angle
+            6: marker type 2 angle
+            7: marker type 3 angle
+            8: marker type 4 angle
+            9: marker type 5 angle
+            10: wall side (avg)
+            11: wall distance (avg)
+            12: team-mate vision count
+            13: team-mate vision angle
+            14: enemy vision count
+            15: enemy vision angle
+            16: sound volume
+            17: target direction (intruders only)
 
-            Output array:
-                0: speed (0 to 1/3: stand, 1/3 to 2/3: walk, 2/3 to 1: sprint)
-                1: direction (0 = max left, 0.5 = straight, 1 = max right)
-                2: place marker 1
-                3: place marker 2
-                4: place marker 3
-                5: place marker 4
-                6: place marker 5
+        Output array:
+            0: speed (0 to 1/3: stand, 1/3 to 2/3: walk, 2/3 to 1: sprint)
+            1: direction (0 = max left, 0.5 = straight, 1 = max right)
+            2: place marker 1
+            3: place marker 2
+            4: place marker 3
+            5: place marker 4
+            6: place marker 5
          */
 
         Entity e = entityInstance;
@@ -143,23 +147,9 @@ public class NeatAgent extends AbstractAgent {
     }
 
     /**
-     *
+     * Detects all walls in the FOV.
      * @return
      */
-    private double[] wallDistance() {
-        ArrayList<Ray> vision = this.entityInstance.getFov();
-        double[] dist = new double[vision.size()];
-        int index = 0;
-
-        for (Ray r : vision)
-        {
-            double length = Vector2D.length(r.getDirection()) / DefaultValues.agentFovDepth;//normalize based on max distance
-            dist[index++] = length;
-        }
-
-        return dist;
-    }
-
     private double[] wallSensing() {
         ArrayList<Ray> vision = this.entityInstance.getFov();
 
@@ -185,7 +175,7 @@ public class NeatAgent extends AbstractAgent {
     }
 
     /**
-     *
+     * Detects all entities' int the FOV.
      * @return
      */
     private double[] entitySensing() {
