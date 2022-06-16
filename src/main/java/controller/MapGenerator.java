@@ -1,14 +1,16 @@
 package controller;
 
-import Enities.Guard;
-import Enities.Intruder;
 import model.*;
 
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Class to generate random maps
+ */
 public final class MapGenerator {
 
+    // Variables
     private final Random random;
     private final GameMap map;
     private final int sizeY;
@@ -17,6 +19,10 @@ public final class MapGenerator {
     private int[] guardsSpawnPoint;
     private int[] intrudersSpawnPoint;
 
+    /**
+     * Constructor
+     * @param map
+     */
     public MapGenerator(GameMap map) {
         this.map = map;
         sizeX = map.getSizeX();
@@ -24,6 +30,9 @@ public final class MapGenerator {
         random = new Random();
     }
 
+    /**
+     * Generates a new map and saves it to the instance variable "map".
+     */
     public void generateMap() {
         mapPoints = new boolean[sizeX][sizeY];
         createBorderWalls();
@@ -43,7 +52,6 @@ public final class MapGenerator {
 
         for (int i = 0; i < random.nextInt(3) + 1; i++)
             createSentryTower(5, 10);
-
         map.populateMap(GameController.amountOfGuards, GameController.amountOfIntruders);
     }
 
@@ -82,12 +90,6 @@ public final class MapGenerator {
         map.addToMap(sentryTower);
     }
 
-//    private void createTeleportArea(int min, int max) {
-//        var pos = getRandomArea(min, max);
-//        var teleportArea = new TeleportArea(pos[0], pos[1], pos[2], pos[3]);
-//        map.addToMap(teleportArea);
-//    }
-
     private void createWalledWDArea(int min, int max) {
         var area = getRandomArea(min, max);
         int x1 = area[0];
@@ -104,6 +106,7 @@ public final class MapGenerator {
         map.addToMap(westWall);
         map.addToMap(eastWall);
     }
+
     private void createWalledArea(int min, int max) {
         var area = getRandomArea(min, max);
         int x1 = area[0];
@@ -120,7 +123,6 @@ public final class MapGenerator {
         map.addToMap(westWall);
         map.addToMap(eastWall);
     }
-
 
     private void createBorderWalls() {
         var northWall = new Wall(-2, -2, sizeX + 2, 0);
@@ -145,15 +147,6 @@ public final class MapGenerator {
         return new int[]{x1, y1, x2, y2};
     }
 
-    private int[] getRandomPoint() {
-        int x, y;
-        do {
-            x = random.nextInt(sizeX);
-            y = random.nextInt(sizeY);
-        } while (areaNotEmpty(x, y, x, y));
-        return new int[]{x, y};
-    }
-
     private boolean areaNotEmpty(int x1, int y1, int x2, int y2) {
         for (int x = x1; x <= x2; x++)
             for (int y = y1; y <= y2; y++)
@@ -167,8 +160,4 @@ public final class MapGenerator {
                 mapPoints[i][j] = true;
     }
 
-    private void printPoints() {
-        for (boolean[] row : mapPoints)
-            System.out.println(Arrays.toString(row));
-    }
 }

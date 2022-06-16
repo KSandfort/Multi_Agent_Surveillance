@@ -93,7 +93,6 @@ public class GameController {
                 break;
             }
         }
-
         coverageMatrix = new boolean[map.getSizeX()][map.getSizeY()];
         // denominator = amount of units that can be explored
         coverageDenominator = map.calculateMaximalPossibleCoverage();
@@ -115,10 +114,8 @@ public class GameController {
     public static GameController simulate(int steps, int numGuards, int numIntruders, int mapCode, int gameMode) {
         amountOfGuards = numGuards;
         amountOfIntruders = numIntruders;
-
         GameController controller = new GameController(null, mapCode);
         controller.setGameMode(gameMode);
-
         boolean finished = false;
         int step = 0;
 
@@ -141,7 +138,6 @@ public class GameController {
         }
 
         TrainLayout.gameCount++;
-
         controller.fitnessGuards = controller.getFitnessGuards();
         controller.fitnessIntruders = controller.getFitnessIntruders();
 
@@ -172,7 +168,6 @@ public class GameController {
 
         ArrayList<Marker> toRemove = new ArrayList<>();
         for(Marker marker : map.getMarkers()){
-            // TODO update marker intensity
                 if(marker.getIntensity() < 0.0001){
                     toRemove.add(marker);
                 } else {
@@ -180,23 +175,17 @@ public class GameController {
                 }
         }
         map.getMarkers().removeAll(toRemove);
-
-        updateWinningCondition(); //TODO stop game if winning condition hasWonGame is not 0
-
+        updateWinningCondition();
         explorationOverTime.add(coveragePercent);
-
         previousCoveragePercent = coveragePercent;
-
         // Print to terminal if wanted
         if (terminalFeedback && getCurrentStep() % 60 == 0) {
             System.out.println("Simulation is running at step: " + getCurrentStep() + " (" + getCurrentStep()/60 + ")");
             System.out.println(map.getMarkers().size() + " markers");
         }
-
         if (TrainLayout.active) {
             TrainLayout.currentStep.setValue((double) currentStep);
         }
-
         currentStep++;
     }
 
@@ -211,13 +200,11 @@ public class GameController {
             coverageMatrix[x][y] = explored;
             coverageNumerator++;
             // Paint to coverage canvas
-
             if (simulationGUI != null)
                 simulationGUI.getMainLayout().addCoveragePoint(x, y, explored);
         }
         // Calculate percentage
         coveragePercent = (double) coverageNumerator / (double) coverageDenominator;
-
         if (simulationGUI != null){
             simulationGUI.getMainLayout().getCoverageBar().setProgress(coveragePercent);
             simulationGUI.getMainLayout().getCoverageText().setText(Math.round(coveragePercent*10000) / 100.0 + " %");
@@ -290,16 +277,14 @@ public class GameController {
             }
         }
 
-        if (hasWonGame == 0)
+        if (hasWonGame == 0) {
             return;
-
+        }
         if (gameMode == 0) {
             if (terminalFeedback)
                 System.out.println("Game Over. Maximum coverage reached! " + coveragePercent);
-
             // Write exploration over time to file
             try {
-                // TODO - remove this (or put it somewhere cleaner in Phase 2)
                 String s = "Random";
                 if (GameController.guardAgentType == 1)
                     s = "Remote";
@@ -315,20 +300,16 @@ public class GameController {
             } catch (Exception e) {
                 System.out.println("Write error");
             }
-
         } else if (gameMode == 1) {
             String winner = (hasWonGame == 1 ? "Guards" : "Intruders");
             // System.out.println(winner + " won!");
 
 
         }
-
         if (terminalFeedback) {
             System.out.println("Fitness Guards:    " + getFitnessGuards());
             System.out.println("Fitness Intruders: " + getFitnessIntruders());
         }
-
-
         if (simulationGUI != null)
             simulationGUI.stopSimulation();
     }
@@ -359,7 +340,6 @@ public class GameController {
         layout.getCanvas().getChildren().add(changingNodes);
     }
 
-
     /**
      * Computes the fitness for training guard agents with the following factors:
      *
@@ -383,17 +363,14 @@ public class GameController {
         }
 
         double fitnessWon = (hasWonGame == 1 ? 1 : 0);
-
         // Sum the fitness attributes
         fitness = (
             getCoveragePercent() +
             fitnessIntrudersKilled +
             fitnessWon
         );
-
         return fitness;
     }
-
 
     /**
      * Computes the fitness for training intruder agents with the following factors:
@@ -429,14 +406,10 @@ public class GameController {
             }
         }
         fitnessAvgDistance /= amountOfIntruders;
-
         fitnessIntrudersKilled = 1 - fitnessIntrudersKilled/amountOfIntruders;
-
         fitnessAvgDistance = 1 - (fitnessAvgDistance / mapNormalizationFactor);
         fitnessMinDistance = 1 - (fitnessMinDistance / mapNormalizationFactor);
-
         fitnessWon = (hasWonGame == 2 ? 1 : 0);
-
         // Add & normalize the fitness attributes
         fitness = (
             fitnessAvgDistance +
@@ -444,11 +417,14 @@ public class GameController {
             fitnessIntrudersKilled +
             fitnessWon
         ) / 4;
-
         return fitness;
     }
 
-
+    /**
+     * Returns the fitness.
+     * @param agent_type
+     * @return
+     */
     public double getFitness(int agent_type) {
         if (agent_type == 0)    // guard
             return getFitnessGuards();
@@ -473,8 +449,10 @@ public class GameController {
         }
     }
 
-
-
+    /**
+     * Run to start a simulation with given parameters and without any GUI.
+     * @param args
+     */
     public static void main(String [] args){
         // Pass Integer.MAX_VALUE as the "steps" parameter for indefinite simulation (terminates upon game over)
         GameController.simulate(2000,3,2,0,1);

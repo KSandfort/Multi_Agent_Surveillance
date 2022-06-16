@@ -29,16 +29,17 @@ public class Marker extends MapItem {
     private double intensity = 10;
     private int tickPlaced; // The time when it was placed on the map
 
+    /**
+     * Constructor
+     * @param markerType
+     * @param position
+     * @param isFromIntruder
+     */
     public Marker(int markerType,Vector2D position, boolean isFromIntruder)
     {
         this.markerType = markerType;
         this.isFromIntruder = isFromIntruder;
         this.position = position;
-    }
-
-    public boolean compareMarker(boolean isIntruder, int type)
-    {
-        return (isIntruder == isFromIntruder && type == markerType);
     }
 
     public Color getColor() {
@@ -80,7 +81,6 @@ public class Marker extends MapItem {
 
     @Override
     public void onAgentCollision(Entity entity) {
-
     }
 
     @Override

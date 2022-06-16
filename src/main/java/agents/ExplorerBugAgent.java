@@ -1,7 +1,6 @@
 package agents;
 
 import Enities.Entity;
-import Enities.Guard;
 import Enities.Intruder;
 import Enities.Ray;
 import model.MapItem;
@@ -10,6 +9,9 @@ import model.Vector2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ *
+ */
 public class ExplorerBugAgent extends AbstractAgent {
 
     // Goal direction from bug's current position
@@ -36,7 +38,6 @@ public class ExplorerBugAgent extends AbstractAgent {
     // all bugs share this
     static int guardCount = 0;
 
-
     // ------------------------
     //      BUG PARAMETERS
     // ------------------------
@@ -49,7 +50,6 @@ public class ExplorerBugAgent extends AbstractAgent {
 
     // If the bug's wallCloseness percentage goes above this threshold, it'll enter wall crawl mode.
     double wallClosenessConditionPercentage = 0.3;
-
 
     @Override
     public void addControls() {
@@ -143,18 +143,17 @@ public class ExplorerBugAgent extends AbstractAgent {
           else
               dir.pivot(pivotToGoal);
 
-
-        // Everything to do with the bug getting stuck somewhere
-        // stuckTimer calculates how long the distance between the bug's current & previous position has been < 0.05.
-        // If the bug has been in the same region for a certain amount of time, the goal direction gets reset.
-        // However, to make sure the bug actually gets out of the corner, first the goal direction is flipped.
-        // Only after another short interval of time, the bug sets its new goal direction.
-
+        /*
+         Everything to do with the bug getting stuck somewhere
+         stuckTimer calculates how long the distance between the bug's current & previous position has been < 0.05.
+         If the bug has been in the same region for a certain amount of time, the goal direction gets reset.
+         However, to make sure the bug actually gets out of the corner, first the goal direction is flipped.
+         Only after another short interval of time, the bug sets its new goal direction.
+         */
         if (!tryingToUnstuck && prevPos != null) {
             stuckTracker = Vector2D.distance(pos, prevPos);
             if (stuckTracker < 0.05) {
                 stuckTimer++;
-
                 if (stuckTimer > 50) {
                     //goalDirection = theta + Math.PI;
                     getGoalDirectionAfterUnstuck = newGoalDirection(goalDirection);
@@ -179,7 +178,11 @@ public class ExplorerBugAgent extends AbstractAgent {
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
     }
 
-    // flips the agent's goal when stuck (rotate 180 degrees and randomly add +-90 degrees
+    /**
+     * Flips the agent's goal when stuck (rotate 180 degrees and randomly add +-90 degrees).
+     * @param goalDir
+     * @return
+     */
     private double newGoalDirection(double goalDir) {
         Random random = new Random();
         return goalDir + Math.PI + (Math.PI) * (random.nextDouble() - .5);

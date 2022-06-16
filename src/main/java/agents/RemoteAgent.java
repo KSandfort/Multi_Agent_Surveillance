@@ -7,7 +7,6 @@ import model.MapItem;
 import model.Vector2D;
 import java.util.ArrayList;
 
-
 /**
  * This guard can be remotely controlled by W, A, S, D.
  */
@@ -49,6 +48,7 @@ public class RemoteAgent extends AbstractAgent {
             if(key.getCode()== KeyCode.P) {
                 System.out.println("Detected Entities: " + entityInstance.getDetectedEntities().size());
             }
+            // Set markers
             if(key.getCode()== KeyCode.DIGIT1) {
                 entityInstance.placeMarker(0);
             }

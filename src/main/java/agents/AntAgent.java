@@ -9,8 +9,12 @@ import model.Wall;
 import java.util.ArrayList;
 import java.util.Random;
 
-
+/**
+ * This agent uses pheromones (markers) in order to passively communicate with other ant agents.
+ */
 public class AntAgent extends AbstractAgent{
+
+    // Variables
     Vector2D pos;
     Vector2D prevPos;
     Vector2D dir;
@@ -39,10 +43,15 @@ public class AntAgent extends AbstractAgent{
         e.setPosition(Vector2D.add(e.getPosition(), Vector2D.scalar(e.getDirection(), velocity)));
     }
 
+    /**
+     * Calculates the desired direction for the next tick based on what the ant sees.
+     * @return
+     */
     private double getNewDirection() {
         double angle = getDirectionWithRandomness();
 
-        if (isStuck()){
+        // In case it is stuck at a wall
+        if (isStuck()) {
             double dirSound = Vector2D.shortestAngle(entityInstance.getDirection(), entityInstance.getListeningDirection(entityInstance.getMap().getMovingItems(), entityInstance.getMap().getStaticItems()));
             while(Math.abs(dirSound) > entityInstance.getFovAngle()){
                 dirSound = dirSound/2;
@@ -60,7 +69,7 @@ public class AntAgent extends AbstractAgent{
                 maxAngle = 30;
                 minAngle = entityInstance.getFovAngle()*2 * -explorationFactor;
 
-            }else{
+            } else {
                 maxAngle = entityInstance.getFovAngle()*2 * explorationFactor;
                 minAngle = -30;
             }
@@ -74,21 +83,24 @@ public class AntAgent extends AbstractAgent{
         return angle;
     }
 
-
     /**
      * checks if agent is currently stuck at an object or another agent
      * @return
      */
     private boolean isStuck(){
-        if (stuckAtWall() || stuckAtAgent()){
+        if (stuckAtWall() || stuckAtAgent()) {
             timeStuck++;
-        }else {
+        } else {
             timeStuck = 0;
         }
         return timeStuck>3;
     }
 
-    private boolean stuckAtWall(){
+    /**
+     * Checks whether an agent is stuck at a wall.
+     * @return
+     */
+    private boolean stuckAtWall() {
         boolean stuckAtWall = false;
         // checks for being stuck at walls
         for (MapItem item: entityInstance.getMap().getSolidBodies()){
@@ -101,9 +113,12 @@ public class AntAgent extends AbstractAgent{
         return stuckAtWall;
     }
 
-    private boolean stuckAtAgent(){
+    /**
+     * Checks whether an agent is stuck at another agent.
+     * @return
+     */
+    private boolean stuckAtAgent() {
         boolean stuckAtAgent = false;
-
         // checks for being stuck with other agents
         for (MapItem item: entityInstance.getMap().getMovingItems()){
             if(item instanceof Entity) {
@@ -119,13 +134,16 @@ public class AntAgent extends AbstractAgent{
         return stuckAtAgent;
     }
 
+    /**
+     * Computes a new direction with a random addition.
+     * @return
+     */
     private double getDirectionWithRandomness(){
         double angle;
         // Define random angle
         double randomDir = (new Random().nextDouble()*180 - 90)*explorationFactor;
         // Get avg pheromone angle
         double pheromoneDir = getPheromoneDirection(entityInstance.getMarkerSensing());
-
         // Combine angles in a weighted sum
         double randomness = 0.4;
         if (pheromoneDir != 0) {
@@ -137,7 +155,12 @@ public class AntAgent extends AbstractAgent{
         return angle;
     }
 
-    private double getPheromoneDirection(double[][] markers){
+    /**
+     * Gets the average pheromone direction.
+     * @param markers
+     * @return
+     */
+    private double getPheromoneDirection(double[][] markers) {
         double angle = 0;
         double maxPheromone = 0;
         if(markers != null) {
@@ -151,6 +174,11 @@ public class AntAgent extends AbstractAgent{
         return angle;
     }
 
+    /**
+     * Get the pheromone with the maximum intensity.
+     * @param markers
+     * @return
+     */
     private double getMaxPheromone(double[][] markers){
         double maxPheromone = 0;
         if(markers != null) {
@@ -163,6 +191,10 @@ public class AntAgent extends AbstractAgent{
         return maxPheromone;
     }
 
+    /**
+     * Sets the agent parameters for further calculations.
+     * @param e
+     */
     private void setAgentParameters(Entity e) {
         e.setPrevPos(e.getPosition());
         pos = e.getPosition();
