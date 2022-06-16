@@ -7,7 +7,6 @@ import model.*;
 import utils.DefaultValues;
 import java.util.ArrayList;
 
-
 /**
  * Abstract class of an entity on the map. Every agent is also an entity.
  */
@@ -410,7 +409,7 @@ public abstract class Entity extends MapItem {
         ArrayList<Entity> detectedEntities = new ArrayList<>();
         for (Ray ray : fov) {
             for (Entity e: ray.getDetectedEntities(this)){
-                if (!Ray.contains(detectedEntities, e)){
+                if (!detectedEntities.contains(e)){
                     detectedEntities.add(e);
                 }
             }

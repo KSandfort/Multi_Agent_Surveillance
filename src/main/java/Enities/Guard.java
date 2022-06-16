@@ -11,9 +11,7 @@ import javafx.scene.text.Text;
 import lombok.Getter;
 import lombok.Setter;
 import model.GameMap;
-import model.HitBox;
 import model.MapItem;
-import model.TargetArea;
 import model.Vector2D;
 
 import java.util.ArrayList;
@@ -29,8 +27,10 @@ public class Guard extends Entity {
     static int guardCount = 0;
     private boolean isYelling = false;
     private double yellingFactor = 10;
-    public static double killDistance = 3;
     public int killCount = 0;
+
+    // Static
+    public static double killDistance = 3;
 
     /**
      * Constructor
