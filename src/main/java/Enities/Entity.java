@@ -4,13 +4,12 @@ import agents.*;
 import lombok.Getter;
 import lombok.Setter;
 import model.*;
-import model.neural_network.NeuralNetwork;
 import utils.DefaultValues;
 import java.util.ArrayList;
 
 
 /**
- * Abstract class of an entity on the map.
+ * Abstract class of an entity on the map. Every agent is also an entity.
  */
 @Getter
 @Setter
@@ -20,7 +19,6 @@ public abstract class Entity extends MapItem {
     private EntityKnowledge entityKnowledge;
     private double fovAngle = DefaultValues.agentFovAngle;
     private double fovDepth = DefaultValues.agentFovDepth;
-
     protected Vector2D direction;
     private boolean isSprinting = false;
     private ArrayList<Ray> fov;
@@ -33,8 +31,11 @@ public abstract class Entity extends MapItem {
     protected AbstractAgent agent;
     protected Vector2D prevPos;
     protected double[][] markerSensing; // row = marker type [0, ..., 4],
-                        // column 0 = amount, column 1 = avg angle from direction (positive = right), column 2 = intensity
+                                        // column 0 = amount,
+                                        // column 1 = avg angle from direction (positive = right),
+                                        // column 2 = intensity
     public double stamina = maxStamina;
+
     // Static
     public static double maxStamina             = DefaultValues.agentMaxStamina;
     public static double sprintConsumption      = DefaultValues.agentSprintConsumption;
@@ -66,14 +67,6 @@ public abstract class Entity extends MapItem {
     }
 
     /**
-     * Setter
-     * @param map
-     */
-    public void setMap(GameMap map){
-        this.map = map;
-    }
-
-    /**
      * Gives the Entity a new position, based on the agent.
      */
     public void update(ArrayList<MapItem> items) {
@@ -84,7 +77,6 @@ public abstract class Entity extends MapItem {
         if (this.agent != null) {
             agent.changeMovement(items);
         }
-
         distanceWalked += Vector2D.distance(position, previousPos);
 
         if (isSprinting){
@@ -98,7 +90,6 @@ public abstract class Entity extends MapItem {
         else if (stamina < maxStamina){
             stamina += staminaRegeneration;
         }
-
 
         // Check collision detection
         if(!isInSpecialArea(items)){
@@ -159,9 +150,7 @@ public abstract class Entity extends MapItem {
      */
     public ArrayList<MapItem> getNearbySolidAreas() {
         double circleRadiusSquared = fovDepth * fovDepth;
-
         ArrayList<MapItem> nearbyMapItems = new ArrayList<>();
-
         // Circle-rectangle collision: https://yal.cc/rectangle-circle-intersection-test/
         for (MapItem item: map.getSolidBodies()) {
             if (item instanceof Entity || item.isTransparentObject()) {
@@ -185,8 +174,12 @@ public abstract class Entity extends MapItem {
         return nearbyMapItems;
     }
 
-
-    public boolean isInSpecialArea(ArrayList<MapItem> items){
+    /**
+     * Checks if the entity is in a special area or not.
+     * @param items
+     * @return
+     */
+    public boolean isInSpecialArea(ArrayList<MapItem> items) {
         return (getCurrentArea(items) != null);
     }
 
@@ -236,12 +229,19 @@ public abstract class Entity extends MapItem {
         return insideArea;
     }
 
+    /**
+     * Collision with other agent.
+     * @param entity
+     */
     public void onAgentCollision(Entity entity)
     {
         entity.setPosition(entity.getPrevPos());
     }
 
-
+    /**
+     * Sets a new position.
+     * @param pos
+     */
     public void setPosition(Vector2D pos) {
         if (getPosition() != null)
             prevPos = new Vector2D(getPosition().getX(), getPosition().getY());
@@ -259,6 +259,10 @@ public abstract class Entity extends MapItem {
      */
     public abstract boolean isIntruder();
 
+    /**
+     * Gets the corner points of the own hit box.
+     * @return
+     */
     public Vector2D [] getCornerPoints(){
         return hitBox.getCornerPoints();
     }
@@ -268,12 +272,12 @@ public abstract class Entity extends MapItem {
      * @return
      */
     public ArrayList<Ray> FOV() {
-        // First, make list of all objects that are within visible distance.
-        // Only these are used in the actual FOV calculations (because it makes no sense to check FOV collision for
-        // a map item that is on the complete other side of the map).
-
+        /*
+         First, make list of all objects that are within visible distance.
+         Only these are used in the actual FOV calculations (because it makes no sense to check FOV collision for
+         a map item that is on the complete other side of the map).
+         */
         ArrayList<MapItem> potentialVisibleItems = getNearbySolidAreas();
-
         ArrayList<Ray> rays = new ArrayList<>();
         // Create all the rays
         for (double i = 0; i < DefaultValues.agentFovNumber;i++){
@@ -370,8 +374,7 @@ public abstract class Entity extends MapItem {
                 speedVolume = baseSpeedIntruder;
             }
         }
-
-        // want closer entities to be heard better
+        // Closer entities are perceived louder
         return ((1/dist) * speedVolume * yellVolume * areaVolume);
     }
 
@@ -398,6 +401,10 @@ public abstract class Entity extends MapItem {
         return listeningDir; //TODO add uncertainty
     }
 
+    /**
+     * Lists all entities that are currently detected.
+     * @return
+     */
     public ArrayList <Entity> getDetectedEntities(){
         ArrayList<Ray> fov = FOV();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
@@ -411,6 +418,10 @@ public abstract class Entity extends MapItem {
         return detectedEntities;
     }
 
+    /**
+     * Set the entity to a sprinting state if possible.
+     * @param sprint
+     */
     public void setSprinting(boolean sprint){
         if (sprint && stamina <= 0){
             isSprinting = false;
@@ -452,16 +463,12 @@ public abstract class Entity extends MapItem {
             case 5 -> { // NEAT Agent
                 agent = new NeatAgent();
                 agent.setEntityInstance(this);
-
-//                NeuralNetwork.readGlobals("output/Neat results/fromPreviousSim.txt");
-//                NeatAgent.setNn(NeuralNetwork.readNetwork("output/Neat results/bestNetwork.txt"));
             }
             default -> {
                 System.out.println("No agent defined!");
             }
         }
     }
-
 
     @Override
     public boolean isSolidBody() {
