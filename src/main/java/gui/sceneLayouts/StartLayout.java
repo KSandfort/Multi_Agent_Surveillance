@@ -39,21 +39,17 @@ public class StartLayout extends BorderPane {
     private Stage primaryStage;
     private GridPane mainGrid;
     private int gameMode; // 0 = exploration, 1 = guards vs intruders
-
     File f = new File("src/main/resources/maps/");
     ArrayList<String> fileNames = new ArrayList<>(Arrays.asList(Objects.requireNonNull(f.list())));
-
     private CheckBox testMap;
     private CheckBox fileMap;
     private CheckBox randMap;
     private int mapCode;
-
     private ObservableList<String> mapsList =
             FXCollections.observableArrayList(
                     fileNames
             );
     private ComboBox mapListBox;
-
     private ObservableList<String> guardAgent =
             FXCollections.observableArrayList(
                     "Random Agent",
@@ -64,7 +60,6 @@ public class StartLayout extends BorderPane {
                     "NEAT Agent"
             );
     private ComboBox guardAgentBox;
-
     private ObservableList<String> intruderAgent =
             FXCollections.observableArrayList(
                     "Random Agent",
@@ -88,7 +83,6 @@ public class StartLayout extends BorderPane {
      * Creates all components on the main layout.
      */
     public void initComponents() {
-
         // Main Controls - Center
         mainGrid = new GridPane();
 
@@ -148,7 +142,6 @@ public class StartLayout extends BorderPane {
         testMap = new CheckBox("Test map");
         randMap = new CheckBox("Random map");
         fileMap = new CheckBox("File map");
-
 
         mapListBox = new ComboBox(mapsList);
         mapListBox.getSelectionModel().selectFirst();
@@ -264,7 +257,6 @@ public class StartLayout extends BorderPane {
         trainButton.setOnAction(e -> {
             simulationGUI.startTrainingInterface(primaryStage);
         });
-
         controlsBox.getChildren().addAll(startButton, spacer, trainButton);
         this.setBottom(controlsBox);
     }

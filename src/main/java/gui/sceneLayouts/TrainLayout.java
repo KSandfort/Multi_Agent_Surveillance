@@ -25,16 +25,13 @@ public class TrainLayout extends BorderPane {
 
     // Variables
     TableView table;
-
     private ToggleGroup trainToggle;
     private RadioButton loadExisting;
     private RadioButton trainNew;
     private boolean startFromFile = true;
-
     private ToggleGroup agentToggle;
     private RadioButton guardTraining;
     private RadioButton intruderTraining;
-
     private ComboBox enemyAgentBox;
     private ObservableList<String> enemyAgent =
             FXCollections.observableArrayList(
@@ -53,7 +50,6 @@ public class TrainLayout extends BorderPane {
                     "2",
                     "3"
             );
-
     Button startTrainingButton;
 
     // Static
@@ -68,7 +64,6 @@ public class TrainLayout extends BorderPane {
     public static TableDataModel totalDraws;
     public static TableDataModel totalWinRatio;
     public static TableDataModel bestFitness;
-
     public static int gameCount = 0;
     public static int guardWins = 0;
     public static int intruderWins = 0;
@@ -123,9 +118,7 @@ public class TrainLayout extends BorderPane {
                 new Label("Map Selection"),
                 mapChoiceBox
         );
-
         this.setTop(radioButtonBox);
-
 
         // Create data table
         table = new TableView();
@@ -176,7 +169,6 @@ public class TrainLayout extends BorderPane {
         );
         refreshTimer.setCycleCount(Timeline.INDEFINITE);
         refreshTimer.play();
-
     }
 
     /**

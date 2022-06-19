@@ -5,6 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
+/**
+ * This class represents a row in the table for the training interface.
+ */
 public class TableDataModel {
 
     // Variables

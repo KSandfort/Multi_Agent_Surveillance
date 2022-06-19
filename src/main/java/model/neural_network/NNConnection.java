@@ -1,21 +1,30 @@
 package model.neural_network;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Random;
 
+/**
+ * Represents a single connection between two nodes in a Neural Network.
+ */
+@Getter
+@Setter
 public class NNConnection {
-    
-    final double initBound = 2;
-    public static int globalInnovation = 1;
 
+    // Variables
+    final double initBound = 2;
     private int in;
     private int out;
     private double weight;
     private boolean enabled;
     private int innovationCount;
 
-    //i = input node, 0 = output node, w = weight, e = enabled? yes/no, iC = innovation count
-    public NNConnection(int i, int o, double w, boolean e, int iC)//constructor used for copying
-    {
+    // Static
+    public static int globalInnovation = 1;
+
+    // i = input node, 0 = output node, w = weight, e = enabled? yes/no, iC = innovation count
+    public NNConnection(int i, int o, double w, boolean e, int iC) { //constructor used for copying
         in = i;
         out = o;
         weight = w;
@@ -23,8 +32,7 @@ public class NNConnection {
         innovationCount = iC;
     }
 
-    public NNConnection(int i, int o, double w, boolean e)
-    {
+    public NNConnection(int i, int o, double w, boolean e) {
         in = i;
         out = o;
         weight = w;
@@ -32,20 +40,6 @@ public class NNConnection {
         innovationCount = NNConnection.globalInnovation;
         NNConnection.globalInnovation++;
     }
-
-    public int getIn() {
-        return in;
-    }
-
-    public int getOut() {
-        return out;
-    }
-    
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) { this.weight = weight; }
 
     //give the weight of the connection a completely new random value
     public void resetWeight() {
@@ -61,10 +55,6 @@ public class NNConnection {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public int getInnovationCount() {
         return innovationCount;
     }
@@ -75,16 +65,13 @@ public class NNConnection {
         return new NNConnection(in,out,weight,enabled,innovationCount);
     }
 
-    public static NNConnection readConnectionFromString(String input)
-    {
+    public static NNConnection readConnectionFromString(String input) {
         String[] dataSubstrings = new String[5];
         char[] text = input.toCharArray();
         int prevIndex = 1;
         int subStringIndex = 0;
-        for (int i = 1; i < text.length; i++)
-        {
-            if(text[i] == ',' || text[i] == '|')
-            {
+        for (int i = 1; i < text.length; i++) {
+            if(text[i] == ',' || text[i] == '|') {
                 dataSubstrings[subStringIndex++] = input.substring(prevIndex,i);
                 prevIndex = i+1;
             }

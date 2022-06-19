@@ -101,7 +101,6 @@ public class Ray {
     }
 
     public ArrayList<Entity> getDetectedEntities(Entity entity) {
-        System.out.println("detected");
         ArrayList<Entity> closestEntities = new ArrayList<>();
         ArrayList<MapItem> allItems = new ArrayList<>();
         allItems.addAll(entity.getMap().getMovingItems());
