@@ -47,10 +47,8 @@ public class NNTraining {
     }
 
     private void saveNetwork(GenePool g) {
-
         NeuralNetwork nn = g.bestNetwork;
-        if ((g.generation - 1) % generationBetweenSave == 0)
-        {
+        if ((g.generation - 1) % generationBetweenSave == 0) {
             String[] networkStrings = networkFilePath.split("\\.");
             String[] simStrings = simulationVarsFilePath.split("\\.");
 
@@ -67,8 +65,7 @@ public class NNTraining {
             fw.write("\n" + g.generation + ";" + g.bestNetwork.getFitness());
             fw.flush();
             fw.close();
-        } catch (
-                IOException exception) {
+        } catch (IOException exception) {
             System.out.println("Error writing to file:\n" + exception);
         }
     }

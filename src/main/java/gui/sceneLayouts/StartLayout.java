@@ -39,21 +39,17 @@ public class StartLayout extends BorderPane {
     private Stage primaryStage;
     private GridPane mainGrid;
     private int gameMode; // 0 = exploration, 1 = guards vs intruders
-
     File f = new File("src/main/resources/maps/");
     ArrayList<String> fileNames = new ArrayList<>(Arrays.asList(Objects.requireNonNull(f.list())));
-
     private CheckBox testMap;
     private CheckBox fileMap;
     private CheckBox randMap;
     private int mapCode;
-
     private ObservableList<String> mapsList =
             FXCollections.observableArrayList(
                     fileNames
             );
     private ComboBox mapListBox;
-
     private ObservableList<String> guardAgent =
             FXCollections.observableArrayList(
                     "Random Agent",
@@ -64,7 +60,6 @@ public class StartLayout extends BorderPane {
                     "NEAT Agent"
             );
     private ComboBox guardAgentBox;
-
     private ObservableList<String> intruderAgent =
             FXCollections.observableArrayList(
                     "Random Agent",
@@ -88,7 +83,6 @@ public class StartLayout extends BorderPane {
      * Creates all components on the main layout.
      */
     public void initComponents() {
-
         // Main Controls - Center
         mainGrid = new GridPane();
 
@@ -125,6 +119,7 @@ public class StartLayout extends BorderPane {
         guardAmount = new TextField("3");
         guardAmount.textProperty().addListener(new NumericInputEnforcer(guardAmount));
         guardAgentBox = new ComboBox(guardAgent);
+        guardAgentBox.setPrefWidth(250);
         guardAgentBox.getSelectionModel().selectFirst();
         mainGrid.add(guardLabel, 0, 1);
         mainGrid.add(guardAmount, 1, 1);
@@ -136,6 +131,7 @@ public class StartLayout extends BorderPane {
         intruderAmount.setDisable(true);
         intruderAmount.textProperty().addListener(new NumericInputEnforcer(intruderAmount));
         intruderAgentBox = new ComboBox(intruderAgent);
+        intruderAgentBox.setPrefWidth(250);
         intruderAgentBox.getSelectionModel().selectFirst();
         mainGrid.add(intruderLabel, 0, 2);
         mainGrid.add(intruderAmount, 1, 2);
@@ -149,8 +145,8 @@ public class StartLayout extends BorderPane {
         randMap = new CheckBox("Random map");
         fileMap = new CheckBox("File map");
 
-
         mapListBox = new ComboBox(mapsList);
+        mapListBox.setPrefWidth(250);
         mapListBox.getSelectionModel().selectFirst();
         mapListBox.setDisable(true);
 
@@ -264,7 +260,6 @@ public class StartLayout extends BorderPane {
         trainButton.setOnAction(e -> {
             simulationGUI.startTrainingInterface(primaryStage);
         });
-
         controlsBox.getChildren().addAll(startButton, spacer, trainButton);
         this.setBottom(controlsBox);
     }

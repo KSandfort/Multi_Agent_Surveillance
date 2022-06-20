@@ -34,12 +34,16 @@ public class SimulationGUI extends Application {
     private final int WIDTH = 1520;
     private final int HEIGHT = 800;
 
+    // Static
     public static final int CANVAS_OFFSET = 30; // Pushes the map a bit in the middle of the canvas (x and y).
     public static double SCALING_FACTOR = 8;
     public static boolean bypassMenu = false;
     public static String bypassPath;
     public static boolean autoStart = false; // Starts automatically if true
 
+    /**
+     * Starts the GUI
+     */
     public void launchGUI() {
         String[] args = new String[0];
         launch(args);
@@ -68,6 +72,10 @@ public class SimulationGUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Starts a bypass to disable the GUI menu
+     * @param primaryStage
+     */
     public void startBypass(Stage primaryStage) {
         startSimulationGUI(primaryStage, 5, 5, 3);
     }

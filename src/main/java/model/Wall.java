@@ -16,15 +16,11 @@ public class Wall extends Area {
 
     /**
      * Constructor
-     * @param pos1
-     * @param pos2
-     * @param pos3
-     * @param pos4
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
      */
-    public Wall(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
-    }
-
     public Wall(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
     }
@@ -71,21 +67,6 @@ public class Wall extends Area {
                     (cornerPoints[(i + 1) % 4].getX() * sf) + offset,
                     (cornerPoints[(i + 1) % 4].getY() * sf) + offset));
         }
-        // Add diagonal lines
-        /*
-        components.add(new Line(
-                (cornerPoints[0].getX() * sf) + offset,
-                (cornerPoints[0].getY() * sf) + offset,
-                (cornerPoints[2].getX() * sf) + offset,
-                (cornerPoints[2].getY() * sf) + offset));
-        components.add(new Line(
-                (cornerPoints[1].getX() * sf) + offset,
-                (cornerPoints[1].getY() * sf) + offset,
-                (cornerPoints[3].getX() * sf) + offset,
-                (cornerPoints[3].getY() * sf) + offset));
-
-
-         */
         return components;
     }
 
@@ -101,17 +82,11 @@ public class Wall extends Area {
     }
 
     public Vector2D getAgentCollisionDirection(Entity agent){
-
-
         Vector2D pos = agent.getPosition();
-
-
-
         Vector2D dir = null;
         for (int i = 0; i < cornerPoints.length; i++) {
             Vector2D c1 = cornerPoints[i];
             Vector2D c2 = cornerPoints[(i + 1)%4];
-
 
             //calculate closest point on edge using vector projection
             //following the math on https://en.wikipedia.org/wiki/Vector_projection
@@ -155,74 +130,18 @@ public class Wall extends Area {
         Vector2D pos = entity.getPosition();
         Vector2D dir = getAgentCollisionDirection(entity);
 
-
         if (dir == null) return;
         if(dir.getX() == 0 && dir.getY() == 0)
         {
             entity.setPosition(entity.getPrevPos());
 
-        }else {
+        } else {
             double length = Vector2D.length(dir);
             double diff = entity.getRadius() - length;
             Vector2D push = Vector2D.scalar(dir, diff / length);
 
             entity.setPosition(Vector2D.add(pos, push));
-
         }
     }
 
-    /*
-    //this function assumes an agent is inside of the area
-    @Override
-    public void onAgentCollision(BaseEntity agent)
-    {
-        //agent is currently inside a wall, so we push the agent out of the wall
-        //find the nearest side of the wall assuming the wall is a rectangle
-        Vector2D agentPos = agent.getPosition();
-
-        //coordinates of the closest point on the edge of the square to the agent
-        double targetX = getPosition().getX();
-        double targetY = getPosition().getY();
-
-        if(agentPos.getX() > targetX + (getWidth()/2.0))
-        {
-            targetX += getWidth();
-        }
-
-        if(agentPos.getY() > targetY + (getLength()/2.0))
-        {
-            targetY += getLength();
-        }
-
-        //distance to nearest x/y edge
-        double xDiff = Math.abs(targetX - agentPos.getX());
-        double yDiff = Math.abs(targetY - agentPos.getY());
-        Vector2D newPos;
-        if(xDiff < yDiff)
-        {
-            if(targetX == getPosition().getX())
-            {
-                targetX -= agent.getRadius();
-            }else
-            {
-                targetX += agent.getRadius();
-            }
-            newPos = new Vector2D(targetX, agentPos.getY());
-        }else
-        {
-            if(targetY == getPosition().getY())
-            {
-                targetY -= agent.getRadius();
-            }else
-            {
-                targetY += agent.getRadius();
-            }
-            newPos = new Vector2D(agentPos.getX(), targetY);
-        }
-
-        agent.setPosition(newPos);
-
-    }
-
-     */
 }

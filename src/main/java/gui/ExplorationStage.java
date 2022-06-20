@@ -81,5 +81,4 @@ public class ExplorationStage extends Stage {
         }
         grid.add(pane, x, y);
     }
-
 }

@@ -58,7 +58,6 @@ public class MainLayout extends BorderPane {
         canvas = new Pane();
         canvas.setStyle("-fx-background-color: rgb(200, 220, 200);");
         canvas.setPrefSize(1200, 600);
-
         this.setCenter(canvas);
 
         // Info - Top
@@ -117,7 +116,6 @@ public class MainLayout extends BorderPane {
 
         returnToStartButton = new Button("Return to start");
         returnToStartButton.setOnAction(e -> {
-            // simulationGUI.startTitleScreenGUI(primaryStage);
             System.out.println("Todo...");
         });
 
@@ -126,6 +124,7 @@ public class MainLayout extends BorderPane {
             ExplorationStage explorationStage = new ExplorationStage(this);
         });
 
+        // Add all control elements
         controlsContainer.getChildren().addAll(
                 playPauseButton,
                 stepButton,

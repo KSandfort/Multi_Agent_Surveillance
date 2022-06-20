@@ -6,14 +6,26 @@ package model;
  */
 public class WallWithWindow extends WallWithItem{
 
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     * @param vertical
+     */
     public WallWithWindow(double xFrom, double yFrom, double xTo, double yTo, boolean vertical) {
         super(xFrom, yFrom, xTo, yTo, vertical);
     }
 
-    public WallWithWindow(Vector2D pos1, Vector2D pos2, boolean vertical) {
-        super(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY(), vertical);
-    }
-
+    /**
+     * Creates a wall object that is part of this element.
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     * @param vertical
+     */
     public void createWallItem(double xFrom, double yFrom, double xTo, double yTo, boolean vertical){
         double length;
         if (vertical){

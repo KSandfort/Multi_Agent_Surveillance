@@ -1,6 +1,5 @@
 package model;
 
-import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -13,14 +12,16 @@ import java.util.ArrayList;
  * object that the agent can see through, but not walks through
  */
 public class Window extends Wall{
-    private double areaSoundVolume = 2;
 
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     */
     public Window(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-    }
-
-    public Window(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
     }
 
     @Override
@@ -66,7 +67,6 @@ public class Window extends Wall{
         }
         return components;
     }
-
 
     public boolean isTransparentObject() {
         return true;

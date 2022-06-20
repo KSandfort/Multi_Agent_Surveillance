@@ -19,7 +19,6 @@ public abstract class MapItem {
     protected GameMap map;
 
     public void update(ArrayList<MapItem> items) {
-
     };
 
     public abstract ArrayList<Node> getComponents();

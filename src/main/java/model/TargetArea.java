@@ -4,22 +4,23 @@ import gui.SimulationGUI;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class TargetArea extends Area{
+/**
+ * Class that represents the target area of the intruders.
+ */
+public class TargetArea extends Area {
 
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     */
     public TargetArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-    }
-
-    public TargetArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
-    }
-
-    public boolean insideTargetArea(Vector2D coordinates){
-        return isInsideArea(coordinates);
     }
 
     @Override
@@ -40,5 +41,4 @@ public class TargetArea extends Area{
         }
         return components;
     }
-
 }

@@ -18,22 +18,21 @@ public class Teleport extends Area{
     private Vector2D target;
     private Vector2D direction;
 
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     * @param targetX
+     * @param targetY
+     * @param directionX
+     * @param directionY
+     */
     public Teleport(double xFrom, double yFrom, double xTo, double yTo, double targetX, double targetY, double directionX, double directionY) {
         super(xFrom, yFrom, xTo, yTo);
         this.target = new Vector2D(targetX, targetY);
         this.direction = Vector2D.normalize(new Vector2D(directionX, directionY));
-    }
-
-    public Teleport(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4, Vector2D target, Vector2D direction) {
-        super(pos1, pos2, pos3, pos4);
-        this.target = target;
-        this.direction = direction;
-    }
-
-    public Teleport(Vector2D[] pos, Vector2D target, Vector2D direction) throws Exception {
-        super(pos);
-        this.target = target;
-        this.direction = direction;
     }
 
     public Vector2D getExitPosition() {

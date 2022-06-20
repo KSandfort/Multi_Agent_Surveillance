@@ -13,23 +13,17 @@ import java.util.ArrayList;
  * this area increases the visual range an angle of an entity
  * decreases the velocity of the agents to simulate climbing the tower
  */
-public class SentryTower extends Area{
+public class SentryTower extends Area {
+
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     */
     public SentryTower(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setAreaFovAngle(getAreaFovAngle()* DefaultValues.areaSentryTowerFovAngleFactor);
-        setAreaFovDepth(getAreaFovDepth()* DefaultValues.areaSentryTowerFovDepthFactor);
-        setAreaSpeedFactor(DefaultValues.areaSentryTowerSpeedFactor);
-    }
-
-    public SentryTower(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
-        setAreaFovAngle(getAreaFovAngle()* DefaultValues.areaSentryTowerFovAngleFactor);
-        setAreaFovDepth(getAreaFovDepth()* DefaultValues.areaSentryTowerFovDepthFactor);
-        setAreaSpeedFactor(DefaultValues.areaSentryTowerSpeedFactor);
-    }
-
-    public SentryTower(Vector2D[] pos) throws Exception {
-        super(pos);
         setAreaFovAngle(getAreaFovAngle()* DefaultValues.areaSentryTowerFovAngleFactor);
         setAreaFovDepth(getAreaFovDepth()* DefaultValues.areaSentryTowerFovDepthFactor);
         setAreaSpeedFactor(DefaultValues.areaSentryTowerSpeedFactor);

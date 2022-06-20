@@ -120,7 +120,6 @@ public class MapReader {
                         double y2 = Double.parseDouble(words[5]);
                         double xt = Double.parseDouble(words[6]);
                         double yt = Double.parseDouble(words[7]);
-                        double angle;
                         
                         Teleport tp = new Teleport(x1, y1, x2, y2, xt, yt, 1, 0);
                         //TODO: correct angle

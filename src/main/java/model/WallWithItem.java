@@ -3,6 +3,8 @@ package model;
 import Enities.Entity;
 import gui.SimulationGUI;
 import javafx.scene.Node;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,23 +12,28 @@ import java.util.Arrays;
 /**
  * wall containing a window or door in the middle
  */
+@Getter
+@Setter
 public abstract class WallWithItem extends Wall{
 
+    // Variables
     private double areaSoundVolume = 2;
     private Wall leftWall;
     private Wall rightWall;
     private Area item;
 
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     * @param vertical
+     */
     public WallWithItem(double xFrom, double yFrom, double xTo, double yTo, boolean vertical) {
         super(xFrom, yFrom, xTo, yTo);
         createWalls(xFrom, yFrom, xTo, yTo, vertical);
         createWallItem(xFrom, yFrom, xTo, yTo, vertical);
-    }
-
-    public WallWithItem(Vector2D pos1, Vector2D pos2, boolean vertical) {
-        super(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY());
-        createWalls(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY(), vertical);
-        createWallItem(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY(), vertical);
     }
 
     /**
@@ -51,23 +58,7 @@ public abstract class WallWithItem extends Wall{
         }
     }
 
-    public void createWallItem(double xFrom, double yFrom, double xTo, double yTo, boolean vertical){
-    }
-
-    public Area getItem() {
-        return item;
-    }
-
-    public void setItem(Area item) {
-        this.item = item;
-    }
-
-    public Wall getLeftWall() {
-        return leftWall;
-    }
-
-    public Wall getRightWall() {
-        return rightWall;
+    public void createWallItem(double xFrom, double yFrom, double xTo, double yTo, boolean vertical) {
     }
 
     public ArrayList<Wall> getWalls(){
@@ -93,12 +84,9 @@ public abstract class WallWithItem extends Wall{
     @Override
     public ArrayList<Node> getComponents() {
         ArrayList<Node> components = new ArrayList<>();
-        int offset = SimulationGUI.CANVAS_OFFSET;
-        double sf = SimulationGUI.SCALING_FACTOR;
         ArrayList<Node> lWallComp = leftWall.getComponents();
         ArrayList<Node> rWallComp = rightWall.getComponents();
         ArrayList<Node> itemComp = item.getComponents();
-
         for (int i = 0; i<lWallComp.size();i++){
             components.add(lWallComp.get(i));
             components.add(rWallComp.get(i));

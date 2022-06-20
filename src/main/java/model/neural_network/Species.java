@@ -1,9 +1,11 @@
 package model.neural_network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Set of individuals.
+ */
 public class Species
 {
     List<NeuralNetwork> genomes;
@@ -11,7 +13,9 @@ public class Species
     double staleness;
     double averageFitness;
 
-
+    /**
+     * Constructor
+     */
     public Species()
     {
         genomes = new ArrayList<>();
@@ -72,11 +76,9 @@ public class Species
 
     private NeuralNetwork[] quickSort(NeuralNetwork[] arr, int Left, int Right)
     {
-
         int l = Left;
         int r = Right;
         double middle = arr[(l + r)/2].getFitness();
-
         do
         {
             while(arr[l].getFitness() > middle)
