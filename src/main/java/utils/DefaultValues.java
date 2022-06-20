@@ -1,7 +1,8 @@
 package utils;
 
-// Default values for various stuff around the program
-
+/**
+ * Default values for various stuff around the program
+ */
 public class DefaultValues {
 
     ////////////
@@ -21,6 +22,7 @@ public class DefaultValues {
     public static double agentFovAngle = 60;
     public static double agentFovDepth = 20;
     public static double agentFovNumber = 20;
+
     //////////////
     // AREA FOV //
     //////////////

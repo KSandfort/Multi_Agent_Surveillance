@@ -7,9 +7,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import java.util.ArrayList;
 
+/**
+ * Hitbox that marks the surface area of an entity.
+ */
 public class HitBox extends Area {
 
-
+    /**
+     * Constructor
+     * @param pos1
+     * @param pos2
+     * @param pos3
+     * @param pos4
+     */
     public HitBox(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
         super(pos1, pos2, pos3, pos4);
     }
@@ -32,7 +41,6 @@ public class HitBox extends Area {
         }
         return components;
     }
-
 
     public void transform(Entity entity) {
         double radius = entity.getRadius();

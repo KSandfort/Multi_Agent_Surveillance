@@ -119,6 +119,7 @@ public class StartLayout extends BorderPane {
         guardAmount = new TextField("3");
         guardAmount.textProperty().addListener(new NumericInputEnforcer(guardAmount));
         guardAgentBox = new ComboBox(guardAgent);
+        guardAgentBox.setPrefWidth(250);
         guardAgentBox.getSelectionModel().selectFirst();
         mainGrid.add(guardLabel, 0, 1);
         mainGrid.add(guardAmount, 1, 1);
@@ -130,6 +131,7 @@ public class StartLayout extends BorderPane {
         intruderAmount.setDisable(true);
         intruderAmount.textProperty().addListener(new NumericInputEnforcer(intruderAmount));
         intruderAgentBox = new ComboBox(intruderAgent);
+        intruderAgentBox.setPrefWidth(250);
         intruderAgentBox.getSelectionModel().selectFirst();
         mainGrid.add(intruderLabel, 0, 2);
         mainGrid.add(intruderAmount, 1, 2);
@@ -144,6 +146,7 @@ public class StartLayout extends BorderPane {
         fileMap = new CheckBox("File map");
 
         mapListBox = new ComboBox(mapsList);
+        mapListBox.setPrefWidth(250);
         mapListBox.getSelectionModel().selectFirst();
         mapListBox.setDisable(true);
 

@@ -13,23 +13,20 @@ import java.util.ArrayList;
 /**
  * this area decreases the visual range an angle of an entity
  */
-public class ShadedArea extends Area{
+public class ShadedArea extends Area {
+
+    // Variables
     private double areaSoundVolume = 2;
 
+    /**
+     * Constructor
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     */
     public ShadedArea(double xFrom, double yFrom, double xTo, double yTo) {
         super(xFrom, yFrom, xTo, yTo);
-        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
-        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
-    }
-
-    public ShadedArea(Vector2D pos1, Vector2D pos2, Vector2D pos3, Vector2D pos4) {
-        super(pos1, pos2, pos3, pos4);
-        setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
-        setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
-    }
-
-    public ShadedArea(Vector2D[] pos) throws Exception {
-        super(pos);
         setAreaFovAngle(getAreaFovAngle() * DefaultValues.areaShadedFovAngleFactor);
         setAreaFovDepth(getAreaFovDepth() * DefaultValues.areaShadedFovDepthFactor);
     }

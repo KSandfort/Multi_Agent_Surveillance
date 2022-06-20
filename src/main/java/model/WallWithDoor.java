@@ -10,10 +10,6 @@ public class WallWithDoor extends WallWithItem{
         super(xFrom, yFrom, xTo, yTo, vertical);
     }
 
-    public WallWithDoor(Vector2D pos1, Vector2D pos2, boolean vertical) {
-        super(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY(), vertical);
-    }
-
     public void createWallItem(double xFrom, double yFrom, double xTo, double yTo, boolean vertical){
         double length;
         if (vertical){

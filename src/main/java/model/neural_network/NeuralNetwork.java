@@ -1,11 +1,16 @@
 package model.neural_network;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.*;
 import java.util.*;
 
 /**
  * Representation of a Neural Network for the NEAT algorithm
  */
+@Getter
+@Setter
 public class NeuralNetwork {
     // Coefficients for compatibility distance calculation
     final static double c1 =1.3;
@@ -36,6 +41,9 @@ public class NeuralNetwork {
 
     Random random;
 
+    /**
+     * Constructor
+     */
     public NeuralNetwork() {
         connections = new ArrayList<NNConnection>();
         random = new Random(System.nanoTime());
@@ -440,14 +448,6 @@ public class NeuralNetwork {
                 graph[c.getOut()].add(c);
         }
         return graph;
-    }
-
-    public int getInputNum() {
-        return inputNum;
-    }
-
-    public int getOutputNum() {
-        return outputNum;
     }
 
     public void saveNetwork(String filePath) {

@@ -200,7 +200,6 @@ public class GameMap {
         addToMap(spawnAreaIntruders);
     }
 
-
     public ArrayList<MapItem> getAllItems() {
         ArrayList<MapItem> items = (ArrayList<MapItem>) getStaticItems().clone();
 
@@ -209,7 +208,6 @@ public class GameMap {
 
         return items;
     }
-
 
     public ArrayList<MapItem> getMapItemsAtCoordinates(double x, double y) {
         ArrayList<MapItem> itemsAtCoordinates = new ArrayList<>();
@@ -226,8 +224,6 @@ public class GameMap {
 
         return itemsAtCoordinates;
     }
-
-
 
     // Breadth-first search algorithm to calculate walkable space
     // Upper bound: map area
@@ -316,7 +312,6 @@ public class GameMap {
 
             searchers = newIteration;
         }
-
         return maxCoverage;
     }
 }
