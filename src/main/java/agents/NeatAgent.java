@@ -106,6 +106,8 @@ public class NeatAgent extends AbstractAgent {
         input[14] = entitySensing[1];
         input[15] = entitySensing[3];
 
+//        System.out.println(e.getID() + " (" + input[12] + " " + input[13] + " " + input[14] + " " + input[15] + ")");
+
         input[16] = Vector2D.shortestAngle(e.getDirection(), e.getListeningDirection(e.getMap().getMovingItems(), e.getMap().getStaticItems()));//this one is a problem sometimes
 
         if (e instanceof Intruder) {

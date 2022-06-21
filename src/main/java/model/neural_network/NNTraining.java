@@ -13,11 +13,11 @@ import java.io.IOException;
 @Setter
 public class NNTraining {
     final static int generations = 1000; // Number of generations to train
-    public static int guardType = 0;
-    public static int intruderType = 5;
-    public static boolean trainGuard = false; // Set to true if you're training a guard, for intruder set to false
-    final static boolean trainOn3Maps = true; // Set to true if you want to train using all 3 maps of this phase
-    public static boolean startFromNothing = true; // Set this to false if you want to start with a fully connected network
+    public static int guardType = 5;
+    public static int intruderType = 2;
+    public static boolean trainGuard = true; // Set to true if you're training a guard, for intruder set to false
+    final static boolean trainOn3Maps = false; // Set to true if you want to train using all 3 maps of this phase
+    public static boolean startFromNothing = false; // Set this to false if you want to start with a fully connected network
     final static int generationThreads = 4; // Splits the gene pool into equally-sized partitions for faster training
     final static int generationBetweenSave = 20;
     public static String networkFilePath = "output/Neat results/bestNetwork.txt";//file path to save network to

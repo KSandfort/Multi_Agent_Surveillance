@@ -405,7 +405,7 @@ public abstract class Entity extends MapItem {
      * @return
      */
     public ArrayList <Entity> getDetectedEntities(){
-        ArrayList<Ray> fov = FOV();
+        ArrayList<Ray> fov = getFov();
         ArrayList<Entity> detectedEntities = new ArrayList<>();
         for (Ray ray : fov) {
             for (Entity e: ray.getDetectedEntities(this)){

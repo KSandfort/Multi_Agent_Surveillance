@@ -50,6 +50,8 @@ public class GameController {
     public static int intruderAgentType = 0;
     public static boolean terminalFeedback = false; // Displays information about the simulation in the terminal
 
+    public int deadIntruders;
+
     // Public
     public double fitnessGuards = 0;
     public double fitnessIntruders = 0;
@@ -121,6 +123,7 @@ public class GameController {
 
         while (!finished) {
             controller.update();
+            System.out.print("Step " + step + "\r");
 
             // Abort simulation upon win
             if (controller.hasWonGame > 0 || step > steps) {
@@ -161,6 +164,7 @@ public class GameController {
             if (item instanceof Intruder){
                 if (!((Intruder) item).isAlive()){
                     toKill.add((Intruder)item);
+                    deadIntruders++;
                 }
             }
         }

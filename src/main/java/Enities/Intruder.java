@@ -28,8 +28,8 @@ public class Intruder extends Entity {
     boolean wasInsideTarget = false;
 
     // Static
-    static int intruderCount = 0;
-    static int intruderTargetCount = 0;
+    public static int intruderCount = 0;
+    public static int intruderTargetCount = 0;
 
     public Intruder(double x, double y, GameMap currentMap) {
         super(x, y, currentMap);
